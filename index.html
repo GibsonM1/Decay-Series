@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Decay Series of Uranium-238</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Arabic:wght@400;700&family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+<!-- Shared theme. If the theme repo can't be reached, the copy in this repo loads instead. -->
+<link rel="stylesheet" href="https://gibsonm1.github.io/theme/theme-v1.css" onerror="this.onerror=null;this.href='theme-v1.css'">
+<style>
+:root{
+  --alpha-fill:#ff8fc4; --alpha-ink:#3b0020; --alpha-line:#b0105f;
+  --beta-fill:#86e89a;  --beta-ink:#002810;  --beta-line:#147a35;
+  --bar-h:64px;
+}
+@media (prefers-color-scheme:dark){ :root{ --alpha-line:#ff8fc4; --beta-line:#86e89a; } }
+body{overflow-x:hidden}
+html[lang="ar"] body{font-family:"Noto Sans Arabic",var(--md-ref-typeface)}
+html[lang="zh-Hant"] body{font-family:"Atkinson Hyperlegible","Noto Sans TC",var(--md-ref-typeface)}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;flex-wrap:wrap;row-gap:4px}
+.topbar h1{font-size:18px}
+.topbar .md-stepper button{padding:0 8px;gap:5px;min-height:34px}
+.topbar .md-stepper .num{width:20px;height:20px}
+.topbar{gap:12px}
+.tb-prog{font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface-variant);white-space:nowrap;padding:0 4px}
+.tb-lang{display:flex;align-items:center;gap:6px;font:var(--md-sys-typescale-label-large);color:var(--md-sys-color-on-surface-variant)}
+.tb-lang svg{width:20px;height:20px}
+.tb-lang #langLbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.tb-lang select{min-height:40px;padding:6px 8px}
+main{padding:12px 16px 24px}
+
+/* math always reads left to right, even in Arabic */
+.nuc,.eq,.deq,.bigeq,.math,.mcard,.chart,.frameEn,.ltr{direction:ltr;unicode-bidi:isolate}
+.nuc{display:inline-flex;align-items:center;line-height:1;white-space:nowrap;font-variant-numeric:tabular-nums}
+.nuc .pre{display:inline-flex;flex-direction:column;align-items:flex-end;font-size:.56em;font-weight:700;margin-right:.08em;gap:.14em}
+.nuc .sym{font-weight:700}
+.kw{font-weight:700;white-space:nowrap}
+.tr{font-weight:400;color:var(--md-sys-color-on-surface-variant);margin-inline-start:.3em}
+.tr:lang(ar){font-family:"Noto Sans Arabic",var(--md-ref-typeface)}
+.tr:lang(zh-Hant){font-family:"Noto Sans TC",var(--md-ref-typeface)}
+.muted{color:var(--md-sys-color-on-surface-variant)}
+h2{font:var(--md-sys-typescale-title-large);margin:0 0 8px}
+h3{font:var(--md-sys-typescale-title-medium);margin:0 0 6px}
+p{margin:0 0 10px}
+
+/* start */
+.start{max-width:780px;margin:24px auto;padding:32px}
+.start h2{font:var(--md-sys-typescale-display-small);margin-bottom:12px}
+.hero{display:flex;align-items:center;gap:16px;margin:8px 0 24px;direction:ltr}
+.hero .span{flex:1;min-width:120px;display:flex;align-items:center;gap:8px;color:var(--md-sys-color-on-surface-variant);font:var(--md-sys-typescale-label-large);white-space:nowrap}
+.hero .span::before,.hero .span::after{content:"";flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--md-sys-color-outline) 0 6px,transparent 6px 12px)}
+.start-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:16px 0 8px}
+.err{color:var(--md-sys-color-error);min-height:1.5em;margin:4px 0}
+.start-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.ver{font-size:12px;color:var(--md-sys-color-on-surface-variant);margin-top:16px}
+
+/* cards */
+.iso-card{position:relative;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex:none;
+  width:96px;height:80px;padding:4px;border-radius:var(--md-sys-shape-corner-medium);
+  border:2px solid var(--md-sys-color-outline);background:var(--md-sys-color-surface-container-lowest);
+  color:var(--md-sys-color-on-surface);user-select:none;direction:ltr}
+button.iso-card{cursor:grab;touch-action:none}
+button.iso-card:hover{border-color:var(--md-sys-color-primary)}
+.iso-card .nuc{font-size:30px}
+.iso-card .nm{font-size:13px;line-height:1.1;color:var(--md-sys-color-on-surface-variant)}
+.pcard{position:relative;display:inline-block;flex:none;width:88px;height:84px;border:0;padding:0;background:transparent;user-select:none;color:inherit}
+button.pcard{cursor:grab;touch-action:none}
+.pcard svg.shape{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.pcard.a svg polygon{fill:var(--alpha-fill);stroke:var(--alpha-ink);stroke-width:2.5}
+.pcard.b svg polygon{fill:var(--beta-fill);stroke:var(--beta-ink);stroke-width:2.5}
+.pcard .gk{position:absolute;left:0;right:0;text-align:center;font-weight:700;font-size:18px}
+.pcard .nuc{position:absolute;left:0;right:0;justify-content:center;font-size:22px}
+.pcard.a{color:var(--alpha-ink)} .pcard.b{color:var(--beta-ink)}
+.pcard.a .gk{top:26px} .pcard.a .nuc{bottom:9px}
+.pcard.b .gk{top:8px;font-size:17px} .pcard.b .nuc{top:37px;font-size:20px}
+[data-card][aria-pressed="true"]{outline:4px solid var(--md-sys-color-primary);outline-offset:3px}
+.ghost{position:fixed;left:0;top:0;z-index:3000;pointer-events:none;box-shadow:0 8px 20px rgba(0,0,0,.3);border-radius:12px}
+.pcard.ghost{box-shadow:none;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35))}
+.dragsrc{opacity:.35}
+body.dragging,body.dragging *{cursor:grabbing!important;user-select:none}
+
+/* layout helpers */
+.two{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start;max-width:1320px;margin:0 auto}
+.stack{display:flex;flex-direction:column;gap:16px}
+.narrow{max-width:1000px;margin:0 auto}
+.reading{font:var(--md-sys-typescale-body-reading)}
+html[lang="ar"] .reading{font-family:"Noto Sans Arabic",var(--md-ref-typeface)}
+.reading p{margin-bottom:12px}
+.vid{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--md-sys-color-outline-variant)}
+.vid:first-of-type{border-top:0}
+.vid .md-btn{flex:none}
+.headrow{display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap}
+.speak{display:flex;align-items:center;gap:4px}
+.speak select{min-height:40px;padding:4px 6px}
+.bigeq{display:flex;align-items:center;gap:12px;font-size:34px;flex-wrap:wrap}
+.legend{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.legend .item{display:flex;align-items:center;gap:8px}
+.legend .pcard{transform:scale(.8);margin:-6px}
+fieldset.q{border:1px solid var(--md-sys-color-outline-variant);border-radius:var(--md-sys-shape-corner-medium);padding:12px 14px;margin:0 0 12px;background:var(--md-sys-color-surface-container-lowest);min-width:0}
+fieldset.q legend{font:var(--md-sys-typescale-title-medium);padding:0 4px}
+.qtext{margin:4px 0 8px}
+.opt{display:flex;gap:10px;align-items:center;min-height:48px;padding:6px 10px;border:1px solid var(--md-sys-color-outline-variant);border-radius:var(--md-sys-shape-corner-small);margin:6px 0;cursor:pointer}
+.opt:hover{border-color:var(--md-sys-color-outline)}
+.opt input{width:20px;height:20px;flex:none;accent-color:var(--md-sys-color-primary)}
+.opt .nuc{font-size:24px}
+.fb{margin:8px 0 0;padding:8px 10px;border-radius:var(--md-sys-shape-corner-small);border-inline-start:4px solid}
+.fb.ok{background:var(--app-color-success-container);color:var(--app-color-on-success-container);border-color:var(--app-color-success)}
+.fb.bad{background:var(--md-sys-color-error-container);color:var(--md-sys-color-on-error-container);border-color:var(--md-sys-color-error)}
+.fb.info{background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-on-tertiary-container);border-color:var(--md-sys-color-tertiary)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+
+/* equations, tally */
+.eq{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.eq .op{font-size:30px;font-weight:700;color:var(--md-sys-color-on-surface-variant)}
+.cell{display:flex;flex-direction:column;align-items:center;gap:4px}
+.cell .lbl{font-size:13px;color:var(--md-sys-color-on-surface-variant);text-align:center;max-width:150px;line-height:1.25}
+.parent .iso-card{border-color:var(--md-sys-color-primary)}
+.tally{margin-top:10px;display:grid;gap:6px}
+.tline{display:grid;grid-template-columns:minmax(150px,auto) 1fr auto;gap:10px;align-items:center;padding:6px 10px;border-radius:var(--md-sys-shape-corner-small);font-variant-numeric:tabular-nums}
+.tline.ok{background:var(--app-color-success-container);color:var(--app-color-on-success-container)}
+.tline.bad{background:var(--md-sys-color-error-container);color:var(--md-sys-color-on-error-container)}
+.tline .math{font-size:20px;font-weight:700}
+.tline .st{font:var(--md-sys-typescale-label-large)}
+
+/* build */
+.build{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.06fr);gap:16px;height:calc(100dvh - var(--bar-h) - 24px);max-width:1400px;margin:0 auto}
+.leftcol{display:flex;flex-direction:column;gap:12px;min-height:0}
+.chainside{display:flex;flex-direction:column;min-height:0;flex:1}
+.chainside h2{font:var(--md-sys-typescale-title-medium);margin-bottom:4px}
+.chain-list{flex:1;min-height:0;overflow-y:auto;padding:2px 2px 8px}
+.drows{list-style:none;margin:0;padding:0}
+.drow{display:flex;align-items:center;gap:10px;padding:5px 4px;border-bottom:1px solid var(--md-sys-color-outline-variant);flex-wrap:wrap}
+.drow .dn{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:var(--md-sys-typescale-label-medium);background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container)}
+.deq{display:flex;align-items:center;gap:6px;font-size:20px;flex:none}
+.deq .op{font-size:16px;color:var(--md-sys-color-on-surface-variant)}
+.mshape{width:18px;height:18px;flex:none;vertical-align:middle}
+.mshape.a polygon{fill:var(--alpha-fill);stroke:var(--alpha-ink);stroke-width:6}
+.mshape.b polygon{fill:var(--beta-fill);stroke:var(--beta-ink);stroke-width:6}
+.dhl{font-size:14px;color:var(--md-sys-color-on-surface-variant);margin-inline-start:auto}
+.dnote{flex-basis:100%;font-size:13px;color:var(--md-sys-color-on-surface-variant);padding-inline-start:36px}
+.tag{font:var(--md-sys-typescale-label-medium);padding:2px 8px;border-radius:999px;background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-on-tertiary-container)}
+.empty-chain{color:var(--md-sys-color-on-surface-variant);padding:8px 4px}
+.work{overflow-y:auto;border:2px solid var(--md-sys-color-primary);background:var(--md-sys-color-surface-container-lowest)}
+.work h2{margin-bottom:4px}
+.slotwrap{position:relative}
+.slot{position:relative;display:grid;place-items:center;padding:0;background:transparent;border:2px dashed var(--md-sys-color-outline);color:var(--md-sys-color-on-surface-variant);cursor:pointer}
+.slot.p{width:100px;height:100px;border-radius:50%}
+.slot.d{width:112px;height:92px;border-radius:var(--md-sys-shape-corner-medium)}
+.slot .ph{font-size:13px;line-height:1.2;text-align:center;padding:6px}
+.slot.ready{border-color:var(--md-sys-color-primary);background:color-mix(in srgb,var(--md-sys-color-primary-container) 55%,transparent)}
+.slot.over{border-style:solid;border-color:var(--md-sys-color-primary);background:var(--md-sys-color-primary-container);box-shadow:0 0 0 4px color-mix(in srgb,var(--md-sys-color-primary) 30%,transparent)}
+.slot.filled{border-style:solid;border-color:transparent;cursor:default}
+.rm{position:absolute;top:-10px;inset-inline-end:-10px;width:30px;height:30px;border-radius:50%;border:2px solid var(--md-sys-color-on-surface);background:var(--md-sys-color-surface-container-lowest);color:var(--md-sys-color-on-surface);display:grid;place-items:center;font-size:18px;line-height:1;padding:0;cursor:pointer;z-index:2}
+.rm::after{content:"";position:absolute;inset:-9px}
+.rm:hover{background:var(--md-sys-color-error);color:var(--md-sys-color-on-error);border-color:var(--md-sys-color-error)}
+.tray{display:flex;gap:12px 24px;flex-wrap:wrap;padding:12px 16px;flex:none;background:var(--md-sys-color-surface-container-low)}
+.tray > div:first-child{flex:none;max-width:200px}
+.tray > div:last-child{flex:1;min-width:0}
+.tray h3{margin:0}
+.tray .sub{font-size:14px;color:var(--md-sys-color-on-surface-variant);margin:2px 0 8px;max-width:440px}
+.piles,.isorow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;direction:ltr}
+.remain{margin:12px 0 0;color:var(--md-sys-color-on-surface-variant)}
+.donebox{margin:12px 0;padding:16px;border-radius:var(--md-sys-shape-corner-large);background:var(--app-color-success-container);color:var(--app-color-on-success-container)}
+.placebar{position:fixed;left:50%;transform:translateX(-50%);bottom:max(12px,env(safe-area-inset-bottom));z-index:900;display:flex;align-items:center;gap:12px;padding:8px 8px 8px 16px;border-radius:var(--md-sys-shape-corner-large);background:var(--md-sys-color-inverse-surface);color:var(--md-sys-color-inverse-on-surface);box-shadow:0 4px 12px rgba(0,0,0,.3);max-width:calc(100vw - 24px)}
+.placebar .md-btn{color:var(--md-sys-color-inverse-primary)}
+
+/* sentence frame */
+.sentence{margin-top:14px;padding:12px 14px;border-radius:var(--md-sys-shape-corner-medium);background:var(--md-sys-color-surface-container-low);border:1px solid var(--md-sys-color-outline-variant)}
+.frameEn{font-size:19px;line-height:2.5;margin:4px 0;text-align:left}
+.frameEn input{min-height:44px;font-size:18px;font-weight:700;padding:4px 8px;margin:0 2px}
+.frameEn input.t{width:110px} .frameEn input.d{width:200px}
+.gloss{font-size:15px}
+.said{margin:12px 0 0;padding:8px 10px;border-radius:var(--md-sys-shape-corner-small);background:var(--app-color-success-container);color:var(--app-color-on-success-container)}
+
+/* missing card */
+.mcard{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:8px;border:2px dashed var(--md-sys-color-primary);border-radius:var(--md-sys-shape-corner-medium);background:var(--md-sys-color-surface-container-lowest)}
+.mcard .pre{display:flex;flex-direction:column;gap:4px}
+.mcard input{width:84px;min-height:48px;text-align:center;font-size:20px;font-weight:700;padding:4px}
+.mcard input.s{width:76px;min-height:100px;font-size:34px}
+.fillrow{padding:14px 16px;margin:12px 0;border-radius:var(--md-sys-shape-corner-large);border:1px solid var(--md-sys-color-outline-variant);background:var(--md-sys-color-surface-container-lowest)}
+.fillrow.active{border:2px solid var(--md-sys-color-primary)}
+.ptype{display:flex;align-items:center;gap:8px;color:var(--md-sys-color-on-surface-variant);margin-bottom:10px}
+.ptstrip{display:flex;gap:4px;overflow-x:auto;padding:4px 0 8px;margin:8px 0 4px;direction:ltr}
+.pt{flex:none;width:68px;border:1px solid var(--md-sys-color-outline);border-radius:6px;text-align:center;padding:4px 2px;background:var(--md-sys-color-surface-container-lowest)}
+.pt b{display:block;font-size:22px}
+.pt small{display:block;font-size:12px;line-height:1.1}
+.pt .z{font-size:12px;color:var(--md-sys-color-on-surface-variant)}
+
+/* patterns */
+.chartcard{position:sticky;top:calc(var(--bar-h) + 12px)}
+.chart{width:100%;height:auto;display:block;font-family:var(--md-ref-typeface)}
+.chart .grid line{stroke:var(--md-sys-color-outline-variant);stroke-width:1}
+.chart .ax text{fill:var(--md-sys-color-on-surface-variant);font-size:13px}
+.chart .ax .sym{font-weight:700;fill:var(--md-sys-color-on-surface)}
+.chart .axt{fill:var(--md-sys-color-on-surface);font-size:14px;font-weight:700}
+.chart .seg{fill:none;stroke-width:3.5;stroke-linecap:round}
+.chart .seg.a{stroke:var(--alpha-line)} .chart .seg.b{stroke:var(--beta-line)}
+.chart .ah.a{fill:var(--alpha-line)} .chart .ah.b{fill:var(--beta-line)}
+.chart .mk.a{fill:var(--alpha-fill);stroke:var(--alpha-ink);stroke-width:1.5}
+.chart .mk.b{fill:var(--beta-fill);stroke:var(--beta-ink);stroke-width:1.5}
+.chart .node circle{fill:var(--md-sys-color-surface-container-lowest);stroke:var(--md-sys-color-on-surface);stroke-width:2}
+.chart .node.end circle{fill:var(--md-sys-color-primary-container);stroke:var(--md-sys-color-primary);stroke-width:3}
+.chart .node text{font-size:11px;font-weight:700;fill:var(--md-sys-color-on-surface);text-anchor:middle;dominant-baseline:central}
+.chart.anim .seg{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .35s ease-out forwards}
+.chart.anim .ah,.chart.anim .mk,.chart.anim .node{opacity:0;animation:pop .25s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{to{opacity:1}}
+.frame{font-size:18px;line-height:2.3}
+.frame select{min-height:44px;margin:0 4px;font-size:16px}
+.numin{width:100px}
+
+/* send & help */
+.summary{white-space:pre-wrap;background:var(--md-sys-color-surface-container-lowest);border:1px solid var(--md-sys-color-outline-variant);border-radius:var(--md-sys-shape-corner-small);padding:12px;max-height:50vh;overflow:auto;direction:ltr;text-align:left}
+.gloss-table{border-collapse:collapse;width:100%;font-size:15px}
+.gloss-table th,.gloss-table td{text-align:start;padding:6px 8px;border-bottom:1px solid var(--md-sys-color-outline-variant);vertical-align:top}
+
+@media (min-width:1001px){ .placebar{left:24px;transform:none} html[dir="rtl"] .placebar{left:auto;right:24px} }
+@media (max-width:1000px){
+  .two{grid-template-columns:1fr}
+  .build{grid-template-columns:1fr;height:auto}
+  .chainside{order:2} .chain-list{overflow:visible}
+  .chartcard{position:static}
+  .topbar h1{font-size:17px}
+}
+@media (prefers-reduced-motion:reduce){ .chart.anim .seg{stroke-dashoffset:0} .chart.anim .ah,.chart.anim .mk,.chart.anim .node{opacity:1} }
+
+.eqrow{display:flex;gap:16px 20px;align-items:flex-start;flex-wrap:wrap}
+.eqrow .side{flex:1;min-width:250px;display:flex;flex-direction:column;gap:8px}
+.side .tline{grid-template-columns:1fr auto;grid-template-areas:"n s" "m m";gap:0 8px;padding:5px 10px}
+.side .tline .tn{grid-area:n;font-size:14px}.side .tline .st{grid-area:s;font-size:13px}.side .tline .math{grid-area:m;font-size:19px}
+@media (min-width:1001px){ .md-snackbar{left:24px;transform:translate(0,24px)} .md-snackbar.show{transform:none} html[dir="rtl"] .md-snackbar{left:auto;right:24px} }
+
+.deq.locked{font-size:30px;gap:10px;margin:6px 0 10px}
+.deq.locked .op{font-size:24px}
+.deq.locked .mshape{width:26px;height:26px}
+.tline.compact{grid-template-columns:auto auto 1fr;gap:24px}
+.tline.compact .st{text-align:end}
+.tline .math{white-space:nowrap}
+.tline{grid-template-columns:minmax(120px,1fr) auto auto}
+.cell .lbl{max-width:170px}
+.slot .ph{font-size:24px;font-weight:700}
+.slot.p .ph{font-size:15px}
+.nw{white-space:nowrap}
+.chart{max-height:calc(100dvh - var(--bar-h) - 140px)}
+</style>
+</head>
+<body>
+<header class="md-top-app-bar topbar" id="bar">
+  <h1 id="ttl">Decay Series of Uranium-238</h1>
+  <nav id="stepnav" aria-label="Steps"><ol class="md-stepper" id="steps"></ol></nav>
+  <div class="md-actions">
+    <span class="tb-prog" id="prog" aria-live="polite"></span>
+    <label class="tb-lang"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><span id="langLbl">Language</span>
+      <select class="md-select" id="lang"><option value="en" lang="en">English</option><option value="es" lang="es">Español</option><option value="zh" lang="zh-Hant">繁體中文</option><option value="ar" lang="ar">العربية</option></select>
+    </label>
+    <button class="md-icon-btn" id="snd" type="button" aria-pressed="false" aria-label="Sound: off" title="Sound: off"></button>
+    <button class="md-icon-btn" id="helpBtn" type="button" aria-label="Help" title="Help">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.2 9.3a2.9 2.9 0 0 1 5.6 1c0 1.9-2.8 2.4-2.8 4.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17.6" r="1.3" fill="currentColor"/></svg>
+    </button>
+  </div>
+</header>
+<main id="app"></main>
+<div class="placebar" id="placebar" hidden><span id="placetext"></span><button class="md-btn text" type="button" data-act="unselect">Cancel</button></div>
+<div class="md-snackbar" id="snack" role="status" aria-live="polite"></div>
+<dialog class="md-dialog" id="helpDlg" aria-labelledby="helpTitle"></dialog>
+<noscript><p style="padding:16px">This activity needs JavaScript turned on.</p></noscript>
+
+<script>
+/* ======================= Teacher settings: edit these lines ======================= */
+const CONFIG = {
+  teacherName: "Mr. Gibson",
+  // Google Form prefill link. In the Form: ⋮ > Get pre-filled link, type STUDENTNAME, CLASSPERIOD,
+  // SCORES, WRITTEN into four answers, click Get link, and paste it here. Blank = "Copy my work" only.
+  formPrefillUrl: "",
+  // how many isotope cards students see for each decay: 1 right answer + trap cards (3 to 6)
+  cardsPerDecay: 4,
+  // true = the first decay (U-238 to Th-234) is already done as an example, like the paper worksheet
+  firstDecayAsExample: true,
+  // which chain decays ask students to write and say "Parent isotope ___ undergoes ___ decay to form...":
+  // the first few alpha decays, the first few beta decays, and the last alpha and last beta decay
+  sayFirstAlpha: 2,
+  sayFirstBeta: 2,
+  sayLastAlpha: true,
+  sayLastBeta: true,
+  // true = the two practice decays (Pu-239, Ra-228) also ask for the sentence
+  sayInPractice: true,
+  // number of "not balanced" checks on one decay before the Hint button shows (0 = always show it)
+  hintAfterWrongChecks: 1,
+  // true = sound effects start ON for a student's first visit
+  soundOnByDefault: false,
+  // the two videos in the Learn step; matchesChain adds "these are the first two decays of your chain"
+  videos: [
+    { title: "FuseSchool: alpha and beta decay", url: "https://www.youtube.com/watch?v=UtZw9jfIxXM", from: "0:00", to: "2:50" },
+    { title: "Khan Academy: alpha, beta, and gamma decay", url: "https://www.khanacademy.org/science/physics/quantum-physics/in-in-nuclei/v/alpha-beta-and-gamma-decay", from: "0:00", to: "6:30", matchesChain: true }
+  ]
+};
+/* ================================================================================== */
+</script>
+<script>
+/* ---------------- key terms: always shown in English, with the translation beside them ---------------- */
+const KW = {
+  "parent isotope": { es: "isótopo padre", zh: "母同位素", ar: "النظير الأم" },
+  "daughter isotope": { es: "isótopo hijo", zh: "子同位素", ar: "النظير الابن" },
+  "decay particle": { es: "partícula de desintegración", zh: "衰變粒子", ar: "جسيم الاضمحلال" },
+  "alpha decay": { es: "desintegración alfa", zh: "α衰變", ar: "اضمحلال ألفا" },
+  "beta decay": { es: "desintegración beta", zh: "β衰變", ar: "اضمحلال بيتا" },
+  "alpha particle": { es: "partícula alfa", zh: "α粒子", ar: "جسيم ألفا" },
+  "beta particle": { es: "partícula beta", zh: "β粒子", ar: "جسيم بيتا" },
+  "radioactive decay": { es: "desintegración radiactiva", zh: "放射性衰變", ar: "الاضمحلال الإشعاعي" },
+  "nucleus": { es: "núcleo", zh: "原子核", ar: "النواة" },
+  "isotope": { es: "isótopo", zh: "同位素", ar: "نظير" },
+  "proton": { es: "protón", zh: "質子", ar: "بروتون" },
+  "neutron": { es: "neutrón", zh: "中子", ar: "نيوترون" },
+  "electron": { es: "electrón", zh: "電子", ar: "إلكترون" },
+  "mass number": { es: "número másico", zh: "質量數", ar: "العدد الكتلي" },
+  "atomic number": { es: "número atómico", zh: "原子序", ar: "العدد الذري" },
+  "balanced": { es: "equilibrada", zh: "平衡", ar: "متوازنة" },
+  "half-life": { es: "semivida (vida media)", zh: "半衰期", ar: "عمر النصف" },
+  "stable": { es: "estable", zh: "穩定", ar: "مستقر" },
+  "helium": { es: "helio", zh: "氦", ar: "الهيليوم" }
+};
+
+const I18N = {
+en: {
+  title: "Decay Series of Uranium-238", short: "U-238 Decay Series", lang: "Language",
+  st0: "Learn", st1: "Practice", st2: "Build the chain", st3: "Patterns", st4: "New chain", st5: "Send", locked: "locked",
+  progDecay: "Decay {n} of {t}", progStep: "Step {n} of {t}", progDone: "Chain complete",
+  sndOn: "Sound: on", sndOff: "Sound: off", help: "Help",
+  startP: "Uranium-238 is radioactive. It decays 14 times before it finally becomes stable lead. You will build the whole chain, one nuclear equation at a time.",
+  fourteen: "14 decays", loggedIn: "Logged in as {name}, period {p}.",
+  yourName: "Your name", period: "Class period", start: "Start", cont: "Continue", over: "Start over",
+  errName: "Type your name to start.", errPeriod: "Type your class period to start.",
+  confirmReset: "Start over? All your answers will be cleared.", version: "Version",
+  readAloud: "Read aloud", stopReading: "Stop reading", speed: "Reading speed", slow: "Slow", medium: "Medium", normal: "Normal",
+  watchH: "1. Watch", openVideo: "Open video", watchRange: "Watch {from} to {to}.", khanNote: "The first two decays in this video are the first two decays of your chain.",
+  readH: "2. Read",
+  r1: "Some nuclei are unstable. An unstable [[nucleus]] can break apart and shoot out a tiny particle. This is called [[radioactive decay]]. The isotope you start with is the [[parent isotope]]. The new isotope it turns into is the [[daughter isotope]].",
+  r2: "<b>[[alpha decay|Alpha (α) decay]]:</b> the nucleus shoots out an [[alpha particle]]. An alpha particle is 2 [[proton|protons]] and 2 [[neutron|neutrons]] stuck together. It is the same as a [[helium]] nucleus, so we write it {he}.",
+  r3: "<b>[[beta decay|Beta (β) decay]]:</b> inside the nucleus, a [[neutron]] turns into a [[proton]] and an [[electron]]. The nucleus shoots the electron out. This electron is a [[beta particle]], written {e}.",
+  r4: "Every nuclear equation must be [[balanced]]. The top numbers ([[mass number|mass numbers]]) before the arrow must equal the top numbers after the arrow added together. The bottom numbers ([[atomic number|atomic numbers]]) work the same way.",
+  exH: "Example: the first decay of your chain", exNote: "Atomic number 90 is thorium (Th), so the [[daughter isotope]] is thorium-234.",
+  cardsH: "Your cards", legA: "Pink triangle: α particle", legB: "Green diamond: β particle",
+  qcH: "3. Quick check", qcSub: "Answer all three, then check.", q: "Question {n}", checkAnswers: "Check answers", next: "Next: {s}",
+  choose: "Choose an answer.", correct: "✓ Correct.", notYet: "✗ Not yet. Try again.", unlocked: "All correct. {s} is unlocked.",
+  massTop: "[[mass number|Mass numbers]] (top)", atomBot: "[[atomic number|Atomic numbers]] (bottom)", bal: "✓ balanced", notBal: "✗ not balanced",
+  mc1q: "What is an [[alpha particle]]?",
+  mc1a: "2 protons and 2 neutrons stuck together (a helium-4 nucleus)", mc1aw: "That's why we write it {he}: mass number 4, atomic number 2.",
+  mc1b: "An electron that shoots out of the nucleus", mc1bw: "That's a beta particle.",
+  mc1c: "A single proton", mc1cw: "An alpha particle has 2 protons, plus 2 neutrons.",
+  mc1d: "A burst of high-energy light", mc1dw: "That's gamma radiation. It has no mass and no charge.",
+  mc2q: "In [[beta decay]], what happens inside the [[nucleus]]?",
+  mc2a: "A neutron turns into a proton, and an electron shoots out", mc2aw: "One more proton means the atomic number goes up by 1.",
+  mc2b: "A proton turns into a neutron", mc2bw: "It's the other way around. Rewatch the beta decay part of the first video.",
+  mc2c: "Two protons and two neutrons leave", mc2cw: "That's alpha decay.",
+  mc2d: "An electron from outside falls into the nucleus", mc2dw: "The beta particle comes out of the nucleus, not in.",
+  mc3q: "Thorium-232 gives off an alpha particle: {eq} Which [[daughter isotope]] makes the equation balanced?",
+  mc3aw: "Top: 232 = 4 + 228. Bottom: 90 = 2 + 88. Atomic number 88 is radium.",
+  mc3bw: "The top numbers balance, but the bottom doesn't: 2 + 90 = 92, not 90.",
+  mc3cw: "The bottom balances, but the top doesn't: 4 + 230 = 234, not 232.",
+  mc3dw: "This adds the alpha particle instead of taking it away.",
+  pracH: "Practice: fill in the missing card",
+  pracP: "Before you build the chain, show you can do one alpha decay and one beta decay. Type the mass number, atomic number, and symbol on the missing card. Use the strip of the periodic table.",
+  givesA: "{x} gives off an alpha (α) particle.", givesB: "{x} gives off a beta (β) particle.",
+  phMass: "mass", phAtomic: "atomic", ariaMass: "Mass number of the missing card", ariaAtomic: "Atomic number of the missing card", ariaSym: "Symbol of the missing card",
+  check: "Check", fillAll: "Fill in the mass number, atomic number, and symbol.",
+  symWrong: "Your numbers balance, but atomic number {z} is not \"{s}\". Find {z} in the strip above.", symOk: "✓ Atomic number {z} is {name} ({sym}).",
+  stripAria: "Part of the periodic table, atomic numbers 86 to 96",
+  sayH: "Write it, then say it", sayInst: "Write the sentence in English. Then say it out loud.", frameGloss: "",
+  checkSent: "Check sentence", sFill: "Fill in both blanks.", sType: "Which particle came out? Write alpha or beta.", sEnglish: "Write it in English: {w}.",
+  sDaughter: "Write the daughter isotope's English name and mass number, like {ex}.", sMass: "Check the mass number.",
+  sOk: "✓ Now say the whole sentence out loud.", hear: "Hear it", said: "I said it out loud",
+  buildSide: "Your chain so far", noneYet: "Your balanced decays will show up here.", decayQ: "Decay {n}: what does {x} turn into?",
+  buildInst: "Drag a card into a box, or tap a card and then tap a box. Then press Check.",
+  parentFrom: "(the daughter from decay {n})", slotP: "α or β?",
+  pileSub: "Take as many as you need.", isoH: "Isotope cards", isoSub: "Only one card balances. The others are traps made from common mistakes.",
+  checkDecay: "Check this decay", hintB: "Hint", hintMore: "Another hint", hintN: "Hint {n} of 3.",
+  h1: "Top numbers: the parent's mass number ({A}) must equal the two mass numbers after the arrow added together. Bottom numbers work the same way ({Z}).",
+  h2: "Try each particle. If α: mass <span class=\"ltr\">{A} − 4 = ?</span>, atomic <span class=\"ltr\">{Z} − 2 = ?</span>. If β: mass <span class=\"ltr\">{A} − 0 = ?</span>, atomic <span class=\"ltr\">{Z} − (−1) = ?</span>. Which card matches?",
+  h3: "Look for the card with mass number {dA} and atomic number {dZ}.",
+  remain: "{n} more decays after this one. The chain ends when it reaches a [[stable]] isotope.", remain1: "1 more decay after this one.", last: "This is the last decay.",
+  doneH: "Chain complete!", doneP: "Lead-206 is [[stable]], so the chain stops here. Uranium-238 went through {a} alpha decays and {b} beta decays to get here.",
+  exTag: "Example", hlOf: "Half-life of {x}: {v}", years: "years", days: "days", minutes: "minutes", seconds: "seconds", stable: "stable",
+  noteM: "This Pa-234 forms in a high-energy state, written Pa-234m. It has the same protons and neutrons as regular Pa-234, so the equation doesn't change.",
+  putFirst: "Put a decay particle and a daughter isotope in the boxes first.", balSnack: "Balanced: {a} → {b}. Now write the sentence.", balSnack2: "Balanced: {a} → {b}.",
+  notBalSnack: "Not balanced yet. Look at the numbers marked ✗.",
+  boxP: "This box is for the decay particle: α or β.", boxD: "This box is for an isotope card.", chooseFirst: "First choose a card.",
+  selected: "Selected: {x}. Now tap a box.", cancel: "Cancel", chainDone: "Chain complete! Lead-206 is stable.",
+  takeOutP: "Take out the particle card", takeOutD: "Take out the isotope card", boxPAria: "Decay particle box", boxDAria: "Daughter isotope box", empty: "empty",
+  mapH: "Your chain on a map", replay: "Replay", mapSub: "Each arrow is one decay. Pink triangle = α decay. Green diamond = β decay.",
+  axZ: "Atomic number (protons)", axA: "Mass number", chartAria: "Map of the uranium-238 decay chain. Atomic number across the bottom, mass number up the side. Each arrow is one decay.",
+  patH: "Find the patterns",
+  p1: "Every time there is [[alpha decay]], the [[mass number]] {s1} and the [[atomic number]] {s2}.",
+  p1ok: "Alpha takes away 2 protons and 2 neutrons: mass − 4, atomic − 2.", p1bad: "Look at one α arrow on the map. How far down does it go? How far left?",
+  p2: "Every time there is [[beta decay]], the [[mass number]] {s1} and the [[atomic number]] {s2}.",
+  p2ok: "Beta keeps the same mass and adds one proton.", p2bad: "Look at one β arrow on the map. Does it move up or down at all?",
+  p3: "In your own words: why does beta decay make the atomic number go up?", p3start: "Sentence starter: \"The atomic number goes up because a neutron…\"", p3short: "Write at least one full sentence.",
+  p4: "Count the α decays in the whole chain. One uranium-238 atom gives off how many alpha particles before it becomes lead-206?",
+  p4ok: "✓ 8 alpha particles. Each alpha particle grabs 2 electrons and becomes a [[helium]] atom. Helium made by uranium decay collects underground, often trapped with natural gas. That's where the helium in party balloons comes from.",
+  p4none: "Type a number.", p4six: "6 is the number of β decays. Count the triangles.", p4bad: "Count the pink triangles on the map or in your chain.",
+  stopq: "Why does the chain stop at lead-206?", stopa: "Pb-206 is stable, so it does not decay", stopaw: "A stable nucleus doesn't break apart, so nothing comes next.",
+  stopb: "Lead has no neutrons left", stopbw: "Pb-206 has 124 neutrons (206 − 82).", stopc: "The chain ran out of alpha particles", stopcw: "Alpha particles come from the nucleus itself. Nothing runs out.",
+  stopd: "Lead is too heavy to decay", stopdw: "The heaviest nuclei are usually the least stable, so that's backward.",
+  hlq: "The [[half-life]] of Po-214 is 0.000164 seconds. The half-life of U-238 is 4.5 billion years. Which statement is true?",
+  hla: "U-238 nuclei are much more stable than Po-214 nuclei", hlaw: "A long half-life means the nuclei last a long time before they decay.",
+  hlb: "Po-214 nuclei are more stable because they decay faster", hlbw: "Decaying fast means the nucleus is less stable, not more.",
+  hlc: "They are equally stable because both are radioactive", hlcw: "Both decay, but at very different rates.",
+  hld: "Po-214 is stable", hldw: "A stable isotope has no half-life at all. It doesn't decay.",
+  p7: "An isotope with a half-life of 1 day is {s} [[stable]] than an isotope with a half-life of 1,000 years, because…",
+  more: "more", less: "less", chooseOpt: "choose",
+  p7ok: "✓ Less stable: half of it decays in just one day.", p7finish: "Finish the sentence with your reason.", p7bad: "✗ Which one decays faster? Faster decay means a less stable nucleus.",
+  sc0: "goes up by 1", sc1: "goes up by 2", sc2: "goes down by 1", sc3: "goes down by 2", sc4: "goes down by 4", sc5: "stays the same",
+  ariaWhy: "Your explanation", ariaNum: "Number of alpha particles",
+  amH: "New chain: americium-241", amP: "Smoke detectors contain a tiny amount of americium-241. Am-241 starts its own decay chain. Fill in each missing card.",
+  niceH: "Nice work.", niceP: "You followed a brand-new decay chain using the same two rules.",
+  sendH: "You finished, {name}", sendP: "Send your work to {t}.", sendBtn: "Send to my teacher", copyBtn: "Copy my work",
+  sendNoteForm: "Send to my teacher opens a form with your work filled in. Press Submit on the form.", sendNoteCopy: "Copy your work and paste it into your Google Classroom assignment.",
+  copied: "Copied. Paste it into your Google Classroom assignment.", highlighted: "Your work is highlighted. Press Ctrl+C to copy it.",
+  helpH: "How this works",
+  helpMove: "<b>Move a card:</b> drag it into a box. Or tap the card, then tap the box. With a keyboard, press Enter on a card, then Enter on a box.",
+  helpTake: "<b>Take a card out:</b> press the × on the card.",
+  helpCheck: "<b>Check:</b> the check shows whether the top numbers (mass numbers) and the bottom numbers (atomic numbers) balance. Fix what's marked ✗.",
+  kwH: "Key words", close: "Close", pracDone: "Practice done. Build the chain is unlocked."
+},
+es: {
+  title: "Serie de desintegración del uranio-238", short: "Serie del U-238", lang: "Idioma",
+  st0: "Aprender", st1: "Practicar", st2: "Construir", st3: "Patrones", st4: "Otra cadena", st5: "Enviar", locked: "bloqueado",
+  progDecay: "Desintegración {n} de {t}", progStep: "Paso {n} de {t}", progDone: "Cadena completa",
+  sndOn: "Sonido: activado", sndOff: "Sonido: desactivado", help: "Ayuda",
+  startP: "El uranio-238 es radiactivo. Se desintegra 14 veces antes de convertirse por fin en plomo estable. Vas a construir toda la cadena, una ecuación nuclear a la vez.",
+  fourteen: "14 desintegraciones", loggedIn: "Sesión iniciada como {name}, período {p}.",
+  yourName: "Tu nombre", period: "Período de clase", start: "Empezar", cont: "Continuar", over: "Empezar de nuevo",
+  errName: "Escribe tu nombre para empezar.", errPeriod: "Escribe tu período de clase para empezar.",
+  confirmReset: "¿Empezar de nuevo? Se borrarán todas tus respuestas.", version: "Versión",
+  readAloud: "Leer en voz alta", stopReading: "Dejar de leer", speed: "Velocidad de lectura", slow: "Lenta", medium: "Media", normal: "Normal",
+  watchH: "1. Mira", openVideo: "Abrir video", watchRange: "Mira del {from} al {to}.", khanNote: "Las dos primeras desintegraciones de este video son las dos primeras de tu cadena.",
+  readH: "2. Lee",
+  r1: "Algunos núcleos son inestables. Un [[nucleus]] inestable puede romperse y lanzar una partícula diminuta. Esto se llama [[radioactive decay]]. El isótopo con el que empiezas es el [[parent isotope]]. El nuevo isótopo en el que se convierte es el [[daughter isotope]].",
+  r2: "<b>[[alpha decay|Alpha (α) decay]]:</b> el núcleo lanza una [[alpha particle]]. Una partícula alfa son 2 [[proton|protons]] y 2 [[neutron|neutrons]] unidos. Es igual a un núcleo de [[helium]], así que la escribimos {he}.",
+  r3: "<b>[[beta decay|Beta (β) decay]]:</b> dentro del núcleo, un [[neutron]] se convierte en un [[proton]] y un [[electron]]. El núcleo lanza el electrón hacia afuera. Este electrón es una [[beta particle]], que se escribe {e}.",
+  r4: "Toda ecuación nuclear debe estar [[balanced]]. Los números de arriba ([[mass number|mass numbers]]) antes de la flecha deben ser iguales a la suma de los números de arriba después de la flecha. Los números de abajo ([[atomic number|atomic numbers]]) funcionan igual.",
+  exH: "Ejemplo: la primera desintegración de tu cadena", exNote: "El número atómico 90 es el torio (thorium, Th), así que el [[daughter isotope]] es thorium-234.",
+  cardsH: "Tus tarjetas", legA: "Triángulo rosado: partícula α", legB: "Rombo verde: partícula β",
+  qcH: "3. Comprobación rápida", qcSub: "Responde las tres y luego comprueba.", q: "Pregunta {n}", checkAnswers: "Comprobar respuestas", next: "Siguiente: {s}",
+  choose: "Elige una respuesta.", correct: "✓ Correcto.", notYet: "✗ Todavía no. Inténtalo de nuevo.", unlocked: "¡Todo correcto! «{s}» está desbloqueado.",
+  massTop: "[[mass number|Mass numbers]] (arriba)", atomBot: "[[atomic number|Atomic numbers]] (abajo)", bal: "✓ equilibrado", notBal: "✗ no equilibrado",
+  mc1q: "¿Qué es una [[alpha particle]]?",
+  mc1a: "2 protones y 2 neutrones unidos (un núcleo de helio-4)", mc1aw: "Por eso la escribimos {he}: número másico 4, número atómico 2.",
+  mc1b: "Un electrón que sale disparado del núcleo", mc1bw: "Esa es una partícula beta.",
+  mc1c: "Un solo protón", mc1cw: "Una partícula alfa tiene 2 protones, más 2 neutrones.",
+  mc1d: "Un destello de luz de alta energía", mc1dw: "Eso es radiación gamma. No tiene masa ni carga.",
+  mc2q: "En la [[beta decay]], ¿qué pasa dentro del [[nucleus]]?",
+  mc2a: "Un neutrón se convierte en protón y sale disparado un electrón", mc2aw: "Un protón más significa que el número atómico sube 1.",
+  mc2b: "Un protón se convierte en neutrón", mc2bw: "Es al revés. Vuelve a ver la parte de desintegración beta del primer video.",
+  mc2c: "Salen dos protones y dos neutrones", mc2cw: "Eso es desintegración alfa.",
+  mc2d: "Un electrón de afuera cae dentro del núcleo", mc2dw: "La partícula beta sale del núcleo, no entra.",
+  mc3q: "El torio-232 emite una partícula alfa: {eq} ¿Qué [[daughter isotope]] equilibra la ecuación?",
+  mc3aw: "Arriba: 232 = 4 + 228. Abajo: 90 = 2 + 88. El número atómico 88 es el radio.",
+  mc3bw: "Los números de arriba están equilibrados, pero los de abajo no: 2 + 90 = 92, no 90.",
+  mc3cw: "Abajo está equilibrado, pero arriba no: 4 + 230 = 234, no 232.",
+  mc3dw: "Esta respuesta suma la partícula alfa en vez de restarla.",
+  pracH: "Práctica: completa la tarjeta que falta",
+  pracP: "Antes de construir la cadena, demuestra que puedes hacer una desintegración alfa y una beta. Escribe el número másico, el número atómico y el símbolo en la tarjeta que falta. Usa la franja de la tabla periódica.",
+  givesA: "{x} emite una partícula alfa (α).", givesB: "{x} emite una partícula beta (β).",
+  phMass: "masa", phAtomic: "atómico", ariaMass: "Número másico de la tarjeta que falta", ariaAtomic: "Número atómico de la tarjeta que falta", ariaSym: "Símbolo de la tarjeta que falta",
+  check: "Comprobar", fillAll: "Completa el número másico, el número atómico y el símbolo.",
+  symWrong: "Tus números están equilibrados, pero el número atómico {z} no es «{s}». Busca el {z} en la franja de arriba.", symOk: "✓ El número atómico {z} es {name} ({sym}).",
+  stripAria: "Parte de la tabla periódica, números atómicos del 86 al 96",
+  sayH: "Escríbelo y dilo", sayInst: "Escribe la oración en inglés. Luego dila en voz alta.",
+  frameGloss: "En español: El isótopo padre {p} experimenta una desintegración ___ para formar el isótopo hijo ___.",
+  checkSent: "Comprobar oración", sFill: "Completa los dos espacios.", sType: "¿Qué partícula salió? Escribe alpha o beta.", sEnglish: "Escríbelo en inglés: {w}.",
+  sDaughter: "Escribe el nombre en inglés y el número másico del isótopo hijo, como {ex}.", sMass: "Revisa el número másico.",
+  sOk: "✓ Ahora di la oración completa en voz alta.", hear: "Escúchala", said: "Ya la dije en voz alta",
+  buildSide: "Tu cadena hasta ahora", noneYet: "Aquí aparecerán tus desintegraciones equilibradas.", decayQ: "Desintegración {n}: ¿en qué se convierte {x}?",
+  buildInst: "Arrastra una tarjeta a una casilla, o toca una tarjeta y luego toca una casilla. Después presiona Comprobar.",
+  parentFrom: "(el isótopo hijo de la desintegración {n})", slotP: "¿α o β?",
+  pileSub: "Toma todas las que necesites.", isoH: "Tarjetas de isótopos", isoSub: "Solo una tarjeta equilibra la ecuación. Las otras son trampas hechas con errores comunes.",
+  checkDecay: "Comprobar esta desintegración", hintB: "Pista", hintMore: "Otra pista", hintN: "Pista {n} de 3.",
+  h1: "Números de arriba: el número másico del isótopo padre ({A}) debe ser igual a la suma de los dos números másicos después de la flecha. Los números de abajo funcionan igual ({Z}).",
+  h2: "Prueba cada partícula. Si es α: masa <span class=\"ltr\">{A} − 4 = ?</span>, atómico <span class=\"ltr\">{Z} − 2 = ?</span>. Si es β: masa <span class=\"ltr\">{A} − 0 = ?</span>, atómico <span class=\"ltr\">{Z} − (−1) = ?</span>. ¿Qué tarjeta coincide?",
+  h3: "Busca la tarjeta con número másico {dA} y número atómico {dZ}.",
+  remain: "Quedan {n} desintegraciones después de esta. La cadena termina cuando llega a un isótopo [[stable]].", remain1: "Queda 1 desintegración después de esta.", last: "Esta es la última desintegración.",
+  doneH: "¡Cadena completa!", doneP: "El plomo-206 es [[stable]], así que la cadena se detiene aquí. El uranio-238 pasó por {a} desintegraciones alfa y {b} desintegraciones beta para llegar aquí.",
+  exTag: "Ejemplo", hlOf: "Semivida de {x}: {v}", years: "años", days: "días", minutes: "minutos", seconds: "segundos", stable: "estable",
+  noteM: "Este Pa-234 se forma en un estado de alta energía, que se escribe Pa-234m. Tiene los mismos protones y neutrones que el Pa-234 normal, así que la ecuación no cambia.",
+  putFirst: "Primero pon una partícula de desintegración y un isótopo hijo en las casillas.", balSnack: "Equilibrada: {a} → {b}. Ahora escribe la oración.", balSnack2: "Equilibrada: {a} → {b}.",
+  notBalSnack: "Todavía no está equilibrada. Mira los números marcados con ✗.",
+  boxP: "Esta casilla es para la partícula de desintegración: α o β.", boxD: "Esta casilla es para una tarjeta de isótopo.", chooseFirst: "Primero elige una tarjeta.",
+  selected: "Seleccionada: {x}. Ahora toca una casilla.", cancel: "Cancelar", chainDone: "¡Cadena completa! El plomo-206 es estable.",
+  takeOutP: "Quitar la tarjeta de partícula", takeOutD: "Quitar la tarjeta de isótopo", boxPAria: "Casilla de la partícula de desintegración", boxDAria: "Casilla del isótopo hijo", empty: "vacía",
+  mapH: "Tu cadena en un mapa", replay: "Repetir", mapSub: "Cada flecha es una desintegración. Triángulo rosado = desintegración α. Rombo verde = desintegración β.",
+  axZ: "Número atómico (protones)", axA: "Número másico", chartAria: "Mapa de la cadena de desintegración del uranio-238. Número atómico abajo, número másico al costado. Cada flecha es una desintegración.",
+  patH: "Encuentra los patrones",
+  p1: "Cada vez que hay [[alpha decay]], el [[mass number]] {s1} y el [[atomic number]] {s2}.",
+  p1ok: "La alfa quita 2 protones y 2 neutrones: masa − 4, atómico − 2.", p1bad: "Mira una flecha α en el mapa. ¿Cuánto baja? ¿Cuánto va a la izquierda?",
+  p2: "Cada vez que hay [[beta decay]], el [[mass number]] {s1} y el [[atomic number]] {s2}.",
+  p2ok: "La beta mantiene la misma masa y agrega un protón.", p2bad: "Mira una flecha β en el mapa. ¿Sube o baja?",
+  p3: "Con tus propias palabras: ¿por qué la desintegración beta hace subir el número atómico?", p3start: "Para empezar: \"The atomic number goes up because a neutron…\" (escribe en inglés si puedes)", p3short: "Escribe al menos una oración completa.",
+  p4: "Cuenta las desintegraciones α de toda la cadena. ¿Cuántas partículas alfa emite un átomo de uranio-238 antes de convertirse en plomo-206?",
+  p4ok: "✓ 8 partículas alfa. Cada partícula alfa atrapa 2 electrones y se convierte en un átomo de [[helium]]. El helio que produce la desintegración del uranio se acumula bajo tierra, a menudo atrapado con el gas natural. De ahí viene el helio de los globos de fiesta.",
+  p4none: "Escribe un número.", p4six: "6 es el número de desintegraciones β. Cuenta los triángulos.", p4bad: "Cuenta los triángulos rosados en el mapa o en tu cadena.",
+  stopq: "¿Por qué la cadena se detiene en el plomo-206?", stopa: "El Pb-206 es estable, así que no se desintegra", stopaw: "Un núcleo estable no se rompe, así que no sigue nada.",
+  stopb: "Al plomo no le quedan neutrones", stopbw: "El Pb-206 tiene 124 neutrones (206 − 82).", stopc: "A la cadena se le acabaron las partículas alfa", stopcw: "Las partículas alfa salen del mismo núcleo. No se acaba nada.",
+  stopd: "El plomo es demasiado pesado para desintegrarse", stopdw: "Los núcleos más pesados suelen ser los menos estables, así que es al revés.",
+  hlq: "La [[half-life]] del Po-214 es 0.000164 segundos. La semivida del U-238 es 4500 millones de años. ¿Qué afirmación es verdadera?",
+  hla: "Los núcleos de U-238 son mucho más estables que los de Po-214", hlaw: "Una semivida larga significa que los núcleos duran mucho tiempo antes de desintegrarse.",
+  hlb: "Los núcleos de Po-214 son más estables porque se desintegran más rápido", hlbw: "Desintegrarse rápido significa que el núcleo es menos estable, no más.",
+  hlc: "Son igual de estables porque los dos son radiactivos", hlcw: "Los dos se desintegran, pero a ritmos muy diferentes.",
+  hld: "El Po-214 es estable", hldw: "Un isótopo estable no tiene semivida. No se desintegra.",
+  p7: "Un isótopo con una semivida de 1 día es {s} [[stable]] que un isótopo con una semivida de 1000 años, porque…",
+  more: "más", less: "menos", chooseOpt: "elige",
+  p7ok: "✓ Menos estable: la mitad se desintegra en solo un día.", p7finish: "Termina la oración con tu razón.", p7bad: "✗ ¿Cuál se desintegra más rápido? Desintegrarse más rápido significa un núcleo menos estable.",
+  sc0: "sube 1", sc1: "sube 2", sc2: "baja 1", sc3: "baja 2", sc4: "baja 4", sc5: "se queda igual",
+  ariaWhy: "Tu explicación", ariaNum: "Número de partículas alfa",
+  amH: "Nueva cadena: americio-241", amP: "Los detectores de humo contienen una cantidad diminuta de americio-241. El Am-241 empieza su propia cadena de desintegración. Completa cada tarjeta que falta.",
+  niceH: "¡Buen trabajo!", niceP: "Seguiste una cadena de desintegración nueva usando las mismas dos reglas.",
+  sendH: "Terminaste, {name}", sendP: "Envía tu trabajo a {t}.", sendBtn: "Enviar a mi maestro", copyBtn: "Copiar mi trabajo",
+  sendNoteForm: "«Enviar a mi maestro» abre un formulario con tu trabajo ya escrito. Presiona Enviar en el formulario.", sendNoteCopy: "Copia tu trabajo y pégalo en tu tarea de Google Classroom.",
+  copied: "Copiado. Pégalo en tu tarea de Google Classroom.", highlighted: "Tu trabajo está resaltado. Presiona Ctrl+C para copiarlo.",
+  helpH: "Cómo funciona",
+  helpMove: "<b>Mover una tarjeta:</b> arrástrala a una casilla. O toca la tarjeta y luego toca la casilla. Con el teclado, presiona Enter en una tarjeta y luego Enter en una casilla.",
+  helpTake: "<b>Quitar una tarjeta:</b> presiona la × de la tarjeta.",
+  helpCheck: "<b>Comprobar:</b> muestra si los números de arriba (números másicos) y los de abajo (números atómicos) están equilibrados. Corrige lo que tenga ✗.",
+  kwH: "Palabras clave", close: "Cerrar", pracDone: "Práctica terminada. «Construir la cadena» está desbloqueado."
+},
+zh: {
+  title: "鈾-238 衰變系列", short: "鈾-238 衰變系列", lang: "語言",
+  st0: "學習", st1: "練習", st2: "建立衰變鏈", st3: "規律", st4: "新的衰變鏈", st5: "提交", locked: "未解鎖",
+  progDecay: "第 {n} 次衰變（共 {t} 次）", progStep: "第 {n} 步（共 {t} 步）", progDone: "衰變鏈完成",
+  sndOn: "聲音：開", sndOff: "聲音：關", help: "說明",
+  startP: "鈾-238 具有放射性。它要衰變 14 次，最後才變成穩定的鉛。你要一次寫一個核反應方程式，建立整條衰變鏈。",
+  fourteen: "14 次衰變", loggedIn: "已登入：{name}，第 {p} 節。",
+  yourName: "你的名字", period: "上課節次", start: "開始", cont: "繼續", over: "重新開始",
+  errName: "請輸入你的名字才能開始。", errPeriod: "請輸入你的上課節次才能開始。",
+  confirmReset: "要重新開始嗎？你所有的答案都會被清除。", version: "版本",
+  readAloud: "朗讀", stopReading: "停止朗讀", speed: "朗讀速度", slow: "慢", medium: "中", normal: "正常",
+  watchH: "1. 觀看", openVideo: "開啟影片", watchRange: "觀看 {from} 到 {to}。", khanNote: "這部影片中的前兩次衰變，就是你的衰變鏈的前兩次衰變。",
+  readH: "2. 閱讀",
+  r1: "有些原子核不穩定。不穩定的 [[nucleus]] 會分裂，並射出一個很小的粒子。這叫做 [[radioactive decay]]。一開始的同位素是 [[parent isotope]]。它變成的新同位素是 [[daughter isotope]]。",
+  r2: "<b>[[alpha decay|Alpha (α) decay]]：</b>原子核射出一個 [[alpha particle]]。α粒子是 2 個 [[proton|protons]] 和 2 個 [[neutron|neutrons]] 結合在一起。它和 [[helium]] 原子核相同，所以寫成 {he}。",
+  r3: "<b>[[beta decay|Beta (β) decay]]：</b>在原子核裡，一個 [[neutron]] 變成一個 [[proton]] 和一個 [[electron]]。原子核把電子射出去。這個電子就是 [[beta particle]]，寫成 {e}。",
+  r4: "每個核反應方程式都必須 [[balanced]]。箭頭前面上方的數字（[[mass number|mass numbers]]）必須等於箭頭後面上方數字的總和。下方的數字（[[atomic number|atomic numbers]]）也一樣。",
+  exH: "例子：你的衰變鏈的第一次衰變", exNote: "原子序 90 是釷（thorium, Th），所以 [[daughter isotope]] 是 thorium-234。",
+  cardsH: "你的卡片", legA: "粉紅色三角形：α粒子", legB: "綠色菱形：β粒子",
+  qcH: "3. 快速檢查", qcSub: "三題都回答後再檢查。", q: "第 {n} 題", checkAnswers: "檢查答案", next: "下一步：{s}",
+  choose: "請選一個答案。", correct: "✓ 正確。", notYet: "✗ 還不對，再試一次。", unlocked: "全部正確！「{s}」已解鎖。",
+  massTop: "[[mass number|Mass numbers]]（上方）", atomBot: "[[atomic number|Atomic numbers]]（下方）", bal: "✓ 平衡", notBal: "✗ 不平衡",
+  mc1q: "什麼是 [[alpha particle]]？",
+  mc1a: "2 個質子和 2 個中子結合在一起（氦-4 原子核）", mc1aw: "所以我們寫成 {he}：質量數 4，原子序 2。",
+  mc1b: "從原子核射出的一個電子", mc1bw: "那是β粒子。",
+  mc1c: "一個質子", mc1cw: "α粒子有 2 個質子，還有 2 個中子。",
+  mc1d: "一道高能量的光", mc1dw: "那是γ輻射。它沒有質量，也沒有電荷。",
+  mc2q: "在 [[beta decay]] 中，[[nucleus]] 裡面發生了什麼？",
+  mc2a: "一個中子變成質子，並射出一個電子", mc2aw: "多一個質子，表示原子序增加 1。",
+  mc2b: "一個質子變成中子", mc2bw: "剛好相反。請重看第一部影片中β衰變的部分。",
+  mc2c: "兩個質子和兩個中子離開", mc2cw: "那是α衰變。",
+  mc2d: "一個外面的電子掉進原子核", mc2dw: "β粒子是從原子核出來，不是進去。",
+  mc3q: "釷-232 放出一個α粒子：{eq} 哪一個 [[daughter isotope]] 能讓方程式平衡？",
+  mc3aw: "上方：232 = 4 + 228。下方：90 = 2 + 88。原子序 88 是鐳。",
+  mc3bw: "上方的數字平衡，但下方的不平衡：2 + 90 = 92，不是 90。",
+  mc3cw: "下方平衡，但上方不平衡：4 + 230 = 234，不是 232。",
+  mc3dw: "這個答案把α粒子加上去，而不是減掉。",
+  pracH: "練習：填寫缺少的卡片",
+  pracP: "在建立衰變鏈之前，先證明你會做一次α衰變和一次β衰變。在缺少的卡片上填入質量數、原子序和元素符號。請使用週期表的這一段。",
+  givesA: "{x} 放出一個 alpha (α) 粒子。", givesB: "{x} 放出一個 beta (β) 粒子。",
+  phMass: "質量", phAtomic: "原子序", ariaMass: "缺少的卡片的質量數", ariaAtomic: "缺少的卡片的原子序", ariaSym: "缺少的卡片的元素符號",
+  check: "檢查", fillAll: "請填入質量數、原子序和元素符號。",
+  symWrong: "你的數字平衡了，但原子序 {z} 不是「{s}」。請在上面的週期表中找 {z}。", symOk: "✓ 原子序 {z} 是 {name}（{sym}）。",
+  stripAria: "週期表的一部分，原子序 86 到 96",
+  sayH: "寫出來，再說出來", sayInst: "用英文寫出句子，然後大聲說出來。",
+  frameGloss: "中文意思：母同位素 {p} 經歷 ___ 衰變，形成子同位素 ___。",
+  checkSent: "檢查句子", sFill: "請填寫兩個空格。", sType: "射出的是哪一種粒子？請寫 alpha 或 beta。", sEnglish: "請用英文寫：{w}。",
+  sDaughter: "請寫出子同位素的英文名稱和質量數，例如 {ex}。", sMass: "請檢查質量數。",
+  sOk: "✓ 現在大聲說出整個句子。", hear: "聽一聽", said: "我已經大聲說了",
+  buildSide: "目前的衰變鏈", noneYet: "平衡的衰變會出現在這裡。", decayQ: "第 {n} 次衰變：{x} 會變成什麼？",
+  buildInst: "把卡片拖到方格裡，或先點一張卡片，再點一個方格。然後按「檢查」。",
+  parentFrom: "（第 {n} 次衰變的子同位素）", slotP: "α 還是 β？",
+  pileSub: "需要幾張就拿幾張。", isoH: "同位素卡片", isoSub: "只有一張卡片能讓方程式平衡。其他卡片是由常見錯誤做成的陷阱。",
+  checkDecay: "檢查這次衰變", hintB: "提示", hintMore: "另一個提示", hintN: "提示 {n}／3。",
+  h1: "上方的數字：母同位素的質量數（{A}）必須等於箭頭後面兩個質量數的總和。下方的數字也一樣（{Z}）。",
+  h2: "每種粒子都試試看。如果是 α：質量 <span class=\"ltr\">{A} − 4 = ?</span>，原子序 <span class=\"ltr\">{Z} − 2 = ?</span>。如果是 β：質量 <span class=\"ltr\">{A} − 0 = ?</span>，原子序 <span class=\"ltr\">{Z} − (−1) = ?</span>。哪一張卡片符合？",
+  h3: "找質量數 {dA}、原子序 {dZ} 的卡片。",
+  remain: "這次之後還有 {n} 次衰變。衰變鏈到達 [[stable]] 的同位素時就結束。", remain1: "這次之後還有 1 次衰變。", last: "這是最後一次衰變。",
+  doneH: "衰變鏈完成！", doneP: "鉛-206 是 [[stable]] 的，所以衰變鏈在這裡結束。鈾-238 經過 {a} 次α衰變和 {b} 次β衰變才到這裡。",
+  exTag: "例子", hlOf: "{x} 的半衰期：{v}", years: "年", days: "天", minutes: "分鐘", seconds: "秒", stable: "穩定",
+  noteM: "這個 Pa-234 是在高能量狀態下形成的，寫成 Pa-234m。它的質子數和中子數和一般的 Pa-234 相同，所以方程式不變。",
+  putFirst: "請先把衰變粒子和子同位素放進方格。", balSnack: "平衡了：{a} → {b}。現在寫出句子。", balSnack2: "平衡了：{a} → {b}。",
+  notBalSnack: "還沒有平衡。看看標著 ✗ 的數字。",
+  boxP: "這個方格是放衰變粒子的：α 或 β。", boxD: "這個方格是放同位素卡片的。", chooseFirst: "請先選一張卡片。",
+  selected: "已選擇：{x}。現在點一個方格。", cancel: "取消", chainDone: "衰變鏈完成！鉛-206 是穩定的。",
+  takeOutP: "拿出粒子卡片", takeOutD: "拿出同位素卡片", boxPAria: "衰變粒子方格", boxDAria: "子同位素方格", empty: "空的",
+  mapH: "你的衰變鏈地圖", replay: "重播", mapSub: "每個箭頭代表一次衰變。粉紅色三角形 = α衰變。綠色菱形 = β衰變。",
+  axZ: "原子序（質子數）", axA: "質量數", chartAria: "鈾-238 衰變鏈的地圖。橫軸是原子序，縱軸是質量數。每個箭頭代表一次衰變。",
+  patH: "找出規律",
+  p1: "每次發生 [[alpha decay]]，[[mass number]] {s1}，[[atomic number]] {s2}。",
+  p1ok: "α衰變帶走 2 個質子和 2 個中子：質量 − 4，原子序 − 2。", p1bad: "看地圖上的一個 α 箭頭。它往下多少？往左多少？",
+  p2: "每次發生 [[beta decay]]，[[mass number]] {s1}，[[atomic number]] {s2}。",
+  p2ok: "β衰變質量不變，多了一個質子。", p2bad: "看地圖上的一個 β 箭頭。它有往上或往下嗎？",
+  p3: "用你自己的話說：為什麼β衰變會讓原子序增加？", p3start: "句子開頭：\"The atomic number goes up because a neutron…\"（盡量用英文寫）", p3short: "請至少寫一個完整的句子。",
+  p4: "數一數整條衰變鏈中的 α 衰變。一個鈾-238 原子在變成鉛-206 之前，會放出幾個α粒子？",
+  p4ok: "✓ 8 個α粒子。每個α粒子會抓住 2 個電子，變成一個 [[helium]] 原子。鈾衰變產生的氦會聚集在地底下，常常和天然氣困在一起。派對氣球裡的氦就是從這裡來的。",
+  p4none: "請輸入一個數字。", p4six: "6 是 β 衰變的次數。請數三角形。", p4bad: "數一數地圖上或衰變鏈中的粉紅色三角形。",
+  stopq: "為什麼衰變鏈停在鉛-206？", stopa: "Pb-206 是穩定的，所以不會衰變", stopaw: "穩定的原子核不會分裂，所以後面沒有東西了。",
+  stopb: "鉛沒有中子了", stopbw: "Pb-206 有 124 個中子（206 − 82）。", stopc: "衰變鏈的α粒子用完了", stopcw: "α粒子來自原子核本身，不會用完。",
+  stopd: "鉛太重了，不能衰變", stopdw: "最重的原子核通常最不穩定，所以這是反過來的。",
+  hlq: "Po-214 的 [[half-life]] 是 0.000164 秒。U-238 的半衰期是 45 億年。哪一句話是正確的？",
+  hla: "U-238 原子核比 Po-214 原子核穩定得多", hlaw: "半衰期長，表示原子核可以存在很久才衰變。",
+  hlb: "Po-214 原子核比較穩定，因為它衰變得比較快", hlbw: "衰變得快表示原子核比較不穩定，不是比較穩定。",
+  hlc: "它們一樣穩定，因為兩個都有放射性", hlcw: "兩個都會衰變，但速度差很多。",
+  hld: "Po-214 是穩定的", hldw: "穩定的同位素沒有半衰期，它不會衰變。",
+  p7: "半衰期 1 天的同位素，比半衰期 1000 年的同位素 {s} [[stable]]，因為……",
+  more: "更", less: "較不", chooseOpt: "選擇",
+  p7ok: "✓ 較不穩定：一天之內就有一半衰變掉了。", p7finish: "請寫完句子，說明你的理由。", p7bad: "✗ 哪一個衰變得比較快？衰變得快表示原子核比較不穩定。",
+  sc0: "增加 1", sc1: "增加 2", sc2: "減少 1", sc3: "減少 2", sc4: "減少 4", sc5: "不變",
+  ariaWhy: "你的解釋", ariaNum: "α粒子的數目",
+  amH: "新的衰變鏈：鋂-241", amP: "煙霧偵測器裡有極少量的鋂-241。Am-241 會開始自己的衰變鏈。請填寫每一張缺少的卡片。",
+  niceH: "做得好！", niceP: "你用同樣的兩條規則，完成了一條全新的衰變鏈。",
+  sendH: "{name}，你完成了", sendP: "把你的作業交給 {t}。", sendBtn: "交給老師", copyBtn: "複製我的作業",
+  sendNoteForm: "「交給老師」會打開一個已經填好你作業的表單。請在表單上按「提交」。", sendNoteCopy: "複製你的作業，貼到 Google Classroom 的作業裡。",
+  copied: "已複製。請貼到 Google Classroom 的作業裡。", highlighted: "你的作業已經反白。按 Ctrl+C 複製。",
+  helpH: "使用說明",
+  helpMove: "<b>移動卡片：</b>把卡片拖到方格裡。或先點卡片，再點方格。用鍵盤的話，在卡片上按 Enter，再在方格上按 Enter。",
+  helpTake: "<b>拿出卡片：</b>按卡片上的 ×。",
+  helpCheck: "<b>檢查：</b>會顯示上方的數字（質量數）和下方的數字（原子序）是否平衡。修改標著 ✗ 的地方。",
+  kwH: "關鍵詞", close: "關閉", pracDone: "練習完成。「建立衰變鏈」已解鎖。"
+},
+ar: {
+  title: "سلسلة اضمحلال اليورانيوم-238", short: "سلسلة اليورانيوم-238", lang: "اللغة",
+  st0: "تعلّم", st1: "تدرّب", st2: "ابنِ السلسلة", st3: "الأنماط", st4: "سلسلة جديدة", st5: "أرسل", locked: "مقفل",
+  progDecay: "الاضمحلال {n} من {t}", progStep: "الخطوة {n} من {t}", progDone: "اكتملت السلسلة",
+  sndOn: "الصوت: يعمل", sndOff: "الصوت: متوقف", help: "مساعدة",
+  startP: "اليورانيوم-238 مادة مشعة. يضمحل 14 مرة قبل أن يصبح أخيرًا رصاصًا مستقرًا. ستبني السلسلة كلها، معادلة نووية واحدة في كل مرة.",
+  fourteen: "14 اضمحلالًا", loggedIn: "تم تسجيل الدخول باسم {name}، الحصة {p}.",
+  yourName: "اسمك", period: "رقم الحصة", start: "ابدأ", cont: "تابع", over: "ابدأ من جديد",
+  errName: "اكتب اسمك لتبدأ.", errPeriod: "اكتب رقم حصتك لتبدأ.",
+  confirmReset: "هل تريد البدء من جديد؟ ستُمحى كل إجاباتك.", version: "الإصدار",
+  readAloud: "اقرأ بصوت عالٍ", stopReading: "أوقف القراءة", speed: "سرعة القراءة", slow: "بطيئة", medium: "متوسطة", normal: "عادية",
+  watchH: "1. شاهد", openVideo: "افتح الفيديو", watchRange: "شاهد من {from} إلى {to}.", khanNote: "أول اضمحلالين في هذا الفيديو هما أول اضمحلالين في سلسلتك.",
+  readH: "2. اقرأ",
+  r1: "بعض الأنوية غير مستقرة. يمكن لـ [[nucleus]] غير المستقرة أن تنقسم وتطلق جسيمًا صغيرًا جدًا. يسمى هذا [[radioactive decay]]. النظير الذي تبدأ به هو [[parent isotope]]. والنظير الجديد الذي يتحول إليه هو [[daughter isotope]].",
+  r2: "<b>[[alpha decay|Alpha (α) decay]]:</b> تطلق النواة [[alpha particle]]. جسيم ألفا هو 2 [[proton|protons]] و 2 [[neutron|neutrons]] ملتصقة معًا. وهو مثل نواة [[helium]]، لذلك نكتبه {he}.",
+  r3: "<b>[[beta decay|Beta (β) decay]]:</b> داخل النواة، يتحول [[neutron]] إلى [[proton]] و [[electron]]. تطلق النواة الإلكترون إلى الخارج. هذا الإلكترون هو [[beta particle]]، ويُكتب {e}.",
+  r4: "يجب أن تكون كل معادلة نووية [[balanced]]. الأرقام العلوية ([[mass number|mass numbers]]) قبل السهم يجب أن تساوي مجموع الأرقام العلوية بعد السهم. والأرقام السفلية ([[atomic number|atomic numbers]]) تعمل بالطريقة نفسها.",
+  exH: "مثال: أول اضمحلال في سلسلتك", exNote: "العدد الذري 90 هو الثوريوم (thorium, Th)، لذلك [[daughter isotope]] هو thorium-234.",
+  cardsH: "بطاقاتك", legA: "مثلث وردي: جسيم α", legB: "معيّن أخضر: جسيم β",
+  qcH: "3. تحقق سريع", qcSub: "أجب عن الأسئلة الثلاثة، ثم تحقق.", q: "السؤال {n}", checkAnswers: "تحقق من الإجابات", next: "التالي: {s}",
+  choose: "اختر إجابة.", correct: "✓ صحيح.", notYet: "✗ ليس بعد. حاول مرة أخرى.", unlocked: "كلها صحيحة. تم فتح «{s}».",
+  massTop: "[[mass number|Mass numbers]] (الأعلى)", atomBot: "[[atomic number|Atomic numbers]] (الأسفل)", bal: "✓ متوازنة", notBal: "✗ غير متوازنة",
+  mc1q: "ما هو [[alpha particle]]؟",
+  mc1a: "2 بروتون و 2 نيوترون ملتصقة معًا (نواة هيليوم-4)", mc1aw: "لهذا نكتبه {he}: العدد الكتلي 4، والعدد الذري 2.",
+  mc1b: "إلكترون ينطلق من النواة", mc1bw: "هذا جسيم بيتا.",
+  mc1c: "بروتون واحد", mc1cw: "جسيم ألفا فيه 2 بروتون، بالإضافة إلى 2 نيوترون.",
+  mc1d: "ومضة من ضوء عالي الطاقة", mc1dw: "هذا إشعاع غاما. ليس له كتلة ولا شحنة.",
+  mc2q: "في [[beta decay]]، ماذا يحدث داخل [[nucleus]]؟",
+  mc2a: "يتحول نيوترون إلى بروتون، وينطلق إلكترون", mc2aw: "بروتون إضافي يعني أن العدد الذري يزيد بمقدار 1.",
+  mc2b: "يتحول بروتون إلى نيوترون", mc2bw: "العكس هو الصحيح. أعد مشاهدة جزء اضمحلال بيتا في الفيديو الأول.",
+  mc2c: "يخرج بروتونان ونيوترونان", mc2cw: "هذا اضمحلال ألفا.",
+  mc2d: "يسقط إلكترون من الخارج داخل النواة", mc2dw: "جسيم بيتا يخرج من النواة، ولا يدخل إليها.",
+  mc3q: "يطلق الثوريوم-232 جسيم ألفا: {eq} أي [[daughter isotope]] يجعل المعادلة متوازنة؟",
+  mc3aw: "الأعلى: 232 = 4 + 228. الأسفل: 90 = 2 + 88. العدد الذري 88 هو الراديوم.",
+  mc3bw: "الأرقام العلوية متوازنة، لكن السفلية لا: 2 + 90 = 92، وليس 90.",
+  mc3cw: "السفلية متوازنة، لكن العلوية لا: 4 + 230 = 234، وليس 232.",
+  mc3dw: "هذه الإجابة تضيف جسيم ألفا بدلًا من طرحه.",
+  pracH: "تدرّب: أكمل البطاقة الناقصة",
+  pracP: "قبل أن تبني السلسلة، أثبت أنك تستطيع حل اضمحلال ألفا واحد واضمحلال بيتا واحد. اكتب العدد الكتلي والعدد الذري والرمز على البطاقة الناقصة. استخدم شريط الجدول الدوري.",
+  givesA: "{x} يطلق جسيم ألفا (α).", givesB: "{x} يطلق جسيم بيتا (β).",
+  phMass: "الكتلي", phAtomic: "الذري", ariaMass: "العدد الكتلي للبطاقة الناقصة", ariaAtomic: "العدد الذري للبطاقة الناقصة", ariaSym: "رمز البطاقة الناقصة",
+  check: "تحقق", fillAll: "اكتب العدد الكتلي والعدد الذري والرمز.",
+  symWrong: "أرقامك متوازنة، لكن العدد الذري {z} ليس «{s}». ابحث عن {z} في الشريط أعلاه.", symOk: "✓ العدد الذري {z} هو {name} ({sym}).",
+  stripAria: "جزء من الجدول الدوري، الأعداد الذرية من 86 إلى 96",
+  sayH: "اكتبها، ثم قلها", sayInst: "اكتب الجملة بالإنجليزية. ثم قلها بصوت عالٍ.",
+  frameGloss: "بالعربية: النظير الأم {p} يمر باضمحلال ___ ليكوّن النظير الابن ___.",
+  checkSent: "تحقق من الجملة", sFill: "املأ الفراغين.", sType: "أي جسيم خرج؟ اكتب alpha أو beta.", sEnglish: "اكتبها بالإنجليزية: {w}.",
+  sDaughter: "اكتب الاسم الإنجليزي للنظير الابن مع عدده الكتلي، مثل {ex}.", sMass: "تحقق من العدد الكتلي.",
+  sOk: "✓ الآن قل الجملة كاملة بصوت عالٍ.", hear: "استمع إليها", said: "قلتها بصوت عالٍ",
+  buildSide: "سلسلتك حتى الآن", noneYet: "ستظهر هنا الاضمحلالات المتوازنة.", decayQ: "الاضمحلال {n}: إلى ماذا يتحول {x}؟",
+  buildInst: "اسحب بطاقة إلى مربع، أو اضغط على بطاقة ثم اضغط على مربع. ثم اضغط «تحقق».",
+  parentFrom: "(النظير الابن من الاضمحلال {n})", slotP: "α أم β؟",
+  pileSub: "خذ العدد الذي تحتاجه.", isoH: "بطاقات النظائر", isoSub: "بطاقة واحدة فقط تجعل المعادلة متوازنة. البطاقات الأخرى فخاخ مصنوعة من أخطاء شائعة.",
+  checkDecay: "تحقق من هذا الاضمحلال", hintB: "تلميح", hintMore: "تلميح آخر", hintN: "تلميح {n} من 3.",
+  h1: "الأرقام العلوية: العدد الكتلي للنظير الأم ({A}) يجب أن يساوي مجموع العددين الكتليين بعد السهم. والأرقام السفلية تعمل بالطريقة نفسها ({Z}).",
+  h2: "جرّب كل جسيم. إذا كان α: الكتلي <span class=\"ltr\">{A} − 4 = ?</span>، الذري <span class=\"ltr\">{Z} − 2 = ?</span>. إذا كان β: الكتلي <span class=\"ltr\">{A} − 0 = ?</span>، الذري <span class=\"ltr\">{Z} − (−1) = ?</span>. أي بطاقة تطابق؟",
+  h3: "ابحث عن البطاقة التي عددها الكتلي {dA} وعددها الذري {dZ}.",
+  remain: "بقي {n} اضمحلالات بعد هذا. تنتهي السلسلة عندما تصل إلى نظير [[stable]].", remain1: "بقي اضمحلال واحد بعد هذا.", last: "هذا آخر اضمحلال.",
+  doneH: "اكتملت السلسلة!", doneP: "الرصاص-206 [[stable]]، لذلك تتوقف السلسلة هنا. مرّ اليورانيوم-238 بـ {a} اضمحلالات ألفا و {b} اضمحلالات بيتا للوصول إلى هنا.",
+  exTag: "مثال", hlOf: "عمر النصف لـ {x}: {v}", years: "سنة", days: "يوم", minutes: "دقيقة", seconds: "ثانية", stable: "مستقر",
+  noteM: "يتكوّن هذا الـ Pa-234 في حالة عالية الطاقة، ويُكتب Pa-234m. فيه عدد البروتونات والنيوترونات نفسه الموجود في Pa-234 العادي، لذلك لا تتغير المعادلة.",
+  putFirst: "ضع جسيم الاضمحلال والنظير الابن في المربعين أولًا.", balSnack: "متوازنة: \u2066{a} → {b}\u2069. الآن اكتب الجملة.", balSnack2: "متوازنة: \u2066{a} → {b}\u2069.",
+  notBalSnack: "ليست متوازنة بعد. انظر إلى الأرقام المعلّمة بـ ✗.",
+  boxP: "هذا المربع لجسيم الاضمحلال: α أو β.", boxD: "هذا المربع لبطاقة نظير.", chooseFirst: "اختر بطاقة أولًا.",
+  selected: "المحدد: {x}. الآن اضغط على مربع.", cancel: "إلغاء", chainDone: "اكتملت السلسلة! الرصاص-206 مستقر.",
+  takeOutP: "أخرج بطاقة الجسيم", takeOutD: "أخرج بطاقة النظير", boxPAria: "مربع جسيم الاضمحلال", boxDAria: "مربع النظير الابن", empty: "فارغ",
+  mapH: "سلسلتك على خريطة", replay: "أعد التشغيل", mapSub: "كل سهم هو اضمحلال واحد. المثلث الوردي = اضمحلال α. المعيّن الأخضر = اضمحلال β.",
+  axZ: "العدد الذري (البروتونات)", axA: "العدد الكتلي", chartAria: "خريطة سلسلة اضمحلال اليورانيوم-238. العدد الذري على المحور الأفقي، والعدد الكتلي على المحور الرأسي. كل سهم هو اضمحلال واحد.",
+  patH: "اكتشف الأنماط",
+  p1: "في كل مرة يحدث فيها [[alpha decay]]، فإن [[mass number]] {s1} و [[atomic number]] {s2}.",
+  p1ok: "ألفا تأخذ 2 بروتون و 2 نيوترون: الكتلي − 4، الذري − 2.", p1bad: "انظر إلى سهم α واحد على الخريطة. كم ينزل؟ وكم يتحرك إلى اليسار؟",
+  p2: "في كل مرة يحدث فيها [[beta decay]]، فإن [[mass number]] {s1} و [[atomic number]] {s2}.",
+  p2ok: "بيتا تحافظ على الكتلة نفسها وتضيف بروتونًا واحدًا.", p2bad: "انظر إلى سهم β واحد على الخريطة. هل يتحرك إلى الأعلى أو الأسفل؟",
+  p3: "بكلماتك الخاصة: لماذا يجعل اضمحلال بيتا العدد الذري يزيد؟", p3start: "بداية الجملة: \"The atomic number goes up because a neutron…\" (حاول أن تكتب بالإنجليزية)", p3short: "اكتب جملة كاملة واحدة على الأقل.",
+  p4: "عُدّ اضمحلالات α في السلسلة كلها. كم جسيم ألفا تطلقه ذرة يورانيوم-238 واحدة قبل أن تصبح رصاص-206؟",
+  p4ok: "✓ 8 جسيمات ألفا. كل جسيم ألفا يلتقط إلكترونين ويصبح ذرة [[helium]]. الهيليوم الناتج عن اضمحلال اليورانيوم يتجمع تحت الأرض، وغالبًا ما يُحبس مع الغاز الطبيعي. ومن هنا يأتي الهيليوم الموجود في بالونات الحفلات.",
+  p4none: "اكتب رقمًا.", p4six: "6 هو عدد اضمحلالات β. عُدّ المثلثات.", p4bad: "عُدّ المثلثات الوردية على الخريطة أو في سلسلتك.",
+  stopq: "لماذا تتوقف السلسلة عند الرصاص-206؟", stopa: "Pb-206 مستقر، لذلك لا يضمحل", stopaw: "النواة المستقرة لا تنقسم، لذلك لا يأتي شيء بعدها.",
+  stopb: "لم يبقَ في الرصاص نيوترونات", stopbw: "في Pb-206 يوجد 124 نيوترونًا (206 − 82).", stopc: "نفدت جسيمات ألفا من السلسلة", stopcw: "جسيمات ألفا تأتي من النواة نفسها. لا شيء ينفد.",
+  stopd: "الرصاص ثقيل جدًا لكي يضمحل", stopdw: "أثقل الأنوية عادةً هي الأقل استقرارًا، لذلك هذا معكوس.",
+  hlq: "[[half-life]] لـ Po-214 هو 0.000164 ثانية. وعمر النصف لـ U-238 هو 4.5 مليار سنة. أي عبارة صحيحة؟",
+  hla: "أنوية U-238 أكثر استقرارًا بكثير من أنوية Po-214", hlaw: "عمر النصف الطويل يعني أن الأنوية تبقى وقتًا طويلًا قبل أن تضمحل.",
+  hlb: "أنوية Po-214 أكثر استقرارًا لأنها تضمحل أسرع", hlbw: "الاضمحلال السريع يعني أن النواة أقل استقرارًا، وليس أكثر.",
+  hlc: "كلاهما مستقر بالقدر نفسه لأن كليهما مشع", hlcw: "كلاهما يضمحل، لكن بسرعات مختلفة جدًا.",
+  hld: "Po-214 مستقر", hldw: "النظير المستقر ليس له عمر نصف أصلًا. إنه لا يضمحل.",
+  p7: "النظير الذي عمر النصف له يوم واحد {s} [[stable]] من نظير عمر النصف له 1000 سنة، لأن…",
+  more: "أكثر", less: "أقل", chooseOpt: "اختر",
+  p7ok: "✓ أقل استقرارًا: نصفه يضمحل في يوم واحد فقط.", p7finish: "أكمل الجملة بذكر السبب.", p7bad: "✗ أيهما يضمحل أسرع؟ الاضمحلال الأسرع يعني نواة أقل استقرارًا.",
+  sc0: "يزيد بمقدار 1", sc1: "يزيد بمقدار 2", sc2: "ينقص بمقدار 1", sc3: "ينقص بمقدار 2", sc4: "ينقص بمقدار 4", sc5: "يبقى كما هو",
+  ariaWhy: "شرحك", ariaNum: "عدد جسيمات ألفا",
+  amH: "سلسلة جديدة: الأمريسيوم-241", amP: "تحتوي أجهزة كشف الدخان على كمية صغيرة جدًا من الأمريسيوم-241. يبدأ Am-241 سلسلة اضمحلال خاصة به. أكمل كل بطاقة ناقصة.",
+  niceH: "أحسنت!", niceP: "تتبعت سلسلة اضمحلال جديدة تمامًا باستخدام القاعدتين نفسيهما.",
+  sendH: "لقد انتهيت يا {name}", sendP: "أرسل عملك إلى {t}.", sendBtn: "أرسل إلى معلمي", copyBtn: "انسخ عملي",
+  sendNoteForm: "زر «أرسل إلى معلمي» يفتح نموذجًا فيه عملك مكتوبًا. اضغط «إرسال» في النموذج.", sendNoteCopy: "انسخ عملك والصقه في مهمتك على Google Classroom.",
+  copied: "تم النسخ. الصقه في مهمتك على Google Classroom.", highlighted: "تم تظليل عملك. اضغط Ctrl+C لنسخه.",
+  helpH: "طريقة العمل",
+  helpMove: "<b>تحريك بطاقة:</b> اسحبها إلى مربع. أو اضغط على البطاقة ثم اضغط على المربع. باستخدام لوحة المفاتيح، اضغط Enter على بطاقة ثم Enter على مربع.",
+  helpTake: "<b>إخراج بطاقة:</b> اضغط على × في البطاقة.",
+  helpCheck: "<b>التحقق:</b> يوضح إن كانت الأرقام العلوية (الأعداد الكتلية) والأرقام السفلية (الأعداد الذرية) متوازنة. صحّح ما عليه ✗.",
+  kwH: "الكلمات المفتاحية", close: "إغلاق", pracDone: "انتهى التدريب. تم فتح «ابنِ السلسلة»."
+}
+};
+
+"use strict";
+const VERSION = "Oct 12, 2026, update 3";
+const KEY = "decay238-v2";
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+const sum = (a, f) => a.reduce((s, x) => s + f(x), 0);
+
+/* ---------------- science data ---------------- */
+const EL = { 80: ["Hg", "mercury"], 81: ["Tl", "thallium"], 82: ["Pb", "lead"], 83: ["Bi", "bismuth"], 84: ["Po", "polonium"], 85: ["At", "astatine"], 86: ["Rn", "radon"], 87: ["Fr", "francium"], 88: ["Ra", "radium"], 89: ["Ac", "actinium"], 90: ["Th", "thorium"], 91: ["Pa", "protactinium"], 92: ["U", "uranium"], 93: ["Np", "neptunium"], 94: ["Pu", "plutonium"], 95: ["Am", "americium"], 96: ["Cm", "curium"] };
+const SYMZ = Object.fromEntries(Object.entries(EL).map(([z, [s]]) => [s, +z]));
+const iso = (A, Z) => ({ id: EL[Z][0] + A, A, Z, sym: EL[Z][0], name: EL[Z][1] });
+const C = (id) => { const m = /^([A-Z][a-z]?)(\d+)$/.exec(id); return iso(+m[2], SYMZ[m[1]]); };
+const full = (c) => `${c.name}-${c.A}`;
+const label = (c) => `${c.sym}-${c.A}`;
+// half-lives: value (HTML) + unit key. Pa-234 is the Pa-234m form made in this chain (1.17 min).
+const CHAIN = [
+  [238, 92, "4.5 × 10<sup>9</sup>", "years"], [234, 90, "24.1", "days"], [234, 91, "1.17", "minutes"], [234, 92, "2.5 × 10<sup>5</sup>", "years"],
+  [230, 90, "7.5 × 10<sup>4</sup>", "years"], [226, 88, "1.6 × 10<sup>3</sup>", "years"], [222, 86, "3.82", "days"], [218, 84, "3.1", "minutes"],
+  [214, 82, "26.8", "minutes"], [214, 83, "19.9", "minutes"], [214, 84, "1.64 × 10<sup>−4</sup>", "seconds"], [210, 82, "22.2", "years"],
+  [210, 83, "5.01", "days"], [210, 84, "138.4", "days"], [206, 82, "", "stable"]
+].map(([A, Z, v, u]) => Object.assign(iso(A, Z), { hv: v, hu: u }));
+const DECAYS = "abbaaaaabbabba".split("");
+const P = { a: { A: 4, Z: 2, sym: "He", name: "alpha particle", gk: "α", word: "alpha" }, b: { A: 0, Z: -1, sym: "e", name: "beta particle", gk: "β", word: "beta" } };
+const balances = (par, c) => ["a", "b"].some((t) => par.A === P[t].A + c.A && par.Z === P[t].Z + c.Z);
+// Trap cards for each decay come from these common mistakes. The first rule in each list is the most
+// common mistake and is always one of the traps; the rest are picked at random for each student.
+const RULES = {
+  a: [[-4, 0, "α decay that changed only the mass number"], [-4, -4, "α decay with 4 subtracted from both numbers"], [-2, -4, "α decay with the 2 and the 4 switched"], [0, -2, "α decay that changed only the atomic number"], [-4, 2, "α decay that added 2 to the atomic number"]],
+  b: [[0, -1, "β decay that lowered the atomic number"], [-1, 1, "β decay that also lowered the mass number"], [-1, 0, "β decay that lowered the mass number instead"], [0, 2, "β decay that raised the atomic number by 2"]]
+};
+function makeCards(i) {
+  const par = CHAIN[i], pool = RULES[DECAYS[i]]
+    .map(([dA, dZ, why]) => (EL[par.Z + dZ] ? { id: EL[par.Z + dZ][0] + (par.A + dA), why } : null))
+    .filter((c) => c && !balances(par, C(c.id)));
+  const n = Math.max(1, Math.min(CONFIG.cardsPerDecay - 1, pool.length));
+  const pick = [pool[0], ...shuffle(pool.slice(1))].slice(0, n);
+  return { cards: shuffle([CHAIN[i + 1].id, ...pick.map((c) => c.id)]), why: Object.fromEntries(pick.map((c) => [c.id, c.why])) };
+}
+const FILL = {
+  prac: [{ p: [239, 94], t: "a", d: [235, 92] }, { p: [228, 88], t: "b", d: [228, 89] }],
+  am: [{ p: [241, 95], t: "a", d: [237, 93] }, { p: [237, 93], t: "a", d: [233, 91] }, { p: [233, 91], t: "b", d: [233, 92] }]
+};
+const STEPS = 6;
+// chain decays that ask for the sentence (row indexes): first N of each type, plus the last of each type
+const SAY = (() => {
+  const s = new Set(), n = { a: 0, b: 0 }, max = { a: CONFIG.sayFirstAlpha, b: CONFIG.sayFirstBeta };
+  for (let i = CONFIG.firstDecayAsExample ? 1 : 0; i < DECAYS.length; i++) if (++n[DECAYS[i]] <= max[DECAYS[i]]) s.add(i);
+  if (CONFIG.sayLastAlpha) s.add(DECAYS.lastIndexOf("a")); if (CONFIG.sayLastBeta) s.add(DECAYS.lastIndexOf("b"));
+  return s;
+})();
+const pracDone = (p) => p.ok && (!CONFIG.sayInPractice || p.sent.said);
+
+/* ---------------- language ---------------- */
+const LANGTAG = { en: "en", es: "es", zh: "zh-Hant", ar: "ar" };
+const L = () => state.lang || "en";
+function kw(term, shown) {
+  const l = L(), tr = KW[term];
+  const en = `<bdi class="kw" lang="en">${esc(shown || term)}</bdi>`;
+  return l === "en" || !tr ? en : `${en}<span class="tr" lang="${LANGTAG[l]}">(${esc(tr[l])})</span>`;
+}
+function t(k, v = {}) {
+  let s = I18N[L()][k]; if (s === undefined) s = I18N.en[k]; if (s === undefined) return k;
+  s = s.replace(/\{(\w+)\}/g, (m, x) => (v[x] !== undefined ? v[x] : m));
+  return s.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (m, term, shown) => kw(term, shown));
+}
+const hlText = (c) => (c.hu === "stable" ? t("stable") : `${c.hv} ${t(c.hu)}`);
+
+/* ---------------- questions ---------------- */
+const nuc = (A, Z, sym) => `<span class="nuc"><span class="pre"><span>${A}</span><span>${Z < 0 ? "−" + Math.abs(Z) : Z}</span></span><span class="sym">${sym}</span></span>`;
+const nucC = (c) => nuc(c.A, c.Z, c.sym);
+const HE = () => nuc(4, 2, "He"), EM = () => nuc(0, -1, "e");
+const mcq = (id, okIdx, opts) => ({ id, q: () => t(id + "q", { he: HE(), eq: `${nuc(232, 90, "Th")} → ${HE()} + ?` }), opts: opts.map((o, i) => ({ t: o, ok: i === okIdx, why: () => t(id + "abcd"[i] + "w", { he: HE() }) })) });
+const MC = [
+  mcq("mc1", 0, [() => t("mc1a"), () => t("mc1b"), () => t("mc1c"), () => t("mc1d")]),
+  mcq("mc2", 0, [() => t("mc2a"), () => t("mc2b"), () => t("mc2c"), () => t("mc2d")]),
+  mcq("mc3", 0, [() => nuc(228, 88, "Ra"), () => nuc(228, 90, "Th"), () => nuc(230, 88, "Ra"), () => nuc(236, 92, "U")])
+];
+const PMC = [
+  mcq("stop", 0, [() => t("stopa"), () => t("stopb"), () => t("stopc"), () => t("stopd")]),
+  mcq("hl", 0, [() => t("hla"), () => t("hlb"), () => t("hlc"), () => t("hld")])
+];
+const PAT = { aA: 4, aZ: 3, bA: 5, bZ: 0 }; // index into the sc0–sc5 scale
+
+/* ---------------- state ---------------- */
+const blankSent = () => ({ t: "", d: "", ok: false, tries: 0, first: null, said: false, fb: null });
+const blankFill = () => ({ A: "", Z: "", S: "", tries: 0, ok: false, first: null, last: null });
+function fresh() {
+  const order = {}; [...MC, ...PMC].forEach((q) => (order[q.id] = shuffle(q.opts.map((_, i) => i))));
+  const rows = DECAYS.map((_, i) => Object.assign({ p: null, d: null, bal: false, done: false, checks: 0, wrong: 0, hint: 0, last: null, sent: blankSent() }, makeCards(i)));
+  if (CONFIG.firstDecayAsExample) Object.assign(rows[0], { p: "a", d: CHAIN[1].id, bal: true, done: true, example: true });
+  return { v: 2, started: 0, finished: 0, at: 0, max: 0, name: "", period: "", lang: "en", order,
+    mc: {}, mcFirst: {}, mcShown: false, prac: FILL.prac.map(() => Object.assign(blankFill(), { sent: blankSent() })),
+    rows, traps: [], pat: {}, patFirst: {}, patShown: false, chartSeen: false, am: FILL.am.map(blankFill) };
+}
+function load() { try { const s = JSON.parse(localStorage.getItem(KEY)); return s && s.v === 2 ? s : null; } catch (e) { return null; } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+let state = load() || fresh();
+state.rows.forEach((r, i) => { if (r.bal && !SAY.has(i)) r.done = true; });
+let who = null; try { const w = localStorage.getItem("ibond-who"); if (w) who = JSON.parse(w); } catch (e) {}
+const whoName = () => `${who.first || ""} ${who.init ? who.init + "." : ""}`.trim();
+if (who && !state.name) { state.name = whoName(); state.period = String(who.period || ""); }
+
+/* ---------------- sound ---------------- */
+let soundOn = CONFIG.soundOnByDefault; try { const s = localStorage.getItem("decay238-sound"); if (s !== null) soundOn = s === "1"; } catch (e) {}
+let actx = null;
+function beep(kind) {
+  if (!soundOn) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const notes = kind === "ok" ? [660, 880] : kind === "done" ? [523, 659, 784, 1047] : [196];
+    notes.forEach((f, i) => {
+      const o = actx.createOscillator(), g = actx.createGain(), tt = actx.currentTime + i * 0.11;
+      o.type = kind === "no" ? "triangle" : "sine"; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, tt); g.gain.exponentialRampToValueAtTime(0.16, tt + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, tt + 0.24);
+      o.connect(g).connect(actx.destination); o.start(tt); o.stop(tt + 0.26);
+    });
+  } catch (e) {}
+}
+function paintSound() {
+  const b = $("#snd"), lab = soundOn ? t("sndOn") : t("sndOff");
+  b.setAttribute("aria-pressed", soundOn); b.setAttribute("aria-label", lab); b.title = lab;
+  b.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/>${soundOn ? '<path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>' : '<path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>'}</svg>`;
+}
+
+/* ---------------- read-aloud (browser voices; buttons hide when no matching voice) ---------------- */
+const VOICE_RE = { en: [/^en-US/i, /^en/i], es: [/^es-(US|MX|419)/i, /^es/i], zh: [/^zh[-_](TW|HK|Hant)/i, /^zh/i, /^yue/i], ar: [/^ar/i] };
+function voiceFor(l) { if (!("speechSynthesis" in window)) return null; const vs = speechSynthesis.getVoices(); for (const re of VOICE_RE[l]) { const v = vs.find((x) => re.test(x.lang)); if (v) return v; } return null; }
+function paintVoices() { $$(".speak").forEach((el) => (el.hidden = !voiceFor(L()))); $$("[data-act='hear']").forEach((el) => (el.hidden = !voiceFor("en"))); }
+if ("speechSynthesis" in window) speechSynthesis.onvoiceschanged = paintVoices;
+function say(text, l, btn, idle) {
+  const v = voiceFor(l); if (!v) return;
+  if (speechSynthesis.speaking) { speechSynthesis.cancel(); if (btn) btn.textContent = idle; return; }
+  const u = new SpeechSynthesisUtterance(text); u.voice = v; u.lang = v.lang; u.rate = Number($("#rate")?.value || 0.85);
+  if (btn) { u.onend = u.onerror = () => (btn.textContent = idle); btn.textContent = t("stopReading"); }
+  speechSynthesis.speak(u);
+}
+function speakEl(id, btn) {
+  const c = $("#" + id).cloneNode(true); $$(".speak, .headrow h2", c).forEach((x) => x.remove());
+  const l = L(); if (l !== "en") $$(".kw", c).forEach((x) => x.remove()); else $$(".tr", c).forEach((x) => x.remove());
+  say(c.textContent.replace(/\s+/g, " ").replace(/−/g, "minus ").replace(/[()]/g, "").trim(), l, btn, t("readAloud"));
+}
+const speakUI = (id) => `<div class="speak" hidden><button class="md-btn tonal" type="button" data-act="speak" data-target="${id}">${t("readAloud")}</button><label class="visually-hidden" for="rate">${t("speed")}</label><select class="md-select" id="rate"><option value="0.7">${t("slow")}</option><option value="0.85" selected>${t("medium")}</option><option value="1">${t("normal")}</option></select></div>`;
+
+/* ---------------- small UI helpers ---------------- */
+let snackT = 0;
+function snack(html) { const s = $("#snack"); s.innerHTML = html; s.classList.add("show"); clearTimeout(snackT); snackT = setTimeout(() => s.classList.remove("show"), 3600); }
+const shapeSVG = (ty, cls = "shape") => ty === "a"
+  ? `<svg class="${cls} a" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,4 97,94 3,94"/></svg>`
+  : `<svg class="${cls} b" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,3 97,50 50,97 3,50"/></svg>`;
+const isoCard = (c, extra = "", tag = "button") => `<${tag} ${tag === "button" ? 'type="button"' : ""} class="iso-card" data-card="${c.id}" aria-label="${esc(full(c))}: mass number ${c.A}, atomic number ${c.Z}" ${extra}>${nucC(c)}<span class="nm" lang="en">${esc(c.name)}</span></${tag}>`;
+const pCard = (ty, extra = "", tag = "button") => `<${tag} ${tag === "button" ? 'type="button"' : ""} class="pcard ${ty}" data-card="${ty}" aria-label="${P[ty].name}: mass number ${P[ty].A}, atomic number ${P[ty].Z}" ${extra}>${shapeSVG(ty)}<span class="gk" aria-hidden="true">${P[ty].gk}</span>${nuc(P[ty].A, P[ty].Z, P[ty].sym)}</${tag}>`;
+const strip = () => `<div class="ptstrip" aria-label="${esc(t("stripAria"))}">${[86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96].map((z) => `<div class="pt"><span class="z">${z}</span><b>${EL[z][0]}</b><small lang="en">${EL[z][1]}</small></div>`).join("")}</div>`;
+function tline(ok, name, math) { return `<div class="tline ${ok ? "ok" : "bad"}"><span class="tn">${name}</span><span class="math">${math}</span><span class="st">${ok ? t("bal") : t("notBal")}</span></div>`; }
+function tally(par, pt, A, Z) {
+  const sA = pt.A + A, sZ = pt.Z + Z, fz = (z) => (z < 0 ? `(−${Math.abs(z)})` : z);
+  return tline(sA === par.A, t("massTop"), `${par.A} ${sA === par.A ? "=" : "≠"} ${pt.A} + ${A}${sA === par.A ? "" : ` = ${sA}`}`)
+       + tline(sZ === par.Z, t("atomBot"), `${par.Z} ${sZ === par.Z ? "=" : "≠"} ${fz(pt.Z)} + ${Z}${sZ === par.Z ? "" : ` = ${sZ}`}`);
+}
+
+/* ---------------- top bar ---------------- */
+function curRow() { return state.rows.findIndex((r) => !r.done); }
+function renderBar() {
+  const html = document.documentElement; html.lang = LANGTAG[L()]; html.dir = L() === "ar" ? "rtl" : "ltr";
+  document.title = I18N[L()].title; $("#ttl").textContent = I18N[L()].short; $("#langLbl").textContent = I18N[L()].lang; $("#helpBtn").setAttribute("aria-label", I18N[L()].help); $("#helpBtn").title = I18N[L()].help;
+  $("#stepnav").hidden = !state.started;
+  $("#steps").innerHTML = Array.from({ length: STEPS }, (_, i) => {
+    const locked = i > state.max, cur = i === state.at, done = i < state.max && !cur;
+    return `<li><button type="button" data-act="goto" data-step="${i}" ${locked ? "disabled" : ""} ${cur ? 'aria-current="step"' : ""} class="${done ? "done" : ""}"><span class="num">${locked ? '<svg class="lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" fill="currentColor"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg>' : done ? "✓" : i + 1}</span>${t("st" + i)}${locked ? `<span class="visually-hidden"> (${t("locked")})</span>` : ""}</button></li>`;
+  }).join("");
+  const r = curRow();
+  $("#prog").textContent = !state.started ? "" : state.at === 2 ? (r < 0 ? t("progDone") : t("progDecay", { n: r + 1, t: DECAYS.length })) : t("progStep", { n: state.at + 1, t: STEPS });
+  $("#lang").value = L(); paintSound();
+  html.style.setProperty("--bar-h", $("#bar").offsetHeight + "px");
+}
+function unlock(i) { if (state.max < i) { state.max = i; save(); } }
+function go(i) { if (i > state.max) return; state.at = i; sel = null; save(); render(); window.scrollTo(0, 0); }
+function render() {
+  renderBar();
+  const app = $("#app");
+  if (!state.started) renderStart(app); else [renderLearn, renderPractice, renderBuild, renderPatterns, renderAm, renderSend][state.at](app);
+  paintVoices(); paintSel();
+}
+const nextBtn = (i) => `<button class="md-btn filled" type="button" data-act="goto" data-step="${i}">${t("next", { s: t("st" + i) })}</button>`;
+
+/* ---------------- start ---------------- */
+function renderStart(app) {
+  const resume = state.max > 0 || Object.keys(state.mc).length > 0;
+  app.innerHTML = `<section class="md-card elevated start">
+    <h2>${t("title")}</h2><p class="reading">${t("startP")}</p>
+    <div class="hero" aria-hidden="true">${isoCard(CHAIN[0], "", "div")}<span class="span">${t("fourteen")}</span>${isoCard(CHAIN[14], "", "div")}</div>
+    <div class="start-grid">
+      ${who ? `<p>${t("loggedIn", { name: `<b>${esc(state.name)}</b>`, p: esc(state.period) })}</p>` : `
+      <label class="md-field"><span>${t("yourName")}</span><input class="md-input" id="nm" autocomplete="name" value="${esc(state.name)}"></label>
+      <label class="md-field"><span>${t("period")}</span><input class="md-input" id="pd" inputmode="numeric" value="${esc(state.period)}"></label>`}
+      <label class="md-field"><span>${t("lang")}</span><select class="md-select" id="lang2">${$("#lang").innerHTML}</select></label></div>
+    <p class="err" id="err" role="alert"></p>
+    <div class="start-actions"><button class="md-btn filled big" type="button" data-act="start">${resume ? t("cont") : t("start")}</button>
+      ${resume ? `<button class="md-btn text" type="button" data-act="reset">${t("over")}</button>` : ""}</div>
+    <p class="ver">${t("version")}: ${VERSION}</p></section>`;
+  const l2 = $("#lang2"); l2.value = L(); l2.onchange = () => setLang(l2.value);
+}
+function startActivity() {
+  if (!who) {
+    state.name = $("#nm").value.trim(); state.period = $("#pd").value.trim();
+    if (!state.name || !state.period) { $("#err").textContent = !state.name ? t("errName") : t("errPeriod"); save(); return; }
+  }
+  if (!state.started) state.started = Date.now();
+  save(); render();
+}
+
+/* ---------------- step 1: learn ---------------- */
+function mcBlock(q, store, shown, num) {
+  const val = store[q.id], kind = store === state.mc ? "mc" : "pat";
+  const opts = state.order[q.id].map((i) => `<label class="opt"><input type="radio" name="${q.id}" value="${i}" ${String(val) === String(i) ? "checked" : ""} data-store="${kind}"><span>${q.opts[i].t()}</span></label>`).join("");
+  let fb = "";
+  if (shown) fb = val === undefined ? `<p class="fb bad">${t("choose")}</p>` : `<p class="fb ${q.opts[val].ok ? "ok" : "bad"}">${q.opts[val].ok ? t("correct") : t("notYet")} ${q.opts[val].why()}</p>`;
+  return `<fieldset class="q"><legend>${t("q", { n: num })}</legend><p class="qtext">${q.q()}</p>${opts}${fb}</fieldset>`;
+}
+function renderLearn(app) {
+  const allOk = MC.every((q) => q.opts[state.mc[q.id]]?.ok);
+  app.innerHTML = `<div class="two"><div class="stack">
+    <article class="md-card"><h2>${t("watchH")}</h2>
+      ${CONFIG.videos.map((v) => `<div class="vid"><a class="md-btn tonal" href="${esc(v.url)}" target="_blank" rel="noopener">${t("openVideo")}</a><div><b lang="en">${esc(v.title)}</b><br><span class="muted">${t("watchRange", { from: v.from, to: v.to })}${v.matchesChain ? " " + t("khanNote") : ""}</span></div></div>`).join("")}</article>
+    <article class="md-card reading" id="readA"><div class="headrow"><h2>${t("readH")}</h2>${speakUI("readA")}</div>
+      <p>${t("r1")}</p><p>${t("r2", { he: HE() })}</p><p>${t("r3", { e: EM() })}</p><p>${t("r4")}</p></article>
+    <article class="md-card"><h3>${t("exH")}</h3>
+      <div class="bigeq">${nucC(CHAIN[0])}<span>→</span>${HE()}<span>+</span>${nucC(CHAIN[1])}</div>
+      <div class="tally">${tally(CHAIN[0], P.a, 234, 90)}</div><p class="muted" style="margin-top:8px">${t("exNote")}</p>
+      <h3>${t("cardsH")}</h3><div class="legend"><span class="item">${pCard("a", 'aria-hidden="true"', "div")}${t("legA")}</span><span class="item">${pCard("b", 'aria-hidden="true"', "div")}${t("legB")}</span></div></article>
+   </div>
+   <article class="md-card"><h2>${t("qcH")}</h2><p class="muted">${t("qcSub")}</p>
+     ${MC.map((q, i) => mcBlock(q, state.mc, state.mcShown, i + 1)).join("")}
+     <div class="actions"><button class="md-btn ${allOk ? "outlined" : "filled"}" type="button" data-act="checkMC">${t("checkAnswers")}</button>${allOk ? nextBtn(1) : ""}</div>
+   </article></div>`;
+}
+function checkMC() {
+  state.mcShown = true;
+  MC.forEach((q) => { const v = state.mc[q.id]; if (v !== undefined && state.mcFirst[q.id] === undefined) state.mcFirst[q.id] = !!q.opts[v].ok; });
+  if (MC.every((q) => q.opts[state.mc[q.id]]?.ok)) { unlock(1); beep("ok"); snack(t("unlocked", { s: t("st1") })); } else beep("no");
+  save(); render();
+}
+
+/* ---------------- missing card (practice + new chain) ---------------- */
+function fillRow(kind, i, live) {
+  const f = FILL[kind][i], s = state[kind][i], par = iso(...f.p), d = iso(...f.d), pt = P[f.t];
+  const right = s.ok ? isoCard(d, "", "div") : `<span class="mcard"><span class="pre">
+      <input class="md-input" data-fill="${kind}" data-i="${i}" data-f="A" inputmode="numeric" aria-label="${esc(t("ariaMass"))}" placeholder="${esc(t("phMass"))}" value="${esc(s.A)}" ${live ? "" : "disabled"}>
+      <input class="md-input" data-fill="${kind}" data-i="${i}" data-f="Z" inputmode="numeric" aria-label="${esc(t("ariaAtomic"))}" placeholder="${esc(t("phAtomic"))}" value="${esc(s.Z)}" ${live ? "" : "disabled"}></span>
+      <input class="md-input s" data-fill="${kind}" data-i="${i}" data-f="S" maxlength="2" autocapitalize="characters" aria-label="${esc(t("ariaSym"))}" placeholder="?" value="${esc(s.S)}" ${live ? "" : "disabled"}></span>`;
+  let fb = "";
+  if (s.last) {
+    const { A, Z, S } = s.last; fb = tally(par, pt, A, Z);
+    if (par.A === pt.A + A && par.Z === pt.Z + Z) fb += s.ok ? `<p class="fb ok">${t("symOk", { z: Z, name: `<span lang="en">${EL[Z][1]}</span>`, sym: EL[Z][0] })}</p>` : `<p class="fb bad">${t("symWrong", { z: Z, s: esc(S) })}</p>`;
+  }
+  const sentence = kind === "prac" && s.ok && CONFIG.sayInPractice ? sentenceUI(`prac:${i}`) : "";
+  return `<div class="fillrow ${live ? "active" : ""}"><p class="ptype">${shapeSVG(f.t, "mshape")} ${t(f.t === "a" ? "givesA" : "givesB", { x: `<span lang="en">${full(par)}</span>` })}</p>
+    <div class="eq">${isoCard(par, "", "div")}<span class="op">→</span>${pCard(f.t, 'aria-hidden="true"', "div")}<span class="op">+</span>${right}</div>
+    <div class="tally" aria-live="polite">${fb}</div>
+    ${live && !s.ok ? `<div class="actions"><button class="md-btn filled" type="button" data-act="checkFill" data-kind="${kind}" data-i="${i}">${t("check")}</button></div>` : ""}${sentence}</div>`;
+}
+function checkFill(kind, i) {
+  const s = state[kind][i], f = FILL[kind][i], A = parseInt(s.A, 10), Z = parseInt(s.Z, 10), S = (s.S || "").trim();
+  if (isNaN(A) || isNaN(Z) || !S) { snack(t("fillAll")); return; }
+  const pt = P[f.t]; s.tries++; s.last = { A, Z, S };
+  const ok = f.p[0] === pt.A + A && f.p[1] === pt.Z + Z && !!EL[Z] && EL[Z][0].toLowerCase() === S.toLowerCase();
+  if (s.first === null) s.first = ok;
+  if (ok) {
+    s.ok = true; beep("ok");
+    if (kind === "am" && state.am.every((x) => x.ok)) { unlock(5); state.finished = Date.now(); beep("done"); }
+    if (kind === "prac" && state.prac.every(pracDone)) { unlock(2); snack(t("pracDone")); }
+  } else beep("no");
+  save(); render();
+}
+
+/* ---------------- sentence frame: "Parent isotope ___ undergoes ___ decay to form daughter isotope ___." ---------------- */
+function sentCtx(key) {
+  const [kind, si] = key.split(":"), i = +si;
+  if (kind === "prac") { const f = FILL.prac[i]; return { s: state.prac[i].sent, par: iso(...f.p), d: iso(...f.d), ty: f.t }; }
+  return { s: state.rows[i].sent, par: CHAIN[i], d: CHAIN[i + 1], ty: DECAYS[i], row: state.rows[i] };
+}
+const sentText = (c) => `Parent isotope ${full(c.par)} undergoes ${c.s.t.trim()} decay to form daughter isotope ${c.s.d.trim()}.`;
+function sentenceUI(key) {
+  const c = sentCtx(key), s = c.s;
+  if (s.said) return `<p class="said" lang="en" dir="ltr">✓ ${esc(sentText(c))}</p>`;
+  const frame = s.ok
+    ? `<p class="frameEn" lang="en">Parent isotope <b>${full(c.par)}</b> undergoes <b>${esc(s.t)}</b> decay to form daughter isotope <b>${esc(s.d)}</b>.</p>`
+    : `<p class="frameEn" lang="en">Parent isotope <b>${full(c.par)}</b> undergoes <input class="md-input t" data-sent="${key}" data-f="t" value="${esc(s.t)}" aria-label="decay type: alpha or beta" autocomplete="off" spellcheck="false"> decay to form daughter isotope <input class="md-input d" data-sent="${key}" data-f="d" value="${esc(s.d)}" aria-label="daughter isotope name and mass number" autocomplete="off" spellcheck="false">.</p>`;
+  const gloss = L() !== "en" ? `<p class="gloss muted">${t("frameGloss", { p: `<span lang="en">${full(c.par)}</span>` })}</p>` : "";
+  const fb = s.fb ? `<p class="fb ${s.ok ? "ok" : "bad"}">${t(s.fb.k, s.fb.v || {})}</p>` : "";
+  const act = s.ok
+    ? `<button class="md-btn tonal" type="button" data-act="hear" data-key="${key}">${t("hear")}</button><button class="md-btn filled" type="button" data-act="said" data-key="${key}">${t("said")}</button>`
+    : `<button class="md-btn filled" type="button" data-act="checkSent" data-key="${key}">${t("checkSent")}</button>`;
+  return `<div class="sentence"><h3>${t("sayH")}</h3><p class="muted">${t("sayInst")}</p>${frame}${gloss}${fb}<div class="actions">${act}</div></div>`;
+}
+const norm = (x) => String(x || "").toLowerCase().normalize("NFKC").replace(/[\s\-–—_.]/g, "");
+const FOREIGN = { alpha: ["alfa", "阿爾法", "阿尔法", "ألفا", "الفا"], beta: ["貝塔", "贝塔", "بيتا"] };
+function checkSent(key) {
+  const c = sentCtx(key), s = c.s, want = P[c.ty].word;
+  if (!s.t.trim() || !s.d.trim()) { s.fb = { k: "sFill" }; save(); return render(); }
+  s.tries++;
+  const ty = norm(s.t).replace(/decay$/, ""), tyOk = ty === want || ty === P[c.ty].gk;
+  const dv = norm(s.d).replace(/m$/, ""), dOk = dv === norm(full(c.d)) || dv === norm(label(c.d));
+  if (!tyOk) s.fb = Object.values(FOREIGN).flat().includes(ty) ? { k: "sEnglish", v: { w: FOREIGN.alpha.includes(ty) ? "alpha" : "beta" } } : { k: "sType" };
+  else if (!dOk) s.fb = /\d/.test(dv) && !dv.endsWith(String(c.d.A)) ? { k: "sMass" } : { k: "sDaughter", v: { ex: `<span lang="en">${full(c.par)}</span>` } };
+  else s.fb = { k: "sOk" };
+  s.ok = tyOk && dOk; if (s.first === null) s.first = s.ok;
+  beep(s.ok ? "ok" : "no"); save(); render();
+  if (s.ok) $(`[data-act="said"]`)?.focus();
+}
+function saidIt(key) {
+  const c = sentCtx(key); c.s.said = true;
+  if (c.row) {
+    c.row.done = true;
+    if (curRow() < 0) { unlock(3); beep("done"); snack(t("chainDone")); } else beep("ok");
+  } else if (state.prac.every(pracDone)) { unlock(2); beep("ok"); snack(t("pracDone")); }
+  save(); render();
+}
+
+/* ---------------- step 2: practice ---------------- */
+function renderPractice(app) {
+  const cur = state.prac.findIndex((p) => !pracDone(p)), done = cur < 0;
+  app.innerHTML = `<div class="narrow"><article class="md-card"><h2>${t("pracH")}</h2><p class="reading">${t("pracP")}</p>${strip()}
+    ${FILL.prac.map((_, i) => (done || i <= cur ? fillRow("prac", i, i === cur) : "")).join("")}
+    ${done ? `<div class="actions">${nextBtn(2)}</div>` : ""}</article></div>`;
+}
+
+/* ---------------- step 3: build the chain ---------------- */
+let sel = null;
+function hintText(i, tier) {
+  const par = CHAIN[i], d = CHAIN[i + 1];
+  return tier ? `<p class="fb info" style="margin:0"><b>${t("hintN", { n: tier })}</b> ${t("h" + tier, { A: par.A, Z: par.Z, dA: d.A, dZ: d.Z })}</p>` : "";
+}
+function renderBuild(app) {
+  const cur = curRow();
+  const done = state.rows.map((r, i) => (r.done ? `<li class="drow"><span class="dn">${i + 1}</span>
+      <span class="deq">${nucC(CHAIN[i])}<span class="op">→</span>${shapeSVG(r.p, "mshape")}${nuc(P[r.p].A, P[r.p].Z, P[r.p].sym)}<span class="op">+</span>${nucC(CHAIN[i + 1])}</span>
+      ${r.example ? `<span class="tag">${t("exTag")}</span>` : ""}<span class="dhl">${t("hlOf", { x: `<bdi>${label(CHAIN[i])}</bdi>`, v: hlText(CHAIN[i]) })}</span>
+      ${i === 2 ? `<span class="dnote">${t("noteM")}</span>` : ""}</li>` : "")).join("");
+  let work, tray = "";
+  if (cur < 0) {
+    work = `<section class="md-card work"><div class="donebox"><h2>${t("doneH")}</h2><p>${t("doneP", { a: DECAYS.filter((x) => x === "a").length, b: DECAYS.filter((x) => x === "b").length })}</p>${nextBtn(3)}</div></section>`;
+  } else {
+    const r = state.rows[cur], par = CHAIN[cur], lock = r.bal, left = DECAYS.length - cur - 1;
+    const slot = (k) => {
+      const filled = r[k], lab = k === "p" ? t("boxPAria") : t("boxDAria");
+      const inner = filled ? (k === "p" ? pCard(filled, "", "div") : isoCard(C(filled), "", "div")) : `<span class="ph">${k === "p" ? t("slotP") : "?"}</span>`;
+      return `<div class="slotwrap"><div ${lock ? "" : 'role="button" tabindex="0"'} class="slot ${k} ${filled ? "filled" : ""}" data-slot="${k}" aria-label="${esc(lab)}: ${filled ? esc(k === "p" ? P[filled].name : full(C(filled))) : t("empty")}">${inner}</div>${filled && !lock ? `<button type="button" class="rm" data-act="takeOut" data-slot="${k}" aria-label="${esc(k === "p" ? t("takeOutP") : t("takeOutD"))}">×</button>` : ""}</div>`;
+    };
+    tray = lock ? "" : `<section class="md-card tray" id="tray" aria-label="${esc(t("isoH"))}">
+        <div><h3>${kw("decay particle", "Decay particles")}</h3><p class="sub">${t("pileSub")}</p><div class="piles">${pCard("a")}${pCard("b")}</div></div>
+        <div><h3>${t("isoH")}</h3><p class="sub">${t("isoSub")}</p><div class="isorow">${r.cards.filter((id) => id !== r.d).map((id) => isoCard(C(id))).join("")}</div></div></section>`;
+    const showHint = !lock && r.wrong >= CONFIG.hintAfterWrongChecks && r.hint < 3;
+    work = `<section class="md-card work" id="work" aria-label="${esc(t("decayQ", { n: cur + 1, x: full(par) }))}">
+      <h2>${t("decayQ", { n: cur + 1, x: `<bdi class="nw" lang="en">${full(par)}</bdi>` })}</h2>
+      ${lock ? "" : `<p class="muted">${t("buildInst")}</p>`}
+      ${lock ? `<div class="deq locked">${nucC(par)}<span class="op">→</span>${shapeSVG(r.p, "mshape")}${nuc(P[r.p].A, P[r.p].Z, P[r.p].sym)}<span class="op">+</span>${nucC(C(r.d))}</div>
+        <div class="tline ok compact"><span class="math">${par.A} = ${P[r.p].A} + ${C(r.d).A}</span><span class="math">${par.Z} = ${P[r.p].Z < 0 ? "(−1)" : P[r.p].Z} + ${C(r.d).Z}</span><span class="st">${t("bal")}</span></div>` : `<div class="eq">
+        <div class="cell"><div class="parent">${isoCard(par, "", "div")}</div><span class="lbl">${kw("parent isotope", "Parent isotope")}${cur ? `<br>${t("parentFrom", { n: cur })}` : ""}</span></div>
+        <span class="op" aria-hidden="true">→</span><div class="cell">${slot("p")}<span class="lbl">${kw("decay particle", "Decay particle")}</span></div>
+        <span class="op" aria-hidden="true">+</span><div class="cell">${slot("d")}<span class="lbl">${kw("daughter isotope", "Daughter isotope")}</span></div>
+      </div>`}
+      ${lock ? "" : `<div class="actions"><button class="md-btn filled" type="button" data-act="checkRow">${t("checkDecay")}</button>${showHint ? `<button class="md-btn outlined" type="button" data-act="hint">${r.hint ? t("hintMore") : t("hintB")}</button>` : ""}</div>`}
+      ${lock ? "" : `<div class="tally" aria-live="polite">${r.last ? tally(par, P[r.last.p], C(r.last.d).A, C(r.last.d).Z) : ""}</div>`}
+      ${lock ? "" : `<div class="hintbox">${hintText(cur, r.hint)}</div>`}
+      ${lock && SAY.has(cur) ? sentenceUI(`row:${cur}`) : ""}
+      ${lock ? "" : `<p class="remain">${left > 1 ? t("remain", { n: left }) : left === 1 ? t("remain1") : t("last")}</p>`}</section>`;
+  }
+  app.innerHTML = `<div class="build"><div class="leftcol">${tray}<section class="md-card chainside"><h2>${t("buildSide")}</h2>
+      <div class="chain-list" id="chainList">${done ? `<ol class="drows">${done}</ol>` : `<p class="empty-chain">${t("noneYet")}</p>`}</div></section></div>${work}</div>`;
+  const cl = $("#chainList"); if (cl) cl.scrollTop = cl.scrollHeight;
+}
+function accepts(slot, id) { return slot === "p" ? id === "a" || id === "b" : !(id === "a" || id === "b"); }
+function place(slot, id) {
+  const cur = curRow(); if (cur < 0 || state.rows[cur].bal) return;
+  if (!accepts(slot, id)) { snack(slot === "p" ? t("boxP") : t("boxD")); return; }
+  state.rows[cur][slot] = id; state.rows[cur].last = null; sel = null; save(); render();
+}
+function takeOut(slot) { const cur = curRow(); if (cur < 0 || state.rows[cur].bal) return; state.rows[cur][slot] = null; state.rows[cur].last = null; save(); render(); }
+function checkRow() {
+  const i = curRow(); if (i < 0) return;
+  const r = state.rows[i];
+  if (!r.p || !r.d) { snack(t("putFirst")); return; }
+  r.checks++; r.last = { p: r.p, d: r.d };
+  const par = CHAIN[i], d = C(r.d);
+  if (par.A === P[r.p].A + d.A && par.Z === P[r.p].Z + d.Z) {
+    r.bal = true;
+    if (!SAY.has(i)) { r.done = true; if (curRow() < 0) { unlock(3); beep("done"); snack(t("chainDone")); save(); return render(); } }
+    beep("ok"); snack(t(SAY.has(i) ? "balSnack" : "balSnack2", { a: label(par), b: label(d) }));
+  } else {
+    r.wrong++; if (r.why[r.d]) state.traps.push({ decay: i + 1, card: label(d), why: r.why[r.d] });
+    beep("no"); snack(t("notBalSnack"));
+  }
+  save(); render();
+  if (r.bal) $(".sentence input")?.focus();
+}
+function select(id) { sel = sel === id ? null : id; paintSel(); }
+function paintSel() {
+  $$("#tray [data-card]").forEach((c) => c.setAttribute("aria-pressed", c.dataset.card === sel));
+  $$(".slot[role=button]").forEach((s) => s.classList.toggle("ready", !!sel && accepts(s.dataset.slot, sel)));
+  const pb = $("#placebar");
+  if (sel && state.at === 2) { pb.hidden = false; $("#placetext").textContent = t("selected", { x: sel === "a" || sel === "b" ? P[sel].name : full(C(sel)) }); $("#placebar .md-btn").textContent = t("cancel"); }
+  else pb.hidden = true;
+}
+
+/* drag and drop (pointer events); tapping is the alternative */
+let drag = null, justDragged = false;
+document.addEventListener("pointerdown", (e) => {
+  if (e.button !== 0 || state.at !== 2) return;
+  const c = e.target.closest("[data-card]");
+  if (!c || !(c.closest("#tray") || c.closest(".slot[role=button]"))) return;
+  const b = c.getBoundingClientRect();
+  drag = { el: c, id: c.dataset.card, from: c.closest(".slot")?.dataset.slot || null, sx: e.clientX, sy: e.clientY, ox: e.clientX - b.left, oy: e.clientY - b.top, w: b.width, started: false };
+});
+document.addEventListener("pointermove", (e) => {
+  if (!drag) return;
+  if (!drag.started) {
+    if (Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 6) return;
+    drag.started = true; sel = null; paintSel();
+    const g = drag.el.cloneNode(true); g.classList.add("ghost"); g.style.width = drag.w + "px"; g.setAttribute("aria-hidden", "true");
+    document.body.appendChild(g); drag.g = g; drag.el.classList.add("dragsrc"); document.body.classList.add("dragging");
+    $$(".slot[role=button]").forEach((s) => s.classList.toggle("ready", accepts(s.dataset.slot, drag.id)));
+  }
+  e.preventDefault();
+  drag.g.style.transform = `translate(${e.clientX - drag.ox}px, ${e.clientY - drag.oy}px)`;
+  const s = document.elementFromPoint(e.clientX, e.clientY)?.closest(".slot[role=button]");
+  $$(".slot.over").forEach((x) => x !== s && x.classList.remove("over"));
+  if (s && accepts(s.dataset.slot, drag.id)) s.classList.add("over");
+}, { passive: false });
+function endDrag(d) { d.g?.remove(); d.el.classList.remove("dragsrc"); document.body.classList.remove("dragging"); $$(".slot").forEach((s) => s.classList.remove("over", "ready")); }
+document.addEventListener("pointerup", (e) => {
+  if (!drag) return;
+  const d = drag; drag = null;
+  if (!d.started) return;
+  endDrag(d); justDragged = true; setTimeout(() => (justDragged = false), 0);
+  const s = document.elementFromPoint(e.clientX, e.clientY)?.closest(".slot[role=button]");
+  if (s) { if (s.dataset.slot !== d.from) place(s.dataset.slot, d.id); } else if (d.from) takeOut(d.from);
+});
+document.addEventListener("pointercancel", () => { if (drag?.started) endDrag(drag); drag = null; });
+
+/* ---------------- step 4: patterns ---------------- */
+function chartSVG(anim) {
+  const W = 640, H = 500, m = { l: 64, r: 16, t: 12, b: 66 }, z0 = 81.5, z1 = 92.5, a0 = 204, a1 = 240, R = 12;
+  const x = (z) => m.l + (z - z0) / (z1 - z0) * (W - m.l - m.r), y = (a) => m.t + (a1 - a) / (a1 - a0) * (H - m.t - m.b);
+  let g = "", ax = "", segs = "", nodes = "", delay = 0;
+  for (let z = 82; z <= 92; z++) { g += `<line x1="${x(z)}" y1="${m.t}" x2="${x(z)}" y2="${H - m.b}"/>`; ax += `<text x="${x(z)}" y="${H - m.b + 20}" text-anchor="middle">${z}</text><text class="sym" x="${x(z)}" y="${H - m.b + 38}" text-anchor="middle">${EL[z][0]}</text>`; }
+  for (let a = 206; a <= 238; a += 4) { g += `<line x1="${m.l}" y1="${y(a)}" x2="${W - m.r}" y2="${y(a)}"/>`; ax += `<text x="${m.l - 10}" y="${y(a) + 4}" text-anchor="end">${a}</text>`; }
+  const st = (d) => (anim ? ` style="animation-delay:${d.toFixed(2)}s"` : "");
+  DECAYS.forEach((ty, i) => {
+    const p = CHAIN[i], c = CHAIN[i + 1], X1 = x(p.Z), Y1 = y(p.A), X2 = x(c.Z), Y2 = y(c.A), Ln = Math.hypot(X2 - X1, Y2 - Y1), ux = (X2 - X1) / Ln, uy = (Y2 - Y1) / Ln;
+    const sx = X1 + ux * (R + 2), sy = Y1 + uy * (R + 2), ex = X2 - ux * (R + 7), ey = Y2 - uy * (R + 7), hx = X2 - ux * (R + 1), hy = Y2 - uy * (R + 1), px = -uy, py = ux;
+    const head = `${hx},${hy} ${hx - ux * 9 + px * 5},${hy - uy * 9 + py * 5} ${hx - ux * 9 - px * 5},${hy - uy * 9 - py * 5}`;
+    const mx = ty === "a" ? (sx + ex) / 2 : (X1 + X2) / 2, my = ty === "a" ? (sy + ey) / 2 : Y1 - 20;
+    const mk = ty === "a" ? `${mx},${my - 6} ${mx + 6},${my + 5} ${mx - 6},${my + 5}` : `${mx},${my - 6} ${mx + 6},${my} ${mx},${my + 6} ${mx - 6},${my}`;
+    segs += `<line class="seg ${ty}" pathLength="1" x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}"${st(delay)}/><polygon class="ah ${ty}" points="${head}"${st(delay + 0.3)}/><polygon class="mk ${ty}" points="${mk}"${st(delay + 0.3)}><title>${ty === "a" ? "α" : "β"}: ${label(p)} → ${label(c)}</title></polygon>`;
+    delay += 0.32;
+  });
+  CHAIN.forEach((c, i) => { nodes += `<g class="node${i === 0 || i === 14 ? " end" : ""}"${st(i * 0.32)}><circle cx="${x(c.Z)}" cy="${y(c.A)}" r="${R}"/><text x="${x(c.Z)}" y="${y(c.A)}">${c.sym}</text><title>${label(c)}</title></g>`; });
+  return `<svg class="chart${anim ? " anim" : ""}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t("chartAria"))}"><g class="grid">${g}</g><g class="ax">${ax}</g>
+    <text class="axt" x="${(m.l + W - m.r) / 2}" y="${H - 8}" text-anchor="middle">${esc(t("axZ"))}</text>
+    <text class="axt" transform="translate(16 ${(m.t + H - m.b) / 2}) rotate(-90)" text-anchor="middle">${esc(t("axA"))}</text>${segs}${nodes}</svg>`;
+}
+const scaleSel = (k, lab) => `<select class="md-select" data-pat="${k}" aria-label="${lab}"><option value="">${t("chooseOpt")}</option>${[0, 1, 2, 3, 4, 5].map((i) => `<option value="${i}" ${String(state.pat[k]) === String(i) ? "selected" : ""}>${t("sc" + i)}</option>`).join("")}</select>`;
+function patItems() {
+  const p = state.pat, n = (k) => (p[k] === undefined || p[k] === "" ? -1 : Number(p[k]));
+  return { alpha: n("aA") === PAT.aA && n("aZ") === PAT.aZ, beta: n("bA") === PAT.bA && n("bZ") === PAT.bZ, he: Number(p.he) === 8,
+    stop: !!PMC[0].opts[p.stop]?.ok, hl: !!PMC[1].opts[p.hl]?.ok, more: p.more === "less",
+    why: (p.why || "").trim().length >= 12, hlwhy: (p.hlwhy || "").trim().length >= 12 };
+}
+function renderPatterns(app) {
+  const p = state.pat, it = patItems(), sh = state.patShown, allOk = Object.values(it).every(Boolean);
+  const anim = !state.chartSeen; state.chartSeen = true; save();
+  const fb = (ok, good, bad) => (sh ? `<p class="fb ${ok ? "ok" : "bad"}">${ok ? "✓ " + good : "✗ " + bad}</p>` : "");
+  const heMsg = !p.he ? t("p4none") : Number(p.he) === 6 ? t("p4six") : t("p4bad");
+  app.innerHTML = `<div class="two">
+    <article class="md-card chartcard"><div class="headrow"><h2>${t("mapH")}</h2><button class="md-btn text" type="button" data-act="replay">${t("replay")}</button></div>
+      <p class="muted">${t("mapSub")}</p><div id="chartBox">${chartSVG(anim)}</div></article>
+    <article class="md-card"><h2>${t("patH")}</h2>
+      <fieldset class="q"><legend>${t("q", { n: 1 })}</legend><p class="frame">${t("p1", { s1: scaleSel("aA", "alpha: mass number"), s2: scaleSel("aZ", "alpha: atomic number") })}</p>${fb(it.alpha, t("p1ok"), t("p1bad"))}</fieldset>
+      <fieldset class="q"><legend>${t("q", { n: 2 })}</legend><p class="frame">${t("p2", { s1: scaleSel("bA", "beta: mass number"), s2: scaleSel("bZ", "beta: atomic number") })}</p>${fb(it.beta, t("p2ok"), t("p2bad"))}</fieldset>
+      <fieldset class="q"><legend>${t("q", { n: 3 })}</legend><p>${t("p3")}</p><p class="muted">${t("p3start")}</p>
+        <textarea class="md-textarea" data-pat="why" aria-label="${esc(t("ariaWhy"))}">${esc(p.why || "")}</textarea>${sh && !it.why ? `<p class="fb bad">${t("p3short")}</p>` : ""}</fieldset>
+      <fieldset class="q"><legend>${t("q", { n: 4 })}</legend><p>${t("p4")}</p>
+        <input class="md-input numin" type="number" inputmode="numeric" data-pat="he" aria-label="${esc(t("ariaNum"))}" value="${esc(p.he || "")}">
+        ${sh ? (it.he ? `<p class="fb ok">${t("p4ok")}</p>` : `<p class="fb bad">✗ ${heMsg}</p>`) : ""}</fieldset>
+      ${mcBlock(PMC[0], state.pat, sh, 5)}${mcBlock(PMC[1], state.pat, sh, 6)}
+      <fieldset class="q"><legend>${t("q", { n: 7 })}</legend><p class="frame">${t("p7", { s: `<select class="md-select" data-pat="more" aria-label="${esc(t("more"))} / ${esc(t("less"))}"><option value="">${t("chooseOpt")}</option><option value="more" ${p.more === "more" ? "selected" : ""}>${t("more")}</option><option value="less" ${p.more === "less" ? "selected" : ""}>${t("less")}</option></select>` })}</p>
+        <textarea class="md-textarea" data-pat="hlwhy" aria-label="${esc(t("ariaWhy"))}">${esc(p.hlwhy || "")}</textarea>
+        ${sh ? (it.more ? (it.hlwhy ? `<p class="fb ok">${t("p7ok")}</p>` : `<p class="fb bad">${t("p7finish")}</p>`) : `<p class="fb bad">${t("p7bad")}</p>`) : ""}</fieldset>
+      <div class="actions"><button class="md-btn ${allOk ? "outlined" : "filled"}" type="button" data-act="checkPat">${t("checkAnswers")}</button>${allOk ? nextBtn(4) : ""}</div>
+    </article></div>`;
+}
+function checkPat() {
+  state.patShown = true; const it = patItems(), p = state.pat, has = (k) => p[k] !== undefined && p[k] !== "";
+  const answered = { alpha: has("aA") && has("aZ"), beta: has("bA") && has("bZ"), he: has("he"), stop: has("stop"), hl: has("hl"), more: has("more") };
+  Object.keys(answered).forEach((k) => { if (answered[k] && state.patFirst[k] === undefined) state.patFirst[k] = it[k]; });
+  if (Object.values(it).every(Boolean)) { unlock(4); beep("ok"); snack(t("unlocked", { s: t("st4") })); } else beep("no");
+  save(); render();
+}
+
+/* ---------------- step 5: new chain (Am-241) ---------------- */
+function renderAm(app) {
+  const cur = state.am.findIndex((a) => !a.ok), done = cur < 0;
+  app.innerHTML = `<div class="narrow"><article class="md-card"><h2>${t("amH")}</h2><p class="reading">${t("amP")}</p>${strip()}
+    ${FILL.am.map((_, i) => (done || i <= cur ? fillRow("am", i, i === cur) : "")).join("")}
+    ${done ? `<div class="donebox"><h3>${t("niceH")}</h3><p>${t("niceP")}</p>${nextBtn(5)}</div>` : ""}</article></div>`;
+}
+
+/* ---------------- step 6: send (the summary stays in English for the teacher) ---------------- */
+function results() {
+  const rows = state.rows.filter((r) => !r.example), mins = Math.max(1, Math.round(((state.finished || Date.now()) - state.started) / 60000));
+  const traps = state.traps.map((x) => `decay ${x.decay}: ${x.card} (${x.why})`).join("; ") || "none";
+  const mc1 = MC.filter((q) => state.mcFirst[q.id]).length, pf = ["alpha", "beta", "he", "stop", "hl", "more"].filter((k) => state.patFirst[k]).length;
+  const sents = [...state.prac.map((x) => x.sent), ...rows.map((r) => r.sent)].filter((s) => s.ok), s1 = sents.filter((s) => s.first).length;
+  return `Quick check: ${mc1}/3 right on first try | Practice cards: ${state.prac.filter((x) => x.first).length}/2 right on first try | Chain: ${rows.length} decays, ${sum(rows, (r) => r.checks)} checks, ${sum(rows, (r) => r.wrong)} not balanced, ${sum(rows, (r) => r.hint)} hints | Trap cards placed: ${traps} | Sentences: ${sents.length} written, ${s1} right on first try | Patterns: ${pf}/6 right on first try | Am-241 cards: ${state.am.filter((a) => a.first).length}/3 right on first try | Language: ${L()} | Time: about ${mins} min`;
+}
+function written() {
+  const p = state.pat, rows = state.rows.filter((r) => !r.example);
+  const sent = [...state.prac.map((x, i) => ({ s: x.sent, key: `prac:${i}` })), ...rows.map((r) => ({ s: r.sent, key: `row:${state.rows.indexOf(r)}` }))]
+    .filter((x) => x.s.said).map((x) => "- " + sentText(sentCtx(x.key))).join("\n");
+  return `Why beta decay raises the atomic number: ${p.why || ""}\nHalf-life: An isotope with a half-life of 1 day is ${p.more || "___"} stable than one with a half-life of 1,000 years, because ${p.hlwhy || ""}\n\nSentences written and said:\n${sent}`;
+}
+function renderSend(app) {
+  const res = results(), wr = written(), fullTxt = `Name: ${state.name}\nPeriod: ${state.period}\n${res}\n\n${wr}`;
+  const hasForm = CONFIG.formPrefillUrl && CONFIG.formPrefillUrl.includes("STUDENTNAME");
+  app.innerHTML = `<div class="narrow"><article class="md-card"><h2>${t("sendH", { name: esc(state.name) })}</h2><p>${t("sendP", { t: esc(CONFIG.teacherName) })}</p>
+    <div class="summary" id="sum" lang="en">${esc(fullTxt)}</div>
+    <div class="actions">${hasForm ? `<button class="md-btn filled" type="button" data-act="send">${t("sendBtn")}</button>` : ""}
+      <button class="md-btn ${hasForm ? "outlined" : "filled"}" type="button" data-act="copy">${t("copyBtn")}</button>
+      <button class="md-btn text" type="button" data-act="reset">${t("over")}</button></div>
+    <p class="muted" style="margin-top:10px">${hasForm ? t("sendNoteForm") : t("sendNoteCopy")}</p></article></div>`;
+}
+function sendForm() {
+  const enc = encodeURIComponent;
+  window.open(CONFIG.formPrefillUrl.replace("STUDENTNAME", enc(state.name)).replace("CLASSPERIOD", enc(state.period)).replace("SCORES", enc(results())).replace("WRITTEN", enc(written())), "_blank", "noopener");
+}
+async function copyWork() {
+  try { await navigator.clipboard.writeText($("#sum").textContent); snack(t("copied")); }
+  catch (e) { const r = document.createRange(); r.selectNodeContents($("#sum")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); snack(t("highlighted")); }
+}
+
+/* ---------------- help ---------------- */
+function openHelp() {
+  const d = $("#helpDlg"), langs = [["es", "Español"], ["zh", "繁體中文"], ["ar", "العربية"]];
+  d.innerHTML = `<h2 id="helpTitle">${t("helpH")}</h2><p>${t("helpMove")}</p><p>${t("helpTake")}</p><p>${t("helpCheck")}</p>
+    <div class="legend" style="margin:8px 0 16px"><span class="item">${pCard("a", 'aria-hidden="true"', "div")}${t("legA")}</span><span class="item">${pCard("b", 'aria-hidden="true"', "div")}${t("legB")}</span></div>
+    <h3>${t("kwH")}</h3><div style="overflow-x:auto"><table class="gloss-table"><thead><tr><th>English</th>${langs.map(([, n]) => `<th>${n}</th>`).join("")}</tr></thead><tbody>
+    ${Object.entries(KW).map(([en, tr]) => `<tr><td lang="en">${esc(en)}</td>${langs.map(([k]) => `<td lang="${LANGTAG[k]}" dir="${k === "ar" ? "rtl" : "ltr"}">${esc(tr[k])}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+    <p class="ver">${t("version")}: ${VERSION}</p><div class="md-dialog-actions"><button class="md-btn filled" type="button" data-act="closeHelp">${t("close")}</button></div>`;
+  d.showModal();
+}
+
+/* ---------------- events ---------------- */
+function setLang(v) { state.lang = v; save(); if ("speechSynthesis" in window) speechSynthesis.cancel(); render(); }
+$("#lang").addEventListener("change", (e) => setLang(e.target.value));
+$("#snd").addEventListener("click", () => { soundOn = !soundOn; try { localStorage.setItem("decay238-sound", soundOn ? "1" : "0"); } catch (e) {} paintSound(); if (soundOn) beep("ok"); });
+$("#helpBtn").addEventListener("click", openHelp);
+document.addEventListener("click", (e) => {
+  if (justDragged) return;
+  const a = e.target.closest("[data-act]"), act = a?.dataset.act;
+  if (act === "goto") return go(Number(a.dataset.step));
+  if (act === "start") return startActivity();
+  if (act === "reset") { if (confirm(t("confirmReset"))) { const l = state.lang; state = fresh(); state.lang = l; if (who) { state.name = whoName(); state.period = String(who.period || ""); } sel = null; save(); render(); } return; }
+  if (act === "checkMC") return checkMC();
+  if (act === "checkFill") return checkFill(a.dataset.kind, +a.dataset.i);
+  if (act === "checkSent") return checkSent(a.dataset.key);
+  if (act === "hear") return say(sentText(sentCtx(a.dataset.key)), "en", null, "");
+  if (act === "said") return saidIt(a.dataset.key);
+  if (act === "checkRow") return checkRow();
+  if (act === "hint") { const r = state.rows[curRow()]; r.hint = Math.min(3, r.hint + 1); save(); return render(); }
+  if (act === "takeOut") return takeOut(a.dataset.slot);
+  if (act === "checkPat") return checkPat();
+  if (act === "replay") { $("#chartBox").innerHTML = chartSVG(true); return; }
+  if (act === "send") return sendForm();
+  if (act === "copy") return copyWork();
+  if (act === "speak") return speakEl(a.dataset.target, a);
+  if (act === "closeHelp") return $("#helpDlg").close();
+  if (act === "unselect") { sel = null; return paintSel(); }
+  if (state.at !== 2 || !state.started) return;
+  const card = e.target.closest("#tray [data-card]"); if (card) return select(card.dataset.card);
+  const slot = e.target.closest(".slot[role=button]"); if (slot && sel) return place(slot.dataset.slot, sel);
+});
+document.addEventListener("keydown", (e) => {
+  const el = e.target;
+  if (e.key === "Escape" && sel) { sel = null; paintSel(); }
+  if ((e.key === "Enter" || e.key === " ") && el.matches?.(".slot[role=button]")) { e.preventDefault(); if (sel) place(el.dataset.slot, sel); else snack(t("chooseFirst")); }
+  if (e.key === "Enter" && (el.id === "nm" || el.id === "pd")) startActivity();
+  if (e.key === "Enter" && el.dataset?.fill) { e.preventDefault(); checkFill(el.dataset.fill, +el.dataset.i); }
+  if (e.key === "Enter" && el.dataset?.sent) { e.preventDefault(); checkSent(el.dataset.sent); }
+});
+document.addEventListener("change", (e) => {
+  const el = e.target;
+  if (el.dataset.store === "mc") { state.mc[el.name] = Number(el.value); save(); }
+  else if (el.dataset.store === "pat") { state.pat[el.name] = Number(el.value); save(); }
+  else if (el.dataset.pat) { state.pat[el.dataset.pat] = el.value; save(); }
+});
+document.addEventListener("input", (e) => {
+  const el = e.target;
+  if (el.dataset.pat) { state.pat[el.dataset.pat] = el.value; save(); }
+  if (el.dataset.fill) { state[el.dataset.fill][+el.dataset.i][el.dataset.f] = el.value; save(); }
+  if (el.dataset.sent) { const c = sentCtx(el.dataset.sent); c.s[el.dataset.f] = el.value; save(); }
+});
+window.addEventListener("resize", () => document.documentElement.style.setProperty("--bar-h", $("#bar").offsetHeight + "px"));
+
+/* self-checks (console only): every decay has exactly one balancing card; the chain itself balances */
+CHAIN.slice(0, -1).forEach((par, i) => {
+  const ty = DECAYS[i]; console.assert(par.A === P[ty].A + CHAIN[i + 1].A && par.Z === P[ty].Z + CHAIN[i + 1].Z, "Bad chain at", par.id);
+  const { cards } = makeCards(i); console.assert(cards.filter((id) => balances(par, C(id))).length === 1, "Ambiguous cards at", par.id);
+});
+render();
+</script>
+</body>
+</html>
