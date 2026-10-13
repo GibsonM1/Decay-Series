@@ -220,12 +220,17 @@ html[lang="ar"] .reading{font-family:"Gibson Greek","Noto Sans Arabic",var(--md-
 .gloss-table th,.gloss-table td{text-align:start;padding:6px 8px;border-bottom:1px solid var(--md-sys-color-outline-variant);vertical-align:top}
 
 @media (min-width:1001px){ .placebar{left:24px;transform:none} html[dir="rtl"] .placebar{left:auto;right:24px} }
-@media (max-width:1000px){
+@media (max-width:1000px), (max-height:520px){
   .two{grid-template-columns:1fr}
-  .build{grid-template-columns:1fr;height:auto}
-  .chainside{order:2} .chain-list{overflow:visible}
   .chartcard{position:static}
   .topbar h1{font-size:17px}
+  /* building the chain: history on top, then the equation, then the cards in a dock pinned to the bottom of the screen */
+  .build{display:flex;flex-direction:column;gap:12px;height:auto}
+  .leftcol{display:contents}
+  .chainside{order:1}
+  .chain-list{max-height:30vh;overflow-y:auto}
+  .work{order:2}
+  .tray,.elems{order:3;position:sticky;bottom:0;z-index:20;box-shadow:0 -4px 16px rgba(0,0,0,.2)}
 }
 @media (prefers-reduced-motion:reduce){ .chart.anim .seg{stroke-dashoffset:0} .chart.anim .ah,.chart.anim .mk,.chart.anim .node{opacity:1} }
 
@@ -314,6 +319,40 @@ svg.links path{fill:none;stroke:var(--md-sys-color-outline);stroke-width:1.6;str
 .info{display:inline-grid;place-items:center;width:22px;height:22px;margin-inline-start:4px;border-radius:50%;border:1.5px solid currentColor;background:transparent;color:var(--md-sys-color-on-surface-variant);font:700 13px/1 Georgia,serif;font-style:italic;cursor:pointer;vertical-align:middle;position:relative}
 .info::after{content:"";position:absolute;inset:-12px}
 .exn.ring-fade::after{opacity:0;transition:opacity .8s ease-out}
+
+/* update 11: phones and short (landscape) screens */
+@media (max-width:700px), (max-height:520px){
+  .topbar{position:static}
+  main{padding:8px 8px 16px}
+  .md-card{padding:12px}
+  .fillrow{padding:10px}
+  .start{padding:18px}
+  .iso-card{width:72px;height:64px} .iso-card .nuc{font-size:24px} .iso-card .nm{font-size:11px}
+  .pcard{width:62px;height:84px} .pcard .nuc{font-size:22px} .pcard .gk{font-size:15px}
+  .pcard.a .nuc,.pcard.b .nuc{top:22px} .pcard.a .gk,.pcard.b .gk{top:57px}
+  .slot.p{width:76px;height:92px} .slot.d{width:84px;height:74px}
+  .mcard input{width:58px;min-height:40px;font-size:17px} .mcard input.s{width:52px;min-height:84px;font-size:26px}
+  /* the card dock: just the cards */
+  .tray{gap:8px;padding:8px 10px;flex-wrap:nowrap;align-items:center}
+  .tray h3,.tray .sub{display:none}
+  .tray > div:first-child{max-width:none}
+  .piles,.isorow{flex-wrap:nowrap;gap:6px}
+  .elems{padding:8px 10px} .elems h3{display:none} .elems .elemgrid{display:flex;overflow-x:auto} .elems .pt{flex:none;width:76px}
+  .eqgrid .lbl{max-width:96px;font-size:12px}
+}
+@media (max-width:700px){
+  .tray{flex-direction:column;align-items:flex-start;gap:6px}
+  .dhl{display:none}
+  .eqgrid{column-gap:4px}
+  .eqgrid .op{font-size:22px}
+  .eqgrid.narrow{grid-template-columns:auto 22px auto 22px auto}
+  .eqgrid.narrow .tlab{flex-direction:row;flex-wrap:wrap;gap:0 10px;padding:4px 8px 0}
+  .tnum{font-size:18px}
+  .frameEn{font-size:17px}
+  .frameEn input.d{width:170px}
+}
+.eqgrid .lbl .kw{white-space:normal}
+@media (max-width:1000px), (max-height:520px){ .work button, .work input, .work .slot{scroll-margin-bottom:200px} }
 </style>
 </head>
 <body>
@@ -456,7 +495,7 @@ en: {
   sDaughter: "Write the English element name, a dash, and the mass number, like hydrogen-2.", elemH: "Element names", sSpell: "Almost! Check the spelling of the element name in the element list on this page.", sMass: "Check the mass number. Use the daughter isotope's top number.",
   sOk: "✓ Now say the whole sentence out loud.", hear: "Hear it", said: "I said it out loud",
   buildSide: "Your chain so far", noneYet: "Your balanced decays will show up here.", decayQ: "Decay {n}: what does {x} turn into?",
-  buildInst: "Drag a card into a box, or tap a card and then tap a box. Then press Check.",
+  buildInst: "Tap a card to put it in the equation, or drag it into a box. Then press Check.",
   parentFrom: "(the daughter from decay {n})", slotP: "α or β?",
   pileSub: "Take as many as you need.", isoH: "Isotope cards", isoSub: "Only one card balances. The others are traps made from common mistakes.",
   checkDecay: "Check this decay", hintB: "Hint", hintMore: "Another hint", hintN: "Hint {n} of 3.",
@@ -502,7 +541,7 @@ en: {
   sendNoteForm: "Send to my teacher opens a form with your work filled in. Press Submit on the form.", sendNoteCopy: "Copy your work and paste it into your Google Classroom assignment.",
   copied: "Copied. Paste it into your Google Classroom assignment.", highlighted: "Your work is highlighted. Press Ctrl+C to copy it.",
   helpH: "How this works",
-  helpMove: "<b>Move a card:</b> drag it into a box. Or tap the card, then tap the box. With a keyboard, press Enter on a card, then Enter on a box.",
+  helpMove: "<b>Move a card:</b> tap it and it goes into the equation. You can also drag it into a box. With a keyboard, press Enter on a card.",
   helpTake: "<b>Take a card out:</b> press the × on the card.",
   helpCheck: "<b>Check:</b> the check shows whether the top numbers (mass numbers) and the bottom numbers (atomic numbers) balance. Fix what's marked ✗.",
   kwH: "Key words", close: "Close", pracDone: "Practice done. Build the chain is unlocked."
@@ -571,7 +610,7 @@ es: {
   sDaughter: "Escribe el nombre del elemento en inglés, un guion y el número másico, como hydrogen-2.", elemH: "Nombres de los elementos (en inglés)", sSpell: "¡Casi! Revisa la ortografía del nombre del elemento en la lista de elementos de esta página.", sMass: "Revisa el número másico. Usa el número de arriba del isótopo hijo.",
   sOk: "✓ Ahora di la oración completa en voz alta.", hear: "Escúchala", said: "Ya la dije en voz alta",
   buildSide: "Tu cadena hasta ahora", noneYet: "Aquí aparecerán tus desintegraciones equilibradas.", decayQ: "Desintegración {n}: ¿en qué se convierte {x}?",
-  buildInst: "Arrastra una tarjeta a una casilla, o toca una tarjeta y luego toca una casilla. Después presiona Comprobar.",
+  buildInst: "Toca una tarjeta para ponerla en la ecuación, o arrástrala a una casilla. Después presiona Comprobar.",
   parentFrom: "(el isótopo hijo de la desintegración {n})", slotP: "¿α o β?",
   pileSub: "Toma todas las que necesites.", isoH: "Tarjetas de isótopos", isoSub: "Solo una tarjeta equilibra la ecuación. Las otras son trampas hechas con errores comunes.",
   checkDecay: "Comprobar esta desintegración", hintB: "Pista", hintMore: "Otra pista", hintN: "Pista {n} de 3.",
@@ -617,7 +656,7 @@ es: {
   sendNoteForm: "«Enviar a mi maestro» abre un formulario con tu trabajo ya escrito. Presiona Enviar en el formulario.", sendNoteCopy: "Copia tu trabajo y pégalo en tu tarea de Google Classroom.",
   copied: "Copiado. Pégalo en tu tarea de Google Classroom.", highlighted: "Tu trabajo está resaltado. Presiona Ctrl+C para copiarlo.",
   helpH: "Cómo funciona",
-  helpMove: "<b>Mover una tarjeta:</b> arrástrala a una casilla. O toca la tarjeta y luego toca la casilla. Con el teclado, presiona Enter en una tarjeta y luego Enter en una casilla.",
+  helpMove: "<b>Mover una tarjeta:</b> tócala y entra en la ecuación. También puedes arrastrarla a una casilla. Con el teclado, presiona Enter en una tarjeta.",
   helpTake: "<b>Quitar una tarjeta:</b> presiona la × de la tarjeta.",
   helpCheck: "<b>Comprobar:</b> muestra si los números de arriba (números másicos) y los de abajo (números atómicos) están equilibrados. Corrige lo que tenga ✗.",
   kwH: "Palabras clave", close: "Cerrar", pracDone: "Práctica terminada. «Construir la cadena» está desbloqueado."
@@ -686,7 +725,7 @@ zh: {
   sDaughter: "請寫英文元素名稱、一個連字號和質量數，例如 hydrogen-2。", elemH: "元素名稱（英文）", sSpell: "差一點！請對照這一頁的元素列表檢查元素名稱的拼法。", sMass: "請檢查質量數。用子同位素上方的數字。",
   sOk: "✓ 現在大聲說出整個句子。", hear: "聽一聽", said: "我已經大聲說了",
   buildSide: "目前的衰變鏈", noneYet: "平衡的衰變會出現在這裡。", decayQ: "第 {n} 次衰變：{x} 會變成什麼？",
-  buildInst: "把卡片拖到方格裡，或先點一張卡片，再點一個方格。然後按「檢查」。",
+  buildInst: "點一下卡片就能放進方程式，也可以把它拖到方格裡。然後按「檢查」。",
   parentFrom: "（第 {n} 次衰變的子同位素）", slotP: "α 還是 β？",
   pileSub: "需要幾張就拿幾張。", isoH: "同位素卡片", isoSub: "只有一張卡片能讓方程式平衡。其他卡片是由常見錯誤做成的陷阱。",
   checkDecay: "檢查這次衰變", hintB: "提示", hintMore: "另一個提示", hintN: "提示 {n}／3。",
@@ -732,7 +771,7 @@ zh: {
   sendNoteForm: "「交給老師」會打開一個已經填好你作業的表單。請在表單上按「提交」。", sendNoteCopy: "複製你的作業，貼到 Google Classroom 的作業裡。",
   copied: "已複製。請貼到 Google Classroom 的作業裡。", highlighted: "你的作業已經反白。按 Ctrl+C 複製。",
   helpH: "使用說明",
-  helpMove: "<b>移動卡片：</b>把卡片拖到方格裡。或先點卡片，再點方格。用鍵盤的話，在卡片上按 Enter，再在方格上按 Enter。",
+  helpMove: "<b>移動卡片：</b>點一下卡片，它就會放進方程式。你也可以把它拖到方格裡。用鍵盤的話，在卡片上按 Enter。",
   helpTake: "<b>拿出卡片：</b>按卡片上的 ×。",
   helpCheck: "<b>檢查：</b>會顯示上方的數字（質量數）和下方的數字（原子序）是否平衡。修改標著 ✗ 的地方。",
   kwH: "關鍵詞", close: "關閉", pracDone: "練習完成。「建立衰變鏈」已解鎖。"
@@ -801,7 +840,7 @@ ar: {
   sDaughter: "اكتب اسم العنصر بالإنجليزية، ثم شَرطة، ثم العدد الكتلي، مثل hydrogen-2.", elemH: "أسماء العناصر (بالإنجليزية)", sSpell: "اقتربت! تحقق من تهجئة اسم العنصر في قائمة العناصر في هذه الصفحة.", sMass: "تحقق من العدد الكتلي. استخدم الرقم العلوي للنظير الابن.",
   sOk: "✓ الآن قل الجملة كاملة بصوت عالٍ.", hear: "استمع إليها", said: "قلتها بصوت عالٍ",
   buildSide: "سلسلتك حتى الآن", noneYet: "ستظهر هنا الاضمحلالات المتوازنة.", decayQ: "الاضمحلال {n}: إلى ماذا يتحول {x}؟",
-  buildInst: "اسحب بطاقة إلى مربع، أو اضغط على بطاقة ثم اضغط على مربع. ثم اضغط «تحقق».",
+  buildInst: "اضغط على بطاقة لوضعها في المعادلة، أو اسحبها إلى مربع. ثم اضغط «تحقق».",
   parentFrom: "(النظير الابن من الاضمحلال {n})", slotP: "α أم β؟",
   pileSub: "خذ العدد الذي تحتاجه.", isoH: "بطاقات النظائر", isoSub: "بطاقة واحدة فقط تجعل المعادلة متوازنة. البطاقات الأخرى فخاخ مصنوعة من أخطاء شائعة.",
   checkDecay: "تحقق من هذا الاضمحلال", hintB: "تلميح", hintMore: "تلميح آخر", hintN: "تلميح {n} من 3.",
@@ -847,7 +886,7 @@ ar: {
   sendNoteForm: "زر «أرسل إلى معلمي» يفتح نموذجًا فيه عملك مكتوبًا. اضغط «إرسال» في النموذج.", sendNoteCopy: "انسخ عملك والصقه في مهمتك على Google Classroom.",
   copied: "تم النسخ. الصقه في مهمتك على Google Classroom.", highlighted: "تم تظليل عملك. اضغط Ctrl+C لنسخه.",
   helpH: "طريقة العمل",
-  helpMove: "<b>تحريك بطاقة:</b> اسحبها إلى مربع. أو اضغط على البطاقة ثم اضغط على المربع. باستخدام لوحة المفاتيح، اضغط Enter على بطاقة ثم Enter على مربع.",
+  helpMove: "<b>تحريك بطاقة:</b> اضغط عليها فتدخل في المعادلة. يمكنك أيضًا سحبها إلى مربع. باستخدام لوحة المفاتيح، اضغط Enter على البطاقة.",
   helpTake: "<b>إخراج بطاقة:</b> اضغط على × في البطاقة.",
   helpCheck: "<b>التحقق:</b> يوضح إن كانت الأرقام العلوية (الأعداد الكتلية) والأرقام السفلية (الأعداد الذرية) متوازنة. صحّح ما عليه ✗.",
   kwH: "الكلمات المفتاحية", close: "إغلاق", pracDone: "انتهى التدريب. تم فتح «ابنِ السلسلة»."
@@ -855,7 +894,7 @@ ar: {
 };
 
 "use strict";
-const VERSION = "Oct 12, 2026, update 10";
+const VERSION = "Oct 12, 2026, update 11";
 const KEY = "decay238-v2";
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -1017,20 +1056,25 @@ function tally(par, pt, A, Z) {
 }
 
 // equation with the balance rows lined up underneath it (mass row, then atomic row); "=" under the arrow, "+" under the plus
+const NARROW = matchMedia("(max-width: 700px)");
 function eqGrid(terms, o = {}) {
-  const fmt = (v) => (v < 0 ? "−" + Math.abs(v) : v);
-  let h = `<div class="eqgrid ${o.cls || ""}"${o.id ? ` id="${o.id}"` : ""}>`;
+  const fmt = (v) => (v < 0 ? "−" + Math.abs(v) : v), nw = NARROW.matches;
+  let h = `<div class="eqgrid ${o.cls || ""}${nw ? " narrow" : ""}"${o.id ? ` id="${o.id}"` : ""}>`;
   terms.forEach((x, k) => { h += `<div class="et" style="grid-column:${1 + 2 * k};grid-row:1">${x}</div>`; if (k < 2) h += `<span class="op" style="grid-column:${2 + 2 * k};grid-row:1" aria-hidden="true">${k ? "+" : "→"}</span>`; });
   let r = 2;
   if (o.labels) { o.labels.forEach((l, k) => (h += `<span class="lbl" style="grid-column:${1 + 2 * k};grid-row:2">${l}</span>`)); r = 3; }
   (o.rows || []).forEach((row) => {
     const sum = row.v[1] + row.v[2], ok = row.v[0] === sum, st = row.state || (ok ? "ok" : "bad"), dl = row.data ? ` data-line="${row.f}"` : "";
-    const num = (k) => `<span class="tnum${row.data ? " hide" : ""}" style="grid-column:${1 + 2 * k};grid-row:${r}"${row.data ? ` data-dst="${row.f}${k}"` : ""}>${fmt(row.v[k])}</span>`;
-    h += `<div class="tbg ${st}"${dl} style="grid-row:${r}"></div>${num(0)}<span class="tnum op2" style="grid-column:2;grid-row:${r}">${ok ? "=" : "≠"}</span>${num(1)}<span class="tnum op2" style="grid-column:4;grid-row:${r}">+</span>${num(2)}
-      <span class="tlab ${st}"${dl} style="grid-column:6;grid-row:${r}"><span class="tn">${row.name}</span><span class="st">${ok ? t("bal") : `${t("notBal")} <span class="sum ltr">(${fmt(row.v[1])} + ${fmt(row.v[2])} = ${fmt(sum)})</span>`}</span></span>`;
-    r++;
+    const nr = nw ? r + 1 : r;
+    const num = (k) => `<span class="tnum${row.data ? " hide" : ""}" style="grid-column:${1 + 2 * k};grid-row:${nr}"${row.data ? ` data-dst="${row.f}${k}"` : ""}>${fmt(row.v[k])}</span>`;
+    h += `<div class="tbg ${st}"${dl} style="grid-row:${r} / span ${nw ? 2 : 1}"></div>${num(0)}<span class="tnum op2" style="grid-column:2;grid-row:${nr}">${ok ? "=" : "≠"}</span>${num(1)}<span class="tnum op2" style="grid-column:4;grid-row:${nr}">+</span>${num(2)}
+      <span class="tlab ${st}"${dl} style="grid-column:${nw ? "1 / -1" : 6};grid-row:${r}"><span class="tn">${row.name}</span><span class="st">${ok ? t("bal") : `${t("notBal")} <span class="sum ltr">(${fmt(row.v[1])} + ${fmt(row.v[2])} = ${fmt(sum)})</span>`}</span></span>`;
+    r += nw ? 2 : 1;
   });
   return h + "</div>";
+}
+function fitGrids() {
+  $$(".eqgrid").forEach((g) => { g.style.zoom = ""; const room = g.clientWidth, need = g.scrollWidth; if (need > room + 1) g.style.zoom = Math.max(0.6, room / need).toFixed(3); });
 }
 const balRows = (par, pt, A, Z) => [{ f: "A", name: t("massTop"), v: [par.A, pt.A, A] }, { f: "Z", name: t("atomBot"), v: [par.Z, pt.Z, Z] }];
 
@@ -1056,7 +1100,7 @@ function render() {
   renderBar();
   const app = $("#app");
   if (!state.started) renderStart(app); else [renderLearn, renderPractice, renderBuild, renderPatterns, renderAm, renderSend][state.at](app);
-  paintVoices(); paintSel();
+  paintVoices(); paintSel(); fitGrids();
 }
 const nextBtn = (i) => `<button class="md-btn filled" type="button" data-act="goto" data-step="${i}">${t("next", { s: t("st" + i) })}</button>`;
 
@@ -1101,7 +1145,8 @@ function exFly(src, dst) {
   const s = src.getBoundingClientRect(), d = dst.getBoundingClientRect(), g = document.createElement("span");
   g.className = "exfly"; g.textContent = src.textContent; g.style.font = getComputedStyle(src).font; g.style.left = s.left + "px"; g.style.top = s.top + "px";
   document.body.appendChild(g);
-  const k = d.height / s.height, an = g.animate([{ transform: "translate(0,0) scale(1)" }, { transform: `translate(${d.left + (d.width - s.width * k) / 2 - s.left}px,${d.top - s.top}px) scale(${k})` }], { duration: 700, easing: "cubic-bezier(.4,0,.2,1)" });
+  const gr = g.getBoundingClientRect(), k0 = s.height / (gr.height || s.height), k1 = d.height / (gr.height || s.height);
+  const an = g.animate([{ transform: `translate(0,0) scale(${k0})` }, { transform: `translate(${d.left + (d.width - gr.width * k1) / 2 - s.left}px,${d.top - s.top}px) scale(${k1})` }], { duration: 700, easing: "cubic-bezier(.4,0,.2,1)" });
   return an.finished.then(() => g.remove(), () => g.remove());
 }
 async function playExample() {
@@ -1326,7 +1371,14 @@ function place(slot, id) {
   const cur = curRow(); if (cur < 0 || state.rows[cur].bal) return;
   if (!accepts(slot, id)) { snack(slot === "p" ? t("boxP") : t("boxD")); return; }
   state.rows[cur][slot] = id; state.rows[cur].last = null; sel = null; save(); render();
+  // one-column screens: once both boxes are full, make sure Check isn't hidden behind the card dock
+  const r = state.rows[cur];
+  if (r.p && r.d && ONECOL.matches) requestAnimationFrame(() => {
+    const btn = $('[data-act="checkRow"]'), dock = $("#tray"); if (!btn || !dock) return;
+    const over = btn.getBoundingClientRect().bottom - (dock.getBoundingClientRect().top - 12); if (over > 0) window.scrollBy({ top: over, behavior: "smooth" });
+  });
 }
+const ONECOL = matchMedia("(max-width: 1000px), (max-height: 520px)");
 function takeOut(slot) { const cur = curRow(); if (cur < 0 || state.rows[cur].bal) return; state.rows[cur][slot] = null; state.rows[cur].last = null; save(); render(); }
 function checkRow() {
   const i = curRow(); if (i < 0) return;
@@ -1531,7 +1583,7 @@ document.addEventListener("click", (e) => {
   if (act === "closeHelp") return $("#helpDlg").close();
   if (act === "unselect") { sel = null; return paintSel(); }
   if (state.at !== 2 || !state.started) return;
-  const card = e.target.closest("#tray [data-card]"); if (card) return select(card.dataset.card);
+  const card = e.target.closest("#tray [data-card]"); if (card) { const id = card.dataset.card; return place(id === "a" || id === "b" ? "p" : "d", id); }
   const slot = e.target.closest(".slot[role=button]"); if (slot && sel) return place(slot.dataset.slot, sel);
 });
 document.addEventListener("keydown", (e) => {
@@ -1554,7 +1606,8 @@ document.addEventListener("input", (e) => {
   if (el.dataset.fill) { state[el.dataset.fill][+el.dataset.i][el.dataset.f] = el.value; save(); }
   if (el.dataset.sent) { const c = sentCtx(el.dataset.sent); c.s[el.dataset.f] = el.value; save(); }
 });
-window.addEventListener("resize", () => { document.documentElement.style.setProperty("--bar-h", $("#bar").offsetHeight + "px"); if (state.at === 2) drawLinks(); });
+window.addEventListener("resize", () => { document.documentElement.style.setProperty("--bar-h", $("#bar").offsetHeight + "px"); fitGrids(); if (state.at === 2) drawLinks(); });
+NARROW.addEventListener("change", () => render());
 document.fonts?.ready.then(() => { if (state.at === 2) drawLinks(); });
 
 /* self-checks (console only): every decay has exactly one balancing card; the chain itself balances */

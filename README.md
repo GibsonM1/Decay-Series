@@ -91,6 +91,12 @@ Everywhere an equation is checked (Learn example, Practice, Build the chain, New
 
 Each blank has helper text under it ("alpha or beta"; "English element name-mass number, like hydrogen-2"). Feedback is specific: atomic number used instead of mass number, missing name or number, wrong element. A one-letter typo is fixed automatically ("We fixed a small spelling mistake"), and two letters off gets a spelling nudge. After 3 misses, the answer is shown, and the summary reports how many answers were shown.
 
+## Tapping and phones
+
+Tapping a card puts it straight into its box (each card fits only one box), so students don't need to drag. Dragging still works, and so does the keyboard (Enter on a card).
+
+Chromebooks get the two-column layout. On phones, or any screen narrower than 1000px or shorter than 520px, Build the chain stacks: a short "Your chain so far" on top, then the equation, then the cards in a dock pinned to the bottom of the screen. During the sentence step, the dock shows the element-name strip instead. After both boxes are filled, the page scrolls just enough to keep Check above the dock. On narrow phones, each balance row's label moves above its numbers, half-lives are hidden from the chain list, and any equation that still doesn't fit scales down instead of running off the screen.
+
 ## Card shapes
 
 The α card is a pink pentagon pointing down, because both numbers go down. The β card is the same pentagon turned 180° (light blue, pointing up), because the atomic number goes up. Colors follow the class code: pink/red = positive (α is +2), blue = negative (β is −1), green = correct. Card-related highlights (selected card, drop slot, parent card) are neutral gray so blue only ever means β. The slot for the decay particle is a plain rounded rectangle, so it doesn't hint which one belongs. The map uses the same idea: mass number runs across the bottom and atomic number up the side, so α arrows run down-left and β arrows run straight up.
@@ -119,4 +125,4 @@ Greek letters come from a small embedded font in the shared theme (Noto Serif It
 - `make-form.gs`: the Form builder (runs in Google Apps Script, not on the page).
 - `theme-v1.css`: a fallback copy of the shared theme. The page loads `gibsonm1.github.io/theme/theme-v1.css` first and uses this copy only if that fails. Create the `theme` repo once and every class interactive can share it.
 
-Version: Oct 12, 2026, update 10
+Version: Oct 12, 2026, update 11
