@@ -119,4 +119,4 @@ Greek letters come from a small embedded font in the shared theme (Noto Serif It
 - `make-form.gs`: the Form builder (runs in Google Apps Script, not on the page).
 - `theme-v1.css`: a fallback copy of the shared theme. The page loads `gibsonm1.github.io/theme/theme-v1.css` first and uses this copy only if that fails. Create the `theme` repo once and every class interactive can share it.
 
-Version: Oct 12, 2026, update 9
+Version: Oct 12, 2026, update 10

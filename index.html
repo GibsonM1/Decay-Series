@@ -77,7 +77,7 @@ button.pcard{cursor:grab;touch-action:none}
 .pcard .nuc{position:absolute;left:0;right:0;justify-content:center;font-size:28px}
 .pcard.a{color:var(--alpha-ink)} .pcard.b{color:var(--beta-ink)}
 .pcard.a .nuc{top:28px} .pcard.a .gk{top:71px;font-size:19px}
-.pcard.b .gk{top:8px;font-size:17px} .pcard.b .nuc{top:28px}
+.pcard.b .nuc{top:28px} .pcard.b .gk{top:71px;font-size:19px}
 [data-card][aria-pressed="true"]{outline:4px solid var(--md-sys-color-on-surface);outline-offset:3px}
 .ghost{position:fixed;left:0;top:0;z-index:3000;pointer-events:none;box-shadow:0 8px 20px rgba(0,0,0,.3);border-radius:12px}
 .pcard.ghost{box-shadow:none;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35))}
@@ -313,6 +313,7 @@ svg.links{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
 svg.links path{fill:none;stroke:var(--md-sys-color-outline);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .info{display:inline-grid;place-items:center;width:22px;height:22px;margin-inline-start:4px;border-radius:50%;border:1.5px solid currentColor;background:transparent;color:var(--md-sys-color-on-surface-variant);font:700 13px/1 Georgia,serif;font-style:italic;cursor:pointer;vertical-align:middle;position:relative}
 .info::after{content:"";position:absolute;inset:-12px}
+.exn.ring-fade::after{opacity:0;transition:opacity .8s ease-out}
 </style>
 </head>
 <body>
@@ -854,7 +855,7 @@ ar: {
 };
 
 "use strict";
-const VERSION = "Oct 12, 2026, update 9";
+const VERSION = "Oct 12, 2026, update 10";
 const KEY = "decay238-v2";
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -1107,7 +1108,7 @@ async function playExample() {
   const run = ++exRun, box = $("#exGrid"); if (!box) return;
   const still = () => run === exRun && document.body.contains(box), reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? Math.min(ms, 120) : ms));
-  $$(".exn", box).forEach((e) => e.classList.remove("ring-on")); $$("[data-dst]", box).forEach((e) => e.classList.add("hide"));
+  $$(".exn", box).forEach((e) => e.classList.remove("ring-on", "ring-fade")); $$("[data-dst]", box).forEach((e) => e.classList.add("hide"));
   $$("[data-line]", box).forEach((e) => { e.classList.remove("ok"); e.classList.add("pending"); });
   $("#replayEx").hidden = true;
   await wait(500);
@@ -1125,7 +1126,12 @@ async function playExample() {
     if (!still()) return;
     $$(`[data-line="${f}"]`, box).forEach((e) => { e.classList.remove("pending"); e.classList.add("ok"); }); beep("ok"); await wait(600);
   }
-  if (still()) $("#replayEx").hidden = false;
+  if (!still()) return;
+  $("#replayEx").hidden = false;
+  // the rings fade away once both rows balance
+  await wait(700); if (!still()) return;
+  $$(".exn", box).forEach((e) => e.classList.add("ring-fade"));
+  await wait(900); if (still()) $$(".exn", box).forEach((e) => e.classList.remove("ring-on", "ring-fade"));
 }
 const LEARN = ["lw", "lr", "le", "lq"];
 function learnBody(i) {
