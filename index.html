@@ -11,11 +11,12 @@
 <link rel="stylesheet" href="https://gibsonm1.github.io/theme/theme-v1.css" onerror="this.onerror=null;this.href='theme-v1.css'">
 <style>
 :root{
-  --alpha-fill:#ff8fc4; --alpha-ink:#3b0020; --alpha-line:#b0105f;
-  --beta-fill:#86e89a;  --beta-ink:#002810;  --beta-line:#147a35;
+  /* class color code: red/pink = positive (α, +2), blue = negative (β, −1); green stays for "correct" */
+  --alpha-fill:#f9c6d3; --alpha-ink:#5c0f2b; --alpha-line:#c2185b;
+  --beta-fill:#b9dcf7;  --beta-ink:#0b3a5c;  --beta-line:#1e6fb0;
   --bar-h:64px;
 }
-@media (prefers-color-scheme:dark){ :root{ --alpha-line:#ff8fc4; --beta-line:#86e89a; } }
+@media (prefers-color-scheme:dark){ :root{ --alpha-line:#f48fb1; --beta-line:#8ec9f2; } }
 body{overflow-x:hidden}
 html[lang="ar"] body{font-family:"Gibson Greek","Noto Sans Arabic",var(--md-ref-typeface)}
 html[lang="zh-Hant"] body{font-family:"Gibson Greek","Atkinson Hyperlegible","Noto Sans TC",var(--md-ref-typeface)}
@@ -77,7 +78,7 @@ button.pcard{cursor:grab;touch-action:none}
 .pcard.a{color:var(--alpha-ink)} .pcard.b{color:var(--beta-ink)}
 .pcard.a .nuc{top:15px} .pcard.a .gk{top:62px}
 .pcard.b .gk{top:24px} .pcard.b .nuc{bottom:15px}
-[data-card][aria-pressed="true"]{outline:4px solid var(--md-sys-color-primary);outline-offset:3px}
+[data-card][aria-pressed="true"]{outline:4px solid var(--md-sys-color-on-surface);outline-offset:3px}
 .ghost{position:fixed;left:0;top:0;z-index:3000;pointer-events:none;box-shadow:0 8px 20px rgba(0,0,0,.3);border-radius:12px}
 .pcard.ghost{box-shadow:none;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35))}
 .dragsrc{opacity:.35}
@@ -118,7 +119,7 @@ fieldset.q legend{font:var(--md-sys-typescale-title-medium);padding:0 4px}
 .eq .op{font-size:30px;font-weight:700;color:var(--md-sys-color-on-surface-variant)}
 .cell{display:flex;flex-direction:column;align-items:center;gap:4px}
 .cell .lbl{font-size:13px;color:var(--md-sys-color-on-surface-variant);text-align:center;max-width:150px;line-height:1.25}
-.parent .iso-card{border-color:var(--md-sys-color-primary)}
+.parent .iso-card{border:3px solid var(--md-sys-color-on-surface)}
 .tally{margin-top:10px;display:grid;gap:6px}
 .tline{display:grid;grid-template-columns:minmax(150px,auto) 1fr auto;gap:10px;align-items:center;padding:6px 10px;border-radius:var(--md-sys-shape-corner-small);font-variant-numeric:tabular-nums}
 .tline.ok{background:var(--app-color-success-container);color:var(--app-color-on-success-container)}
@@ -151,8 +152,8 @@ fieldset.q legend{font:var(--md-sys-typescale-title-medium);padding:0 4px}
 .slot.p{width:96px;height:116px;border-radius:var(--md-sys-shape-corner-large)}
 .slot.d{width:112px;height:92px;border-radius:var(--md-sys-shape-corner-medium)}
 .slot .ph{font-size:13px;line-height:1.2;text-align:center;padding:6px}
-.slot.ready{border-color:var(--md-sys-color-primary);background:color-mix(in srgb,var(--md-sys-color-primary-container) 55%,transparent)}
-.slot.over{border-style:solid;border-color:var(--md-sys-color-primary);background:var(--md-sys-color-primary-container);box-shadow:0 0 0 4px color-mix(in srgb,var(--md-sys-color-primary) 30%,transparent)}
+.slot.ready{border-color:var(--md-sys-color-on-surface);border-width:3px;background:var(--md-sys-color-surface-container-high)}
+.slot.over{border-style:solid;border-width:3px;border-color:var(--md-sys-color-on-surface);background:var(--md-sys-color-surface-container-highest);box-shadow:0 0 0 4px color-mix(in srgb,var(--md-sys-color-on-surface) 25%,transparent)}
 .slot.filled{border-style:solid;border-color:transparent;cursor:default}
 .rm{position:absolute;top:-10px;inset-inline-end:-10px;width:30px;height:30px;border-radius:50%;border:2px solid var(--md-sys-color-on-surface);background:var(--md-sys-color-surface-container-lowest);color:var(--md-sys-color-on-surface);display:grid;place-items:center;font-size:18px;line-height:1;padding:0;cursor:pointer;z-index:2}
 .rm::after{content:"";position:absolute;inset:-9px}
@@ -177,7 +178,7 @@ fieldset.q legend{font:var(--md-sys-typescale-title-medium);padding:0 4px}
 .said{margin:12px 0 0;padding:8px 10px;border-radius:var(--md-sys-shape-corner-small);background:var(--app-color-success-container);color:var(--app-color-on-success-container)}
 
 /* missing card */
-.mcard{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:8px;border:2px dashed var(--md-sys-color-primary);border-radius:var(--md-sys-shape-corner-medium);background:var(--md-sys-color-surface-container-lowest)}
+.mcard{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:8px;border:2px dashed var(--md-sys-color-on-surface-variant);border-radius:var(--md-sys-shape-corner-medium);background:var(--md-sys-color-surface-container-lowest)}
 .mcard .pre{display:flex;flex-direction:column;gap:4px}
 .mcard input{width:84px;min-height:48px;text-align:center;font-size:20px;font-weight:700;padding:4px}
 .mcard input.s{width:76px;min-height:100px;font-size:34px}
@@ -203,7 +204,7 @@ fieldset.q legend{font:var(--md-sys-typescale-title-medium);padding:0 4px}
 .chart .mk.a{fill:var(--alpha-fill);stroke:var(--alpha-ink);stroke-width:1.5}
 .chart .mk.b{fill:var(--beta-fill);stroke:var(--beta-ink);stroke-width:1.5}
 .chart .node circle{fill:var(--md-sys-color-surface-container-lowest);stroke:var(--md-sys-color-on-surface);stroke-width:2}
-.chart .node.end circle{fill:var(--md-sys-color-primary-container);stroke:var(--md-sys-color-primary);stroke-width:3}
+.chart .node.end circle{fill:var(--md-sys-color-surface-container-highest);stroke:var(--md-sys-color-on-surface);stroke-width:3.5}
 .chart .node text{font-size:11px;font-weight:700;fill:var(--md-sys-color-on-surface);text-anchor:middle;dominant-baseline:central}
 .chart.anim .seg{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .35s ease-out forwards}
 .chart.anim .ah,.chart.anim .mk,.chart.anim .node{opacity:0;animation:pop .25s ease-out forwards}
@@ -343,7 +344,7 @@ en: {
   r3: "<b>[[beta decay|Beta (β) decay]]:</b> inside the nucleus, a [[neutron]] turns into a [[proton]] and an [[electron]]. The nucleus shoots the electron out. This electron is a [[beta particle]], written {e}.",
   r4: "Every nuclear equation must be [[balanced]]. The top numbers ([[mass number|mass numbers]]) before the arrow must equal the top numbers after the arrow added together. The bottom numbers ([[atomic number|atomic numbers]]) work the same way.",
   exH: "Example: the first decay of your chain", exNote: "Atomic number 90 is thorium (Th), so the [[daughter isotope]] is thorium-234.",
-  cardsH: "Your cards", legA: "Pink, points down: α particle", legB: "Green, points up: β particle",
+  cardsH: "Your cards", legA: "Pink, points down: α particle", legB: "Blue, points up: β particle",
   qcH: "3. Quick check", qcSub: "Answer all three, then check.", q: "Question {n}", checkAnswers: "Check answers", next: "Next: {s}",
   choose: "Choose an answer.", correct: "✓ Correct.", notYet: "✗ Not yet. Try again.", unlocked: "All correct. {s} is unlocked.",
   massTop: "[[mass number|Mass numbers]] (top)", atomBot: "[[atomic number|Atomic numbers]] (bottom)", bal: "✓ balanced", notBal: "✗ not balanced",
@@ -390,7 +391,7 @@ en: {
   boxP: "This box is for the decay particle: α or β.", boxD: "This box is for an isotope card.", chooseFirst: "First choose a card.",
   selected: "Selected: {x}. Now tap a box.", cancel: "Cancel", chainDone: "Chain complete! Lead-206 is stable.",
   takeOutP: "Take out the particle card", takeOutD: "Take out the isotope card", boxPAria: "Decay particle box", boxDAria: "Daughter isotope box", empty: "empty",
-  mapH: "Your chain on a map", replay: "Replay", mapSub: "Each arrow is one decay. Pink shape pointing down = α decay. Green shape pointing up = β decay.",
+  mapH: "Your chain on a map", replay: "Replay", mapSub: "Each arrow is one decay. Pink shape pointing down = α decay. Blue shape pointing up = β decay.",
   axZ: "Atomic number (protons)", axA: "Mass number", chartAria: "Map of the uranium-238 decay chain. Mass number across the bottom, atomic number up the side. Each arrow is one decay.",
   patH: "Find the patterns",
   p1: "Every time there is [[alpha decay]], the [[mass number]] {s1} and the [[atomic number]] {s2}.",
@@ -443,7 +444,7 @@ es: {
   r3: "<b>[[beta decay|Beta (β) decay]]:</b> dentro del núcleo, un [[neutron]] se convierte en un [[proton]] y un [[electron]]. El núcleo lanza el electrón hacia afuera. Este electrón es una [[beta particle]], que se escribe {e}.",
   r4: "Toda ecuación nuclear debe estar [[balanced]]. Los números de arriba ([[mass number|mass numbers]]) antes de la flecha deben ser iguales a la suma de los números de arriba después de la flecha. Los números de abajo ([[atomic number|atomic numbers]]) funcionan igual.",
   exH: "Ejemplo: la primera desintegración de tu cadena", exNote: "El número atómico 90 es el torio (thorium, Th), así que el [[daughter isotope]] es thorium-234.",
-  cardsH: "Tus tarjetas", legA: "Rosada, apunta hacia abajo: partícula α", legB: "Verde, apunta hacia arriba: partícula β",
+  cardsH: "Tus tarjetas", legA: "Rosada, apunta hacia abajo: partícula α", legB: "Azul, apunta hacia arriba: partícula β",
   qcH: "3. Comprobación rápida", qcSub: "Responde las tres y luego comprueba.", q: "Pregunta {n}", checkAnswers: "Comprobar respuestas", next: "Siguiente: {s}",
   choose: "Elige una respuesta.", correct: "✓ Correcto.", notYet: "✗ Todavía no. Inténtalo de nuevo.", unlocked: "¡Todo correcto! «{s}» está desbloqueado.",
   massTop: "[[mass number|Mass numbers]] (arriba)", atomBot: "[[atomic number|Atomic numbers]] (abajo)", bal: "✓ equilibrado", notBal: "✗ no equilibrado",
@@ -491,7 +492,7 @@ es: {
   boxP: "Esta casilla es para la partícula de desintegración: α o β.", boxD: "Esta casilla es para una tarjeta de isótopo.", chooseFirst: "Primero elige una tarjeta.",
   selected: "Seleccionada: {x}. Ahora toca una casilla.", cancel: "Cancelar", chainDone: "¡Cadena completa! El plomo-206 es estable.",
   takeOutP: "Quitar la tarjeta de partícula", takeOutD: "Quitar la tarjeta de isótopo", boxPAria: "Casilla de la partícula de desintegración", boxDAria: "Casilla del isótopo hijo", empty: "vacía",
-  mapH: "Tu cadena en un mapa", replay: "Repetir", mapSub: "Cada flecha es una desintegración. Figura rosada hacia abajo = desintegración α. Figura verde hacia arriba = desintegración β.",
+  mapH: "Tu cadena en un mapa", replay: "Repetir", mapSub: "Cada flecha es una desintegración. Figura rosada hacia abajo = desintegración α. Figura azul hacia arriba = desintegración β.",
   axZ: "Número atómico (protones)", axA: "Número másico", chartAria: "Mapa de la cadena de desintegración del uranio-238. Número másico abajo, número atómico al costado. Cada flecha es una desintegración.",
   patH: "Encuentra los patrones",
   p1: "Cada vez que hay [[alpha decay]], el [[mass number]] {s1} y el [[atomic number]] {s2}.",
@@ -544,7 +545,7 @@ zh: {
   r3: "<b>[[beta decay|Beta (β) decay]]：</b>在原子核裡，一個 [[neutron]] 變成一個 [[proton]] 和一個 [[electron]]。原子核把電子射出去。這個電子就是 [[beta particle]]，寫成 {e}。",
   r4: "每個核反應方程式都必須 [[balanced]]。箭頭前面上方的數字（[[mass number|mass numbers]]）必須等於箭頭後面上方數字的總和。下方的數字（[[atomic number|atomic numbers]]）也一樣。",
   exH: "例子：你的衰變鏈的第一次衰變", exNote: "原子序 90 是釷（thorium, Th），所以 [[daughter isotope]] 是 thorium-234。",
-  cardsH: "你的卡片", legA: "粉紅色、尖端朝下：α粒子", legB: "綠色、尖端朝上：β粒子",
+  cardsH: "你的卡片", legA: "粉紅色、尖端朝下：α粒子", legB: "淺藍色、尖端朝上：β粒子",
   qcH: "3. 快速檢查", qcSub: "三題都回答後再檢查。", q: "第 {n} 題", checkAnswers: "檢查答案", next: "下一步：{s}",
   choose: "請選一個答案。", correct: "✓ 正確。", notYet: "✗ 還不對，再試一次。", unlocked: "全部正確！「{s}」已解鎖。",
   massTop: "[[mass number|Mass numbers]]（上方）", atomBot: "[[atomic number|Atomic numbers]]（下方）", bal: "✓ 平衡", notBal: "✗ 不平衡",
@@ -592,7 +593,7 @@ zh: {
   boxP: "這個方格是放衰變粒子的：α 或 β。", boxD: "這個方格是放同位素卡片的。", chooseFirst: "請先選一張卡片。",
   selected: "已選擇：{x}。現在點一個方格。", cancel: "取消", chainDone: "衰變鏈完成！鉛-206 是穩定的。",
   takeOutP: "拿出粒子卡片", takeOutD: "拿出同位素卡片", boxPAria: "衰變粒子方格", boxDAria: "子同位素方格", empty: "空的",
-  mapH: "你的衰變鏈地圖", replay: "重播", mapSub: "每個箭頭代表一次衰變。粉紅色朝下的圖形 = α衰變。綠色朝上的圖形 = β衰變。",
+  mapH: "你的衰變鏈地圖", replay: "重播", mapSub: "每個箭頭代表一次衰變。粉紅色朝下的圖形 = α衰變。淺藍色朝上的圖形 = β衰變。",
   axZ: "原子序（質子數）", axA: "質量數", chartAria: "鈾-238 衰變鏈的地圖。橫軸是質量數，縱軸是原子序。每個箭頭代表一次衰變。",
   patH: "找出規律",
   p1: "每次發生 [[alpha decay]]，[[mass number]] {s1}，[[atomic number]] {s2}。",
@@ -645,7 +646,7 @@ ar: {
   r3: "<b>[[beta decay|Beta (β) decay]]:</b> داخل النواة، يتحول [[neutron]] إلى [[proton]] و [[electron]]. تطلق النواة الإلكترون إلى الخارج. هذا الإلكترون هو [[beta particle]]، ويُكتب {e}.",
   r4: "يجب أن تكون كل معادلة نووية [[balanced]]. الأرقام العلوية ([[mass number|mass numbers]]) قبل السهم يجب أن تساوي مجموع الأرقام العلوية بعد السهم. والأرقام السفلية ([[atomic number|atomic numbers]]) تعمل بالطريقة نفسها.",
   exH: "مثال: أول اضمحلال في سلسلتك", exNote: "العدد الذري 90 هو الثوريوم (thorium, Th)، لذلك [[daughter isotope]] هو thorium-234.",
-  cardsH: "بطاقاتك", legA: "وردي، يشير إلى الأسفل: جسيم α", legB: "أخضر، يشير إلى الأعلى: جسيم β",
+  cardsH: "بطاقاتك", legA: "وردي، يشير إلى الأسفل: جسيم α", legB: "أزرق، يشير إلى الأعلى: جسيم β",
   qcH: "3. تحقق سريع", qcSub: "أجب عن الأسئلة الثلاثة، ثم تحقق.", q: "السؤال {n}", checkAnswers: "تحقق من الإجابات", next: "التالي: {s}",
   choose: "اختر إجابة.", correct: "✓ صحيح.", notYet: "✗ ليس بعد. حاول مرة أخرى.", unlocked: "كلها صحيحة. تم فتح «{s}».",
   massTop: "[[mass number|Mass numbers]] (الأعلى)", atomBot: "[[atomic number|Atomic numbers]] (الأسفل)", bal: "✓ متوازنة", notBal: "✗ غير متوازنة",
@@ -693,7 +694,7 @@ ar: {
   boxP: "هذا المربع لجسيم الاضمحلال: α أو β.", boxD: "هذا المربع لبطاقة نظير.", chooseFirst: "اختر بطاقة أولًا.",
   selected: "المحدد: {x}. الآن اضغط على مربع.", cancel: "إلغاء", chainDone: "اكتملت السلسلة! الرصاص-206 مستقر.",
   takeOutP: "أخرج بطاقة الجسيم", takeOutD: "أخرج بطاقة النظير", boxPAria: "مربع جسيم الاضمحلال", boxDAria: "مربع النظير الابن", empty: "فارغ",
-  mapH: "سلسلتك على خريطة", replay: "أعد التشغيل", mapSub: "كل سهم هو اضمحلال واحد. الشكل الوردي المتجه إلى الأسفل = اضمحلال α. الشكل الأخضر المتجه إلى الأعلى = اضمحلال β.",
+  mapH: "سلسلتك على خريطة", replay: "أعد التشغيل", mapSub: "كل سهم هو اضمحلال واحد. الشكل الوردي المتجه إلى الأسفل = اضمحلال α. الشكل الأزرق المتجه إلى الأعلى = اضمحلال β.",
   axZ: "العدد الذري (البروتونات)", axA: "العدد الكتلي", chartAria: "خريطة سلسلة اضمحلال اليورانيوم-238. العدد الكتلي على المحور الأفقي، والعدد الذري على المحور الرأسي. كل سهم هو اضمحلال واحد.",
   patH: "اكتشف الأنماط",
   p1: "في كل مرة يحدث فيها [[alpha decay]]، فإن [[mass number]] {s1} و [[atomic number]] {s2}.",
@@ -731,7 +732,7 @@ ar: {
 };
 
 "use strict";
-const VERSION = "Oct 12, 2026, update 4";
+const VERSION = "Oct 12, 2026, update 5";
 const KEY = "decay238-v2";
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];

@@ -81,7 +81,7 @@ The card order is shuffled with Fisher–Yates. An 8,000-student simulation put 
 
 ## Card shapes
 
-The α card is a pink pentagon pointing down, because both numbers go down. The β card is the same pentagon turned 180° (green, pointing up), because the atomic number goes up. The slot for the decay particle is a plain rounded rectangle, so it doesn't hint which one belongs. The map uses the same idea: mass number runs across the bottom and atomic number up the side, so α arrows run down-left and β arrows run straight up.
+The α card is a pink pentagon pointing down, because both numbers go down. The β card is the same pentagon turned 180° (light blue, pointing up), because the atomic number goes up. Colors follow the class code: pink/red = positive (α is +2), blue = negative (β is −1), green = correct. Card-related highlights (selected card, drop slot, parent card) are neutral gray so blue only ever means β. The slot for the decay particle is a plain rounded rectangle, so it doesn't hint which one belongs. The map uses the same idea: mass number runs across the bottom and atomic number up the side, so α arrows run down-left and β arrows run straight up.
 
 Greek letters come from a small embedded font in the shared theme (Noto Serif Italic, Greek letters only, OFL license). Atkinson Hyperlegible has no Greek, so before this, each device substituted its own font and α often looked like an "a".
 
@@ -106,4 +106,4 @@ Greek letters come from a small embedded font in the shared theme (Noto Serif It
 - `make-form.gs`: the Form builder (runs in Google Apps Script, not on the page).
 - `theme-v1.css`: a fallback copy of the shared theme. The page loads `gibsonm1.github.io/theme/theme-v1.css` first and uses this copy only if that fails. Create the `theme` repo once and every class interactive can share it.
 
-Version: Oct 12, 2026, update 4
+Version: Oct 12, 2026, update 5
