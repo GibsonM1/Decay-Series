@@ -87,6 +87,7 @@ Greek letters come from a small embedded font in the shared theme (Noto Serif It
 
 ## Language and discourse notes
 
+- During the sentence step, an Element names box (atomic numbers 82–92, English names) replaces the card tray, so students can spell names like protactinium. No tile is highlighted; students still find the atomic number. A near-miss spelling (up to 2 letters off) gets "check the spelling" feedback instead of the generic hint.
 - The interface, reading, questions, and feedback are translated. The sentence frame ("Parent isotope ___ undergoes ___ decay to form daughter isotope ___.") must be written in English. If a student types *alfa*, *ألفا*, or *阿爾法*, the feedback asks for the English word.
 - Translations are my drafts. Have a native speaker spot-check the Arabic and Chinese before wide use.
 - The sentence frame appears on 8 decays (2 practice + 6 in the chain), not every one, so it stays a language routine instead of copy work.
@@ -106,4 +107,4 @@ Greek letters come from a small embedded font in the shared theme (Noto Serif It
 - `make-form.gs`: the Form builder (runs in Google Apps Script, not on the page).
 - `theme-v1.css`: a fallback copy of the shared theme. The page loads `gibsonm1.github.io/theme/theme-v1.css` first and uses this copy only if that fails. Create the `theme` repo once and every class interactive can share it.
 
-Version: Oct 12, 2026, update 5
+Version: Oct 12, 2026, update 6

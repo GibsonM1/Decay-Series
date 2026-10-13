@@ -247,6 +247,12 @@ fieldset.q legend{font:var(--md-sys-typescale-title-medium);padding:0 4px}
 .slot.p .ph{font-size:15px}
 .nw{white-space:nowrap}
 .chart{max-height:calc(100dvh - var(--bar-h) - 140px)}
+
+.elems{flex:none;padding:12px 16px;background:var(--md-sys-color-surface-container-low)}
+.elems h3{margin-bottom:8px}
+.elemgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px;direction:ltr}
+.elems .pt{width:auto;padding:4px}
+.elems .pt small{font-size:14px}
 </style>
 </head>
 <body>
@@ -372,7 +378,7 @@ en: {
   stripAria: "Part of the periodic table, atomic numbers 86 to 96",
   sayH: "Write it, then say it", sayInst: "Write the sentence in English. Then say it out loud.", frameGloss: "",
   checkSent: "Check sentence", sFill: "Fill in both blanks.", sType: "Which particle came out? Write alpha or beta.", sEnglish: "Write it in English: {w}.",
-  sDaughter: "Write the daughter isotope's English name and mass number, like {ex}.", sMass: "Check the mass number.",
+  sDaughter: "Write the daughter isotope's English name and mass number, like {ex}.", elemH: "Element names", sSpell: "Almost! Check the spelling of the element name in “{box}”.", sMass: "Check the mass number.",
   sOk: "✓ Now say the whole sentence out loud.", hear: "Hear it", said: "I said it out loud",
   buildSide: "Your chain so far", noneYet: "Your balanced decays will show up here.", decayQ: "Decay {n}: what does {x} turn into?",
   buildInst: "Drag a card into a box, or tap a card and then tap a box. Then press Check.",
@@ -473,7 +479,7 @@ es: {
   sayH: "Escríbelo y dilo", sayInst: "Escribe la oración en inglés. Luego dila en voz alta.",
   frameGloss: "En español: El isótopo padre {p} experimenta una desintegración ___ para formar el isótopo hijo ___.",
   checkSent: "Comprobar oración", sFill: "Completa los dos espacios.", sType: "¿Qué partícula salió? Escribe alpha o beta.", sEnglish: "Escríbelo en inglés: {w}.",
-  sDaughter: "Escribe el nombre en inglés y el número másico del isótopo hijo, como {ex}.", sMass: "Revisa el número másico.",
+  sDaughter: "Escribe el nombre en inglés y el número másico del isótopo hijo, como {ex}.", elemH: "Nombres de los elementos (en inglés)", sSpell: "¡Casi! Revisa la ortografía del nombre del elemento en «{box}».", sMass: "Revisa el número másico.",
   sOk: "✓ Ahora di la oración completa en voz alta.", hear: "Escúchala", said: "Ya la dije en voz alta",
   buildSide: "Tu cadena hasta ahora", noneYet: "Aquí aparecerán tus desintegraciones equilibradas.", decayQ: "Desintegración {n}: ¿en qué se convierte {x}?",
   buildInst: "Arrastra una tarjeta a una casilla, o toca una tarjeta y luego toca una casilla. Después presiona Comprobar.",
@@ -574,7 +580,7 @@ zh: {
   sayH: "寫出來，再說出來", sayInst: "用英文寫出句子，然後大聲說出來。",
   frameGloss: "中文意思：母同位素 {p} 經歷 ___ 衰變，形成子同位素 ___。",
   checkSent: "檢查句子", sFill: "請填寫兩個空格。", sType: "射出的是哪一種粒子？請寫 alpha 或 beta。", sEnglish: "請用英文寫：{w}。",
-  sDaughter: "請寫出子同位素的英文名稱和質量數，例如 {ex}。", sMass: "請檢查質量數。",
+  sDaughter: "請寫出子同位素的英文名稱和質量數，例如 {ex}。", elemH: "元素名稱（英文）", sSpell: "差一點！請對照「{box}」檢查元素名稱的拼法。", sMass: "請檢查質量數。",
   sOk: "✓ 現在大聲說出整個句子。", hear: "聽一聽", said: "我已經大聲說了",
   buildSide: "目前的衰變鏈", noneYet: "平衡的衰變會出現在這裡。", decayQ: "第 {n} 次衰變：{x} 會變成什麼？",
   buildInst: "把卡片拖到方格裡，或先點一張卡片，再點一個方格。然後按「檢查」。",
@@ -675,7 +681,7 @@ ar: {
   sayH: "اكتبها، ثم قلها", sayInst: "اكتب الجملة بالإنجليزية. ثم قلها بصوت عالٍ.",
   frameGloss: "بالعربية: النظير الأم {p} يمر باضمحلال ___ ليكوّن النظير الابن ___.",
   checkSent: "تحقق من الجملة", sFill: "املأ الفراغين.", sType: "أي جسيم خرج؟ اكتب alpha أو beta.", sEnglish: "اكتبها بالإنجليزية: {w}.",
-  sDaughter: "اكتب الاسم الإنجليزي للنظير الابن مع عدده الكتلي، مثل {ex}.", sMass: "تحقق من العدد الكتلي.",
+  sDaughter: "اكتب الاسم الإنجليزي للنظير الابن مع عدده الكتلي، مثل {ex}.", elemH: "أسماء العناصر (بالإنجليزية)", sSpell: "اقتربت! تحقق من تهجئة اسم العنصر في «{box}».", sMass: "تحقق من العدد الكتلي.",
   sOk: "✓ الآن قل الجملة كاملة بصوت عالٍ.", hear: "استمع إليها", said: "قلتها بصوت عالٍ",
   buildSide: "سلسلتك حتى الآن", noneYet: "ستظهر هنا الاضمحلالات المتوازنة.", decayQ: "الاضمحلال {n}: إلى ماذا يتحول {x}؟",
   buildInst: "اسحب بطاقة إلى مربع، أو اضغط على بطاقة ثم اضغط على مربع. ثم اضغط «تحقق».",
@@ -732,7 +738,7 @@ ar: {
 };
 
 "use strict";
-const VERSION = "Oct 12, 2026, update 5";
+const VERSION = "Oct 12, 2026, update 6";
 const KEY = "decay238-v2";
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -1027,6 +1033,8 @@ function sentenceUI(key) {
     : `<button class="md-btn filled" type="button" data-act="checkSent" data-key="${key}">${t("checkSent")}</button>`;
   return `<div class="sentence"><h3>${t("sayH")}</h3><p class="muted">${t("sayInst")}</p>${frame}${gloss}${fb}<div class="actions">${act}</div></div>`;
 }
+function lev(s, u) { const d = Array.from({ length: s.length + 1 }, (_, i) => [i]); for (let j = 1; j <= u.length; j++) d[0][j] = j;
+  for (let i = 1; i <= s.length; i++) for (let j = 1; j <= u.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (s[i - 1] === u[j - 1] ? 0 : 1)); return d[s.length][u.length]; }
 const norm = (x) => String(x || "").toLowerCase().normalize("NFKC").replace(/[\s\-–—_.]/g, "");
 const FOREIGN = { alpha: ["alfa", "阿爾法", "阿尔法", "ألفا", "الفا"], beta: ["貝塔", "贝塔", "بيتا"] };
 function checkSent(key) {
@@ -1036,7 +1044,10 @@ function checkSent(key) {
   const ty = norm(s.t).replace(/decay$/, ""), tyOk = ty === want || ty === P[c.ty].gk;
   const dv = norm(s.d).replace(/m$/, ""), dOk = dv === norm(full(c.d)) || dv === norm(label(c.d));
   if (!tyOk) s.fb = Object.values(FOREIGN).flat().includes(ty) ? { k: "sEnglish", v: { w: FOREIGN.alpha.includes(ty) ? "alpha" : "beta" } } : { k: "sType" };
-  else if (!dOk) s.fb = /\d/.test(dv) && !dv.endsWith(String(c.d.A)) ? { k: "sMass" } : { k: "sDaughter", v: { ex: `<span lang="en">${full(c.par)}</span>` } };
+  else if (!dOk) {
+    const mm = /^([a-z]+)(\d*)$/.exec(dv), near = mm && mm[2] === String(c.d.A) && lev(mm[1], c.d.name) <= 2;
+    s.fb = near ? { k: "sSpell", v: { box: t("elemH") } } : /\d/.test(dv) && !dv.endsWith(String(c.d.A)) ? { k: "sMass" } : { k: "sDaughter", v: { ex: `<span lang="en">${full(c.par)}</span>` } };
+  }
   else s.fb = { k: "sOk" };
   s.ok = tyOk && dOk; if (s.first === null) s.first = s.ok;
   beep(s.ok ? "ok" : "no"); save(); render();
@@ -1081,7 +1092,7 @@ function renderBuild(app) {
       const inner = filled ? (k === "p" ? pCard(filled, "", "div") : isoCard(C(filled), "", "div")) : `<span class="ph">${k === "p" ? t("slotP") : "?"}</span>`;
       return `<div class="slotwrap"><div ${lock ? "" : 'role="button" tabindex="0"'} class="slot ${k} ${filled ? "filled" : ""}" data-slot="${k}" aria-label="${esc(lab)}: ${filled ? esc(k === "p" ? P[filled].name : full(C(filled))) : t("empty")}">${inner}</div>${filled && !lock ? `<button type="button" class="rm" data-act="takeOut" data-slot="${k}" aria-label="${esc(k === "p" ? t("takeOutP") : t("takeOutD"))}">×</button>` : ""}</div>`;
     };
-    tray = lock ? "" : `<section class="md-card tray" id="tray" aria-label="${esc(t("isoH"))}">
+    tray = lock ? (SAY.has(cur) ? elemBox() : "") : `<section class="md-card tray" id="tray" aria-label="${esc(t("isoH"))}">
         <div><h3>${kw("decay particle", "Decay particles")}</h3><p class="sub">${t("pileSub")}</p><div class="piles">${pCard("a")}${pCard("b")}</div></div>
         <div><h3>${t("isoH")}</h3><p class="sub">${t("isoSub")}</p><div class="isorow">${r.cards.filter((id) => id !== r.d).map((id) => isoCard(C(id))).join("")}</div></div></section>`;
     const showHint = !lock && r.wrong >= CONFIG.hintAfterWrongChecks && r.hint < 3;
@@ -1104,6 +1115,8 @@ function renderBuild(app) {
       <div class="chain-list" id="chainList">${done ? `<ol class="drows">${done}</ol>` : `<p class="empty-chain">${t("noneYet")}</p>`}</div></section></div>${work}</div>`;
   const cl = $("#chainList"); if (cl) cl.scrollTop = cl.scrollHeight;
 }
+// element names for spelling the sentence (no tile is highlighted: students still find the atomic number)
+const elemBox = () => `<section class="md-card elems" aria-label="${esc(t("elemH"))}"><h3>${t("elemH")}</h3><div class="elemgrid">${[82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92].map((z) => `<div class="pt"><span class="z">${z}</span><b>${EL[z][0]}</b><small lang="en">${EL[z][1]}</small></div>`).join("")}</div></section>`;
 function accepts(slot, id) { return slot === "p" ? id === "a" || id === "b" : !(id === "a" || id === "b"); }
 function place(slot, id) {
   const cur = curRow(); if (cur < 0 || state.rows[cur].bal) return;
