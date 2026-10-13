@@ -74,10 +74,10 @@ button.pcard{cursor:grab;touch-action:none}
 .pcard.a svg polygon{fill:var(--alpha-fill);stroke:var(--alpha-ink);stroke-width:2.5}
 .pcard.b svg polygon{fill:var(--beta-fill);stroke:var(--beta-ink);stroke-width:2.5}
 .pcard .gk{position:absolute;left:0;right:0;text-align:center;font-weight:700;font-size:21px;line-height:1}
-.pcard .nuc{position:absolute;left:0;right:0;justify-content:center;font-size:24px}
+.pcard .nuc{position:absolute;left:0;right:0;justify-content:center;font-size:28px}
 .pcard.a{color:var(--alpha-ink)} .pcard.b{color:var(--beta-ink)}
-.pcard.a .nuc{top:15px} .pcard.a .gk{top:62px}
-.pcard.b .gk{top:24px} .pcard.b .nuc{bottom:15px}
+.pcard.a .nuc{top:28px} .pcard.a .gk{top:71px;font-size:19px}
+.pcard.b .gk{top:8px;font-size:17px} .pcard.b .nuc{top:28px}
 [data-card][aria-pressed="true"]{outline:4px solid var(--md-sys-color-on-surface);outline-offset:3px}
 .ghost{position:fixed;left:0;top:0;z-index:3000;pointer-events:none;box-shadow:0 8px 20px rgba(0,0,0,.3);border-radius:12px}
 .pcard.ghost{box-shadow:none;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35))}
@@ -134,14 +134,14 @@ html[lang="ar"] .reading{font-family:"Gibson Greek","Noto Sans Arabic",var(--md-
 .chainside h2{font:var(--md-sys-typescale-title-medium);margin-bottom:4px}
 .chain-list{flex:1;min-height:0;overflow-y:auto;padding:2px 2px 8px}
 .drows{list-style:none;margin:0;padding:0}
-.drow{display:flex;align-items:center;gap:10px;padding:5px 4px;border-bottom:1px solid var(--md-sys-color-outline-variant);flex-wrap:wrap}
+.drow{display:flex;align-items:center;gap:10px;padding:9px 4px;flex-wrap:nowrap}
 .drow .dn{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:var(--md-sys-typescale-label-medium);background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container)}
 .deq{display:flex;align-items:center;gap:6px;font-size:20px;flex:none}
 .deq .op{font-size:16px;color:var(--md-sys-color-on-surface-variant)}
 .mshape{width:14px;height:19px;flex:none;vertical-align:middle}
 .mshape.a polygon{fill:var(--alpha-fill);stroke:var(--alpha-ink);stroke-width:6}
 .mshape.b polygon{fill:var(--beta-fill);stroke:var(--beta-ink);stroke-width:6}
-.dhl{font-size:14px;color:var(--md-sys-color-on-surface-variant);margin-inline-start:auto}
+.dhl{flex:1;min-width:0;font-size:13px;line-height:1.25;text-align:end;color:var(--md-sys-color-on-surface-variant)}
 .dnote{flex-basis:100%;font-size:13px;color:var(--md-sys-color-on-surface-variant);padding-inline-start:36px}
 .tag{font:var(--md-sys-typescale-label-medium);padding:2px 8px;border-radius:999px;background:var(--md-sys-color-tertiary-container);color:var(--md-sys-color-on-tertiary-container)}
 .empty-chain{color:var(--md-sys-color-on-surface-variant);padding:8px 4px}
@@ -288,6 +288,31 @@ html[lang="ar"] .reading{font-family:"Gibson Greek","Noto Sans Arabic",var(--md-
 .exd.land{animation:land .55s ease-out}
 @keyframes land{0%{transform:scale(1.35);color:var(--md-sys-color-tertiary)}100%{transform:scale(1)}}
 .exfly{position:fixed;z-index:2500;transform-origin:0 0;pointer-events:none;font-weight:700;color:var(--md-sys-color-tertiary);line-height:1}
+
+/* update 9: equation grid with aligned balance rows; chain arrows; info button */
+.eqgrid{display:grid;grid-template-columns:auto 36px auto 36px auto minmax(150px,1fr);align-items:center;justify-items:center;column-gap:8px;row-gap:5px;direction:ltr;margin:6px 0}
+.eqgrid .et{display:flex;justify-content:center}
+.eqgrid .op{font-size:30px;font-weight:700;color:var(--md-sys-color-on-surface-variant)}
+.eqgrid .lbl{align-self:start;font-size:13px;color:var(--md-sys-color-on-surface-variant);text-align:center;max-width:170px;line-height:1.25}
+.eqgrid.exeq .et{font-size:44px} .eqgrid.exeq .nuc .pre{gap:.32em}
+.eqgrid.small .et{font-size:28px} .eqgrid.small .op{font-size:22px} .eqgrid.small .mshape{width:20px;height:27px}
+.pnuc{display:inline-flex;align-items:center;gap:6px}
+.tbg{grid-column:1/-1;align-self:stretch;justify-self:stretch;border-radius:var(--md-sys-shape-corner-small);background:var(--md-sys-color-surface-container-high);transition:background .3s}
+.tbg.ok{background:var(--app-color-success-container)} .tbg.bad{background:var(--md-sys-color-error-container)}
+.tnum{position:relative;font-size:21px;font-weight:700;font-variant-numeric:tabular-nums;padding:5px 0;line-height:1.2;transition:opacity .2s}
+.tnum.op2{color:var(--md-sys-color-on-surface-variant)}
+.tnum.hide{opacity:0}
+.tnum.land{animation:land .55s ease-out}
+.tlab{position:relative;justify-self:stretch;display:flex;flex-direction:column;padding:4px 10px 4px 4px;font-size:14px;line-height:1.25}
+html[dir="rtl"] .tlab{direction:rtl;text-align:right}
+.tlab .st{font:var(--md-sys-typescale-label-large)}
+.tlab .sum{font-weight:400}
+.tlab.pending .st{visibility:hidden}
+.drows{position:relative}
+svg.links{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+svg.links path{fill:none;stroke:var(--md-sys-color-outline);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.info{display:inline-grid;place-items:center;width:22px;height:22px;margin-inline-start:4px;border-radius:50%;border:1.5px solid currentColor;background:transparent;color:var(--md-sys-color-on-surface-variant);font:700 13px/1 Georgia,serif;font-style:italic;cursor:pointer;vertical-align:middle;position:relative}
+.info::after{content:"";position:absolute;inset:-12px}
 </style>
 </head>
 <body>
@@ -426,7 +451,7 @@ en: {
   symWrong: "Your numbers balance, but atomic number {z} is not \"{s}\". Find {z} in the strip above.", symOk: "✓ Atomic number {z} is {name} ({sym}).",
   stripAria: "Part of the periodic table, atomic numbers 86 to 96",
   sayH: "Write it, then say it", sayInst: "Write the sentence in English. Then say it out loud.", frameGloss: "",
-  checkSent: "Check sentence", sFill: "Fill in both blanks.", sType: "Which particle came out? Write alpha or beta.", sEnglish: "Write it in English: {w}.",
+  checkSent: "Check sentence", sFill: "Fill in both blanks.", sType: "Which particle came out? Write alpha or beta.", sEnglish: "The spelling in English is {w}.",
   sDaughter: "Write the English element name, a dash, and the mass number, like hydrogen-2.", elemH: "Element names", sSpell: "Almost! Check the spelling of the element name in the element list on this page.", sMass: "Check the mass number. Use the daughter isotope's top number.",
   sOk: "✓ Now say the whole sentence out loud.", hear: "Hear it", said: "I said it out loud",
   buildSide: "Your chain so far", noneYet: "Your balanced decays will show up here.", decayQ: "Decay {n}: what does {x} turn into?",
@@ -440,7 +465,7 @@ en: {
   remain: "{n} more decays after this one. The chain ends when it reaches a [[stable]] isotope.", remain1: "1 more decay after this one.", last: "This is the last decay.",
   doneH: "Chain complete!", doneP: "Lead-206 is [[stable]], so the chain stops here. Uranium-238 went through {a} alpha decays and {b} beta decays to get here.",
   exTag: "Example", hlOf: "Half-life of {x}: {v}", years: "years", days: "days", minutes: "minutes", seconds: "seconds", stable: "stable",
-  noteM: "This Pa-234 forms in a high-energy state, written Pa-234m. It has the same protons and neutrons as regular Pa-234, so the equation doesn't change.",
+  noteMAria: "What does Pa-234m mean?", noteM: "This Pa-234 forms in a high-energy state, written Pa-234m. It has the same protons and neutrons as regular Pa-234, so the equation doesn't change.",
   putFirst: "Put a decay particle and a daughter isotope in the boxes first.", balSnack: "Balanced: {a} → {b}. Now write the sentence.", balSnack2: "Balanced: {a} → {b}.",
   notBalSnack: "Not balanced yet. Look at the numbers marked ✗.",
   boxP: "This box is for the decay particle: α or β.", boxD: "This box is for an isotope card.", chooseFirst: "First choose a card.",
@@ -541,7 +566,7 @@ es: {
   stripAria: "Parte de la tabla periódica, números atómicos del 86 al 96",
   sayH: "Escríbelo y dilo", sayInst: "Escribe la oración en inglés. Luego dila en voz alta.",
   frameGloss: "En español: El isótopo padre {p} experimenta una desintegración ___ para formar el isótopo hijo ___.",
-  checkSent: "Comprobar oración", sFill: "Completa los dos espacios.", sType: "¿Qué partícula salió? Escribe alpha o beta.", sEnglish: "Escríbelo en inglés: {w}.",
+  checkSent: "Comprobar oración", sFill: "Completa los dos espacios.", sType: "¿Qué partícula salió? Escribe alpha o beta.", sEnglish: "En inglés se escribe {w}.",
   sDaughter: "Escribe el nombre del elemento en inglés, un guion y el número másico, como hydrogen-2.", elemH: "Nombres de los elementos (en inglés)", sSpell: "¡Casi! Revisa la ortografía del nombre del elemento en la lista de elementos de esta página.", sMass: "Revisa el número másico. Usa el número de arriba del isótopo hijo.",
   sOk: "✓ Ahora di la oración completa en voz alta.", hear: "Escúchala", said: "Ya la dije en voz alta",
   buildSide: "Tu cadena hasta ahora", noneYet: "Aquí aparecerán tus desintegraciones equilibradas.", decayQ: "Desintegración {n}: ¿en qué se convierte {x}?",
@@ -555,7 +580,7 @@ es: {
   remain: "Quedan {n} desintegraciones después de esta. La cadena termina cuando llega a un isótopo [[stable]].", remain1: "Queda 1 desintegración después de esta.", last: "Esta es la última desintegración.",
   doneH: "¡Cadena completa!", doneP: "El plomo-206 es [[stable]], así que la cadena se detiene aquí. El uranio-238 pasó por {a} desintegraciones alfa y {b} desintegraciones beta para llegar aquí.",
   exTag: "Ejemplo", hlOf: "Semivida de {x}: {v}", years: "años", days: "días", minutes: "minutos", seconds: "segundos", stable: "estable",
-  noteM: "Este Pa-234 se forma en un estado de alta energía, que se escribe Pa-234m. Tiene los mismos protones y neutrones que el Pa-234 normal, así que la ecuación no cambia.",
+  noteMAria: "¿Qué significa Pa-234m?", noteM: "Este Pa-234 se forma en un estado de alta energía, que se escribe Pa-234m. Tiene los mismos protones y neutrones que el Pa-234 normal, así que la ecuación no cambia.",
   putFirst: "Primero pon una partícula de desintegración y un isótopo hijo en las casillas.", balSnack: "Equilibrada: {a} → {b}. Ahora escribe la oración.", balSnack2: "Equilibrada: {a} → {b}.",
   notBalSnack: "Todavía no está equilibrada. Mira los números marcados con ✗.",
   boxP: "Esta casilla es para la partícula de desintegración: α o β.", boxD: "Esta casilla es para una tarjeta de isótopo.", chooseFirst: "Primero elige una tarjeta.",
@@ -656,7 +681,7 @@ zh: {
   stripAria: "週期表的一部分，原子序 86 到 96",
   sayH: "寫出來，再說出來", sayInst: "用英文寫出句子，然後大聲說出來。",
   frameGloss: "中文意思：母同位素 {p} 經歷 ___ 衰變，形成子同位素 ___。",
-  checkSent: "檢查句子", sFill: "請填寫兩個空格。", sType: "射出的是哪一種粒子？請寫 alpha 或 beta。", sEnglish: "請用英文寫：{w}。",
+  checkSent: "檢查句子", sFill: "請填寫兩個空格。", sType: "射出的是哪一種粒子？請寫 alpha 或 beta。", sEnglish: "英文的拼法是 {w}。",
   sDaughter: "請寫英文元素名稱、一個連字號和質量數，例如 hydrogen-2。", elemH: "元素名稱（英文）", sSpell: "差一點！請對照這一頁的元素列表檢查元素名稱的拼法。", sMass: "請檢查質量數。用子同位素上方的數字。",
   sOk: "✓ 現在大聲說出整個句子。", hear: "聽一聽", said: "我已經大聲說了",
   buildSide: "目前的衰變鏈", noneYet: "平衡的衰變會出現在這裡。", decayQ: "第 {n} 次衰變：{x} 會變成什麼？",
@@ -670,7 +695,7 @@ zh: {
   remain: "這次之後還有 {n} 次衰變。衰變鏈到達 [[stable]] 的同位素時就結束。", remain1: "這次之後還有 1 次衰變。", last: "這是最後一次衰變。",
   doneH: "衰變鏈完成！", doneP: "鉛-206 是 [[stable]] 的，所以衰變鏈在這裡結束。鈾-238 經過 {a} 次α衰變和 {b} 次β衰變才到這裡。",
   exTag: "例子", hlOf: "{x} 的半衰期：{v}", years: "年", days: "天", minutes: "分鐘", seconds: "秒", stable: "穩定",
-  noteM: "這個 Pa-234 是在高能量狀態下形成的，寫成 Pa-234m。它的質子數和中子數和一般的 Pa-234 相同，所以方程式不變。",
+  noteMAria: "Pa-234m 是什麼意思？", noteM: "這個 Pa-234 是在高能量狀態下形成的，寫成 Pa-234m。它的質子數和中子數和一般的 Pa-234 相同，所以方程式不變。",
   putFirst: "請先把衰變粒子和子同位素放進方格。", balSnack: "平衡了：{a} → {b}。現在寫出句子。", balSnack2: "平衡了：{a} → {b}。",
   notBalSnack: "還沒有平衡。看看標著 ✗ 的數字。",
   boxP: "這個方格是放衰變粒子的：α 或 β。", boxD: "這個方格是放同位素卡片的。", chooseFirst: "請先選一張卡片。",
@@ -771,7 +796,7 @@ ar: {
   stripAria: "جزء من الجدول الدوري، الأعداد الذرية من 86 إلى 96",
   sayH: "اكتبها، ثم قلها", sayInst: "اكتب الجملة بالإنجليزية. ثم قلها بصوت عالٍ.",
   frameGloss: "بالعربية: النظير الأم {p} يمر باضمحلال ___ ليكوّن النظير الابن ___.",
-  checkSent: "تحقق من الجملة", sFill: "املأ الفراغين.", sType: "أي جسيم خرج؟ اكتب alpha أو beta.", sEnglish: "اكتبها بالإنجليزية: {w}.",
+  checkSent: "تحقق من الجملة", sFill: "املأ الفراغين.", sType: "أي جسيم خرج؟ اكتب alpha أو beta.", sEnglish: "التهجئة بالإنجليزية هي {w}.",
   sDaughter: "اكتب اسم العنصر بالإنجليزية، ثم شَرطة، ثم العدد الكتلي، مثل hydrogen-2.", elemH: "أسماء العناصر (بالإنجليزية)", sSpell: "اقتربت! تحقق من تهجئة اسم العنصر في قائمة العناصر في هذه الصفحة.", sMass: "تحقق من العدد الكتلي. استخدم الرقم العلوي للنظير الابن.",
   sOk: "✓ الآن قل الجملة كاملة بصوت عالٍ.", hear: "استمع إليها", said: "قلتها بصوت عالٍ",
   buildSide: "سلسلتك حتى الآن", noneYet: "ستظهر هنا الاضمحلالات المتوازنة.", decayQ: "الاضمحلال {n}: إلى ماذا يتحول {x}؟",
@@ -785,7 +810,7 @@ ar: {
   remain: "بقي {n} اضمحلالات بعد هذا. تنتهي السلسلة عندما تصل إلى نظير [[stable]].", remain1: "بقي اضمحلال واحد بعد هذا.", last: "هذا آخر اضمحلال.",
   doneH: "اكتملت السلسلة!", doneP: "الرصاص-206 [[stable]]، لذلك تتوقف السلسلة هنا. مرّ اليورانيوم-238 بـ {a} اضمحلالات ألفا و {b} اضمحلالات بيتا للوصول إلى هنا.",
   exTag: "مثال", hlOf: "عمر النصف لـ {x}: {v}", years: "سنة", days: "يوم", minutes: "دقيقة", seconds: "ثانية", stable: "مستقر",
-  noteM: "يتكوّن هذا الـ Pa-234 في حالة عالية الطاقة، ويُكتب Pa-234m. فيه عدد البروتونات والنيوترونات نفسه الموجود في Pa-234 العادي، لذلك لا تتغير المعادلة.",
+  noteMAria: "ماذا يعني Pa-234m؟", noteM: "يتكوّن هذا الـ Pa-234 في حالة عالية الطاقة، ويُكتب Pa-234m. فيه عدد البروتونات والنيوترونات نفسه الموجود في Pa-234 العادي، لذلك لا تتغير المعادلة.",
   putFirst: "ضع جسيم الاضمحلال والنظير الابن في المربعين أولًا.", balSnack: "متوازنة: \u2066{a} → {b}\u2069. الآن اكتب الجملة.", balSnack2: "متوازنة: \u2066{a} → {b}\u2069.",
   notBalSnack: "ليست متوازنة بعد. انظر إلى الأرقام المعلّمة بـ ✗.",
   boxP: "هذا المربع لجسيم الاضمحلال: α أو β.", boxD: "هذا المربع لبطاقة نظير.", chooseFirst: "اختر بطاقة أولًا.",
@@ -829,7 +854,7 @@ ar: {
 };
 
 "use strict";
-const VERSION = "Oct 12, 2026, update 8";
+const VERSION = "Oct 12, 2026, update 9";
 const KEY = "decay238-v2";
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -976,7 +1001,7 @@ const speakUI = (id) => `<div class="speak" hidden><button class="md-btn tonal" 
 
 /* ---------------- small UI helpers ---------------- */
 let snackT = 0;
-function snack(html) { const s = $("#snack"); s.innerHTML = html; s.classList.add("show"); clearTimeout(snackT); snackT = setTimeout(() => s.classList.remove("show"), 3600); }
+function snack(html, ms = 3600) { const s = $("#snack"); s.innerHTML = html; s.classList.add("show"); clearTimeout(snackT); snackT = setTimeout(() => s.classList.remove("show"), ms); }
 const PENTA = { a: [[20, 3], [80, 3], [97, 84], [50, 134], [3, 84]], b: [[50, 3], [97, 53], [80, 134], [20, 134], [3, 53]] }; // viewBox 100 x 137
 const shapeSVG = (ty, cls = "shape") => `<svg class="${cls} ${ty}" viewBox="0 0 100 137" aria-hidden="true"><polygon points="${PENTA[ty].map((p) => p.join(",")).join(" ")}"/></svg>`;
 const pentaAt = (ty, cx, cy, s) => PENTA[ty].map(([px, py]) => `${(cx + (px - 50) * s).toFixed(1)},${(cy + (py - 68.5) * s).toFixed(1)}`).join(" ");
@@ -989,6 +1014,24 @@ function tally(par, pt, A, Z) {
   return tline(sA === par.A, t("massTop"), `${par.A} ${sA === par.A ? "=" : "≠"} ${pt.A} + ${A}${sA === par.A ? "" : ` = ${sA}`}`)
        + tline(sZ === par.Z, t("atomBot"), `${par.Z} ${sZ === par.Z ? "=" : "≠"} ${fz(pt.Z)} + ${Z}${sZ === par.Z ? "" : ` = ${sZ}`}`);
 }
+
+// equation with the balance rows lined up underneath it (mass row, then atomic row); "=" under the arrow, "+" under the plus
+function eqGrid(terms, o = {}) {
+  const fmt = (v) => (v < 0 ? "−" + Math.abs(v) : v);
+  let h = `<div class="eqgrid ${o.cls || ""}"${o.id ? ` id="${o.id}"` : ""}>`;
+  terms.forEach((x, k) => { h += `<div class="et" style="grid-column:${1 + 2 * k};grid-row:1">${x}</div>`; if (k < 2) h += `<span class="op" style="grid-column:${2 + 2 * k};grid-row:1" aria-hidden="true">${k ? "+" : "→"}</span>`; });
+  let r = 2;
+  if (o.labels) { o.labels.forEach((l, k) => (h += `<span class="lbl" style="grid-column:${1 + 2 * k};grid-row:2">${l}</span>`)); r = 3; }
+  (o.rows || []).forEach((row) => {
+    const sum = row.v[1] + row.v[2], ok = row.v[0] === sum, st = row.state || (ok ? "ok" : "bad"), dl = row.data ? ` data-line="${row.f}"` : "";
+    const num = (k) => `<span class="tnum${row.data ? " hide" : ""}" style="grid-column:${1 + 2 * k};grid-row:${r}"${row.data ? ` data-dst="${row.f}${k}"` : ""}>${fmt(row.v[k])}</span>`;
+    h += `<div class="tbg ${st}"${dl} style="grid-row:${r}"></div>${num(0)}<span class="tnum op2" style="grid-column:2;grid-row:${r}">${ok ? "=" : "≠"}</span>${num(1)}<span class="tnum op2" style="grid-column:4;grid-row:${r}">+</span>${num(2)}
+      <span class="tlab ${st}"${dl} style="grid-column:6;grid-row:${r}"><span class="tn">${row.name}</span><span class="st">${ok ? t("bal") : `${t("notBal")} <span class="sum ltr">(${fmt(row.v[1])} + ${fmt(row.v[2])} = ${fmt(sum)})</span>`}</span></span>`;
+    r++;
+  });
+  return h + "</div>";
+}
+const balRows = (par, pt, A, Z) => [{ f: "A", name: t("massTop"), v: [par.A, pt.A, A] }, { f: "Z", name: t("atomBot"), v: [par.Z, pt.Z, Z] }];
 
 /* ---------------- top bar ---------------- */
 function curRow() { return state.rows.findIndex((r) => !r.done); }
@@ -1050,28 +1093,28 @@ function mcBlock(q, store, shown, num) {
   if (shown) fb = val === undefined ? `<p class="fb bad">${t("choose")}</p>` : `<p class="fb ${q.opts[val].ok ? "ok" : "bad"}">${q.opts[val].ok ? t("correct") : t("notYet")} ${q.opts[val].why()}</p>`;
   return `<fieldset class="q"><legend class="qtext"><b>${num})</b> ${q.q()}</legend>${opts}${fb}</fieldset>`;
 }
-// worked-example animation: ring each number in the equation, fly it into its balance row, then mark the row balanced
+// worked-example animation: ring each number in the equation, drop it into the number directly below it, then mark the row balanced
 const exNuc = (c, k) => `<span class="nuc"><span class="pre"><span class="exn" data-src="A${k}">${c.A}</span><span class="exn" data-src="Z${k}">${c.Z}</span></span><span class="sym">${c.sym}</span></span>`;
-const exLine = (f, name, v) => `<div class="tline exline" data-line="${f}"><span class="tn">${name}</span><span class="math"><span class="exd" data-dst="${f}0">${v[0]}</span> = <span class="exd" data-dst="${f}1">${v[1]}</span> + <span class="exd" data-dst="${f}2">${v[2]}</span></span><span class="st">${t("bal")}</span></div>`;
-let exRun = 0;
+let exRun = 0, exObs = null;
 function exFly(src, dst) {
   const s = src.getBoundingClientRect(), d = dst.getBoundingClientRect(), g = document.createElement("span");
   g.className = "exfly"; g.textContent = src.textContent; g.style.font = getComputedStyle(src).font; g.style.left = s.left + "px"; g.style.top = s.top + "px";
   document.body.appendChild(g);
-  const k = d.height / s.height, an = g.animate([{ transform: "translate(0,0) scale(1)" }, { transform: `translate(${d.left - s.left}px,${d.top - s.top}px) scale(${k})` }], { duration: 700, easing: "cubic-bezier(.4,0,.2,1)" });
+  const k = d.height / s.height, an = g.animate([{ transform: "translate(0,0) scale(1)" }, { transform: `translate(${d.left + (d.width - s.width * k) / 2 - s.left}px,${d.top - s.top}px) scale(${k})` }], { duration: 700, easing: "cubic-bezier(.4,0,.2,1)" });
   return an.finished.then(() => g.remove(), () => g.remove());
 }
 async function playExample() {
-  const run = ++exRun, box = $("#exEq"); if (!box) return;
+  const run = ++exRun, box = $("#exGrid"); if (!box) return;
   const still = () => run === exRun && document.body.contains(box), reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? Math.min(ms, 120) : ms));
-  $$(".exn").forEach((e) => e.classList.remove("ring-on")); $$(".exd").forEach((e) => e.classList.add("hide")); $$(".exline").forEach((e) => e.classList.remove("ok"));
+  $$(".exn", box).forEach((e) => e.classList.remove("ring-on")); $$("[data-dst]", box).forEach((e) => e.classList.add("hide"));
+  $$("[data-line]", box).forEach((e) => { e.classList.remove("ok"); e.classList.add("pending"); });
   $("#replayEx").hidden = true;
-  await wait(600);
+  await wait(500);
   for (const f of ["A", "Z"]) {
     for (let k = 0; k < 3; k++) {
       if (!still()) return;
-      const src = $(`.exn[data-src="${f}${k}"]`), dst = $(`.exd[data-dst="${f}${k}"]`);
+      const src = box.querySelector(`.exn[data-src="${f}${k}"]`), dst = box.querySelector(`[data-dst="${f}${k}"]`);
       src.classList.add("ring-on"); await wait(400);
       if (!still()) return;
       if (!reduce) await exFly(src, dst);
@@ -1080,16 +1123,16 @@ async function playExample() {
       await wait(250);
     }
     if (!still()) return;
-    $(`.exline[data-line="${f}"]`).classList.add("ok"); beep("ok"); await wait(600);
+    $$(`[data-line="${f}"]`, box).forEach((e) => { e.classList.remove("pending"); e.classList.add("ok"); }); beep("ok"); await wait(600);
   }
-  if (still()) { const b = $("#replayEx"); b.hidden = false; }
+  if (still()) $("#replayEx").hidden = false;
 }
 const LEARN = ["lw", "lr", "le", "lq"];
 function learnBody(i) {
   if (i === 0) return CONFIG.videos.map((v) => `<div class="vid"><a class="md-btn tonal" href="${esc(v.url)}" target="_blank" rel="noopener">${t("openVideo")}</a><div><b lang="en">${esc(v.title)}</b><br><span class="muted">${t("watchRange", { from: v.from, to: v.to })}${v.matchesChain ? " " + t("khanNote") : ""}</span></div></div>`).join("");
   if (i === 1) return `<div class="reading" id="readA">${speakUI("readA")}<p>${t("r1")}</p><p>${t("r2", { he: HE() })}</p><p>${t("r3", { e: EM() })}</p><p>${t("r4")}</p></div>`;
-  if (i === 2) return `<div class="bigeq exeq" id="exEq">${exNuc(CHAIN[0], 0)}<span>→</span>${exNuc(P.a, 1)}<span>+</span>${exNuc(CHAIN[1], 2)}</div>
-      <div class="tally">${exLine("A", t("massTop"), [238, 4, 234])}${exLine("Z", t("atomBot"), [92, 2, 90])}</div>
+  if (i === 2) return eqGrid([exNuc(CHAIN[0], 0), exNuc(P.a, 1), exNuc(CHAIN[1], 2)], { id: "exGrid", cls: "exeq",
+        rows: [{ f: "A", name: t("massTop"), v: [238, 4, 234], state: "pending", data: true }, { f: "Z", name: t("atomBot"), v: [92, 2, 90], state: "pending", data: true }] }) + `
       <div class="actions" style="margin-top:8px"><button class="md-btn tonal" type="button" data-act="replayEx" id="replayEx" hidden>↻ ${t("replayEx")}</button></div>
       <p style="margin-top:10px">${t("exNote")}</p><p class="namenote">${t("exName")}</p>
       <h3>${t("cardsH")}</h3><div class="legend"><span class="item">${pCard("a", 'aria-hidden="true"', "div")}${t("legA")}</span><span class="item">${pCard("b", 'aria-hidden="true"', "div")}${t("legB")}</span></div>`;
@@ -1098,15 +1141,17 @@ function learnBody(i) {
     <div class="actions"><button class="md-btn ${allOk ? "outlined" : "filled"}" type="button" data-act="checkMC">${t("checkAnswers")}</button>${allOk ? nextBtn(1) : ""}</div>`;
 }
 function renderLearn(app) {
-  const open = state.learnOpen ?? 0, max = state.learnMax ?? 0, allOk = MC.every((q) => q.opts[state.mc[q.id]]?.ok);
-  app.innerHTML = `<div class="narrow learn">${LEARN.map((k, i) => {
-    const isOpen = open === i, reached = i <= max, done = i < max || (i === 3 && allOk);
-    return `<section class="md-card acc${isOpen ? " open" : ""}" id="sec${i}">
-      <h2 class="acc-h"><button type="button" data-act="sec" data-i="${i}" aria-expanded="${isOpen}" ${reached ? "" : "disabled"}>
-        <span class="acc-t">${t(k)}</span><span class="acc-ic" aria-hidden="true">${done ? "✓" : reached ? "" : LOCK}</span><span class="chev" aria-hidden="true"></span></button></h2>
-      ${isOpen ? `<div class="acc-b">${learnBody(i)}${i < 3 ? `<div class="actions"><button class="md-btn filled" type="button" data-act="secNext" data-i="${i}">${t("cont2")}</button></div>` : ""}</div>` : ""}</section>`;
-  }).join("")}</div>`;
-  if (open === 2) requestAnimationFrame(() => playExample()); else exRun++;
+  app.innerHTML = `<div class="two"><div class="stack">
+    <article class="md-card"><h2>${t("lw")}</h2>${learnBody(0)}</article>
+    <article class="md-card"><h2>${t("lr")}</h2>${learnBody(1)}</article>
+    <article class="md-card"><h2>${t("le")}</h2>${learnBody(2)}</article>
+   </div>
+   <article class="md-card"><h2>${t("lq")}</h2>${learnBody(3)}</article></div>`;
+  // the example animation starts when the student scrolls it into view
+  exRun++; exObs?.disconnect();
+  const g = $("#exGrid");
+  if (g && "IntersectionObserver" in window) { exObs = new IntersectionObserver((en) => { if (en.some((e) => e.isIntersecting)) { exObs.disconnect(); playExample(); } }, { threshold: 0.8 }); exObs.observe(g); }
+  else playExample();
 }
 function checkMC() {
   state.mcShown = true;
@@ -1123,14 +1168,12 @@ function fillRow(kind, i, live) {
       <input class="md-input" data-fill="${kind}" data-i="${i}" data-f="Z" inputmode="numeric" aria-label="${esc(t("ariaAtomic"))}" placeholder="${esc(t("phAtomic"))}" value="${esc(s.Z)}" ${live ? "" : "disabled"}></span>
       <input class="md-input s" data-fill="${kind}" data-i="${i}" data-f="S" maxlength="2" autocapitalize="characters" aria-label="${esc(t("ariaSym"))}" placeholder="?" value="${esc(s.S)}" ${live ? "" : "disabled"}></span>`;
   let fb = "";
-  if (s.last) {
-    const { A, Z, S } = s.last; fb = tally(par, pt, A, Z);
-    if (par.A === pt.A + A && par.Z === pt.Z + Z) fb += s.ok ? `<p class="fb ok">${t("symOk", { z: Z, name: `<span lang="en">${EL[Z][1]}</span>`, sym: EL[Z][0] })}</p>` : `<p class="fb bad">${t("symWrong", { z: Z, s: esc(S) })}</p>`;
-  }
+  if (s.last && par.A === pt.A + s.last.A && par.Z === pt.Z + s.last.Z)
+    fb = s.ok ? `<p class="fb ok">${t("symOk", { z: s.last.Z, name: `<span lang="en">${EL[s.last.Z][1]}</span>`, sym: EL[s.last.Z][0] })}</p>` : `<p class="fb bad">${t("symWrong", { z: s.last.Z, s: esc(s.last.S) })}</p>`;
   const sentence = kind === "prac" && s.ok && CONFIG.sayInPractice ? sentenceUI(`prac:${i}`) : "";
   return `<div class="fillrow ${live ? "active" : ""}"><p class="ptype">${shapeSVG(f.t, "mshape")} ${t(f.t === "a" ? "givesA" : "givesB", { x: `<span lang="en">${full(par)}</span>` })}</p>
-    <div class="eq">${isoCard(par, "", "div")}<span class="op">→</span>${pCard(f.t, 'aria-hidden="true"', "div")}<span class="op">+</span>${right}</div>
-    <div class="tally" aria-live="polite">${fb}</div>
+    ${eqGrid([isoCard(par, "", "div"), pCard(f.t, 'aria-hidden="true"', "div"), right], { rows: s.last ? balRows(par, pt, s.last.A, s.last.Z) : [] })}
+    <div aria-live="polite">${fb}</div>
     ${live && !s.ok ? `<div class="actions"><button class="md-btn filled" type="button" data-act="checkFill" data-kind="${kind}" data-i="${i}">${t("check")}</button></div>` : ""}${sentence}</div>`;
 }
 function checkFill(kind, i) {
@@ -1223,9 +1266,8 @@ function hintText(i, tier) {
 function renderBuild(app) {
   const cur = curRow();
   const done = state.rows.map((r, i) => (r.done ? `<li class="drow"><span class="dn">${i + 1}</span>
-      <span class="deq">${nucC(CHAIN[i])}<span class="op">→</span>${shapeSVG(r.p, "mshape")}${nuc(P[r.p].A, P[r.p].Z, P[r.p].sym)}<span class="op">+</span>${nucC(CHAIN[i + 1])}</span>
-      ${r.example ? `<span class="tag">${t("exTag")}</span>` : ""}<span class="dhl">${t("hlOf", { x: `<bdi>${label(CHAIN[i])}</bdi>`, v: hlText(CHAIN[i]) })}</span>
-      ${i === 2 ? `<span class="dnote">${t("noteM")}</span>` : ""}</li>` : "")).join("");
+      <span class="deq"><span class="par">${nucC(CHAIN[i])}</span><span class="op">→</span>${shapeSVG(r.p, "mshape")}${nuc(P[r.p].A, P[r.p].Z, P[r.p].sym)}<span class="op">+</span><span class="dau">${nucC(CHAIN[i + 1])}</span></span>
+      ${r.example ? `<span class="tag">${t("exTag")}</span>` : ""}<span class="dhl">${t("hlOf", { x: `<bdi>${label(CHAIN[i])}</bdi>`, v: hlText(CHAIN[i]) })}${i === 2 ? ` <button type="button" class="info" data-act="noteM" aria-label="${esc(t("noteMAria"))}" title="${esc(t("noteMAria"))}">i</button>` : ""}</span></li>` : "")).join("");
   let work, tray = "";
   if (cur < 0) {
     work = `<section class="md-card work"><div class="donebox"><h2>${t("doneH")}</h2><p>${t("doneP", { a: DECAYS.filter((x) => x === "a").length, b: DECAYS.filter((x) => x === "b").length })}</p>${nextBtn(3)}</div></section>`;
@@ -1243,14 +1285,11 @@ function renderBuild(app) {
     work = `<section class="md-card work" id="work" aria-label="${esc(t("decayQ", { n: cur + 1, x: full(par) }))}">
       <h2>${t("decayQ", { n: cur + 1, x: `<bdi class="nw" lang="en">${full(par)}</bdi>` })}</h2>
       ${lock ? "" : `<p class="muted">${t("buildInst")}</p>`}
-      ${lock ? `<div class="deq locked">${nucC(par)}<span class="op">→</span>${shapeSVG(r.p, "mshape")}${nuc(P[r.p].A, P[r.p].Z, P[r.p].sym)}<span class="op">+</span>${nucC(C(r.d))}</div>
-        <div class="tline ok compact"><span class="math">${par.A} = ${P[r.p].A} + ${C(r.d).A}</span><span class="math">${par.Z} = ${P[r.p].Z < 0 ? "(−1)" : P[r.p].Z} + ${C(r.d).Z}</span><span class="st">${t("bal")}</span></div>` : `<div class="eq">
-        <div class="cell"><div class="parent">${isoCard(par, "", "div")}</div><span class="lbl">${kw("parent isotope", "Parent isotope")}${cur ? `<br>${t("parentFrom", { n: cur })}` : ""}</span></div>
-        <span class="op" aria-hidden="true">→</span><div class="cell">${slot("p")}<span class="lbl">${kw("decay particle", "Decay particle")}</span></div>
-        <span class="op" aria-hidden="true">+</span><div class="cell">${slot("d")}<span class="lbl">${kw("daughter isotope", "Daughter isotope")}</span></div>
-      </div>`}
+      ${lock ? eqGrid([nucC(par), `<span class="pnuc">${shapeSVG(r.p, "mshape")}${nuc(P[r.p].A, P[r.p].Z, P[r.p].sym)}</span>`, nucC(C(r.d))], { cls: "small", rows: balRows(par, P[r.p], C(r.d).A, C(r.d).Z) })
+        : eqGrid([`<div class="parent">${isoCard(par, "", "div")}</div>`, slot("p"), slot("d")], {
+            labels: [kw("parent isotope", "Parent isotope") + (cur ? `<br>${t("parentFrom", { n: cur })}` : ""), kw("decay particle", "Decay particle"), kw("daughter isotope", "Daughter isotope")],
+            rows: r.last ? balRows(par, P[r.last.p], C(r.last.d).A, C(r.last.d).Z) : [] })}
       ${lock ? "" : `<div class="actions"><button class="md-btn filled" type="button" data-act="checkRow">${t("checkDecay")}</button>${showHint ? `<button class="md-btn outlined" type="button" data-act="hint">${r.hint ? t("hintMore") : t("hintB")}</button>` : ""}</div>`}
-      ${lock ? "" : `<div class="tally" aria-live="polite">${r.last ? tally(par, P[r.last.p], C(r.last.d).A, C(r.last.d).Z) : ""}</div>`}
       ${lock ? "" : `<div class="hintbox">${hintText(cur, r.hint)}</div>`}
       ${lock && SAY.has(cur) ? sentenceUI(`row:${cur}`) : ""}
       ${lock ? "" : `<p class="remain">${left > 1 ? t("remain", { n: left }) : left === 1 ? t("remain1") : t("last")}</p>`}</section>`;
@@ -1258,6 +1297,21 @@ function renderBuild(app) {
   app.innerHTML = `<div class="build"><div class="leftcol">${tray}<section class="md-card chainside"><h2>${t("buildSide")}</h2>
       <div class="chain-list" id="chainList">${done ? `<ol class="drows">${done}</ol>` : `<p class="empty-chain">${t("noneYet")}</p>`}</div></section></div>${work}</div>`;
   const cl = $("#chainList"); if (cl) cl.scrollTop = cl.scrollHeight;
+  drawLinks();
+}
+// narrow arrows from each daughter down to the same isotope as the next parent (like the in-class scaffold)
+function drawLinks() {
+  const ol = $(".drows"); if (!ol) return;
+  ol.querySelector("svg.links")?.remove();
+  const rows = $$(".drow", ol); if (rows.length < 2) return;
+  const o = ol.getBoundingClientRect(); let d = "", hd = "";
+  for (let i = 0; i < rows.length - 1; i++) {
+    const p = $(".dau", rows[i])?.getBoundingClientRect(), q = $(".par", rows[i + 1])?.getBoundingClientRect(); if (!p || !q) continue;
+    const x1 = p.left + p.width / 2 - o.left, y1 = p.bottom - o.top + 1, x2 = q.left + q.width / 2 - o.left, y2 = q.top - o.top - 1, my = (y1 + y2) / 2;
+    d += `M${x1.toFixed(1)},${y1.toFixed(1)} C${x1.toFixed(1)},${(my + 4).toFixed(1)} ${x2.toFixed(1)},${(my - 4).toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)} `;
+    hd += `M${(x2 - 4).toFixed(1)},${(y2 - 5).toFixed(1)} L${x2.toFixed(1)},${y2.toFixed(1)} L${(x2 + 4).toFixed(1)},${(y2 - 5).toFixed(1)} `;
+  }
+  ol.insertAdjacentHTML("beforeend", `<svg class="links" aria-hidden="true" width="${ol.scrollWidth}" height="${ol.scrollHeight}"><path d="${d}"/><path d="${hd}"/></svg>`);
 }
 // element names for spelling the sentence (no tile is highlighted: students still find the atomic number)
 const elemBox = () => `<section class="md-card elems" aria-label="${esc(t("elemH"))}"><h3>${t("elemH")}</h3><div class="elemgrid">${[82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92].map((z) => `<div class="pt"><span class="z">${z}</span><b>${EL[z][0]}</b><small lang="en">${EL[z][1]}</small></div>`).join("")}</div></section>`;
@@ -1463,6 +1517,7 @@ document.addEventListener("click", (e) => {
   if (act === "takeOut") return takeOut(a.dataset.slot);
   if (act === "checkPat") return checkPat();
   if (act === "replayEx") return playExample();
+  if (act === "noteM") return snack(t("noteM"), 9000);
   if (act === "replay") { $("#chartBox").innerHTML = chartSVG(true); return; }
   if (act === "send") return sendForm();
   if (act === "copy") return copyWork();
@@ -1493,7 +1548,8 @@ document.addEventListener("input", (e) => {
   if (el.dataset.fill) { state[el.dataset.fill][+el.dataset.i][el.dataset.f] = el.value; save(); }
   if (el.dataset.sent) { const c = sentCtx(el.dataset.sent); c.s[el.dataset.f] = el.value; save(); }
 });
-window.addEventListener("resize", () => document.documentElement.style.setProperty("--bar-h", $("#bar").offsetHeight + "px"));
+window.addEventListener("resize", () => { document.documentElement.style.setProperty("--bar-h", $("#bar").offsetHeight + "px"); if (state.at === 2) drawLinks(); });
+document.fonts?.ready.then(() => { if (state.at === 2) drawLinks(); });
 
 /* self-checks (console only): every decay has exactly one balancing card; the chain itself balances */
 CHAIN.slice(0, -1).forEach((par, i) => {
