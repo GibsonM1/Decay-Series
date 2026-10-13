@@ -74,10 +74,16 @@ The card order is shuffled with Fisher–Yates. An 8,000-student simulation put 
   - HS-PS1-8 ✓ (SFUSD places it in Unit 2): α and β decay as changes to the nucleus, with mass and atomic number conserved.
   - HS-ESS1-6 ✓, partial (SFUSD places it in Unit 2): half-life interpretation only. This lesson does no radiometric dating.
 - **SEPs:** 2 Developing and Using Models (nuclide notation, the decay map); 5 Using Mathematics and Computational Thinking (balancing mass and atomic numbers); 4 Analyzing and Interpreting Data (patterns on the map, half-life comparisons).
-- **CCCs:** Energy and Matter (conservation of nucleons); Patterns (α moves 2 left and 4 down, β moves 1 right); Stability and Change (half-life, the stable endpoint).
+- **CCCs:** Energy and Matter (conservation of nucleons); Patterns (on the map, α moves 4 left and 2 down, β moves 1 up); Stability and Change (half-life, the stable endpoint).
 - **Flags:**
   - Pa-234m is a nuclear isomer, which is *beyond the NGSS assessment boundary*. It appears only as an enrichment note.
   - Gamma decay is in the PS1-8 boundary but is not practiced here.
+
+## Card shapes
+
+The α card is a pink pentagon pointing down, because both numbers go down. The β card is the same pentagon turned 180° (green, pointing up), because the atomic number goes up. The slot for the decay particle is a plain rounded rectangle, so it doesn't hint which one belongs. The map uses the same idea: mass number runs across the bottom and atomic number up the side, so α arrows run down-left and β arrows run straight up.
+
+Greek letters come from a small embedded font in the shared theme (Noto Serif Italic, Greek letters only, OFL license). Atkinson Hyperlegible has no Greek, so before this, each device substituted its own font and α often looked like an "a".
 
 ## Language and discourse notes
 
@@ -100,4 +106,4 @@ The card order is shuffled with Fisher–Yates. An 8,000-student simulation put 
 - `make-form.gs`: the Form builder (runs in Google Apps Script, not on the page).
 - `theme-v1.css`: a fallback copy of the shared theme. The page loads `gibsonm1.github.io/theme/theme-v1.css` first and uses this copy only if that fails. Create the `theme` repo once and every class interactive can share it.
 
-Version: Oct 12, 2026, update 3
+Version: Oct 12, 2026, update 4
