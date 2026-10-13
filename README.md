@@ -6,7 +6,7 @@ A digital version of the Ch4 U-238 decay series card sort, built for make-up wor
 
 | Step | What students do | Check before moving on | Time |
 |---|---|---|---|
-| 1 Learn | Four sections open one at a time (Watch, Read, Example, Quick check). The example circles the top and bottom numbers right on the equation with = and + between them, then explains naming (thorium-234, not thorium-90) | 3 questions (must all be right; first-try score recorded) | ~15 min |
+| 1 Learn | Four sections open one at a time (Watch, Read, Example, Quick check). The example plays an animation: each mass number in the equation gets a ring and flies down into the Mass numbers row, which turns green once it balances; then the same for the atomic numbers. A Replay button follows. Then a naming note (thorium-234, not thorium-90) | 3 questions (must all be right; first-try score recorded) | ~15 min |
 | 2 Practice | Fill in the missing card for Pu-239 (α) and Ra-228 (β), then write and say the sentence frame for each | Each card and each sentence must be right | ~6 min |
 | 3 Build the chain | Decays 2–14. Each decay shows the α/β piles and 4 isotope cards (1 right + 3 traps). Students write and say the sentence frame for the first two β decays (2, 3), the first two α decays (4, 5), and the last β and α decays (13, 14) | Balanced check every decay; sentence on 6 of them | ~15 min |
 | 4 Patterns | The chain is drawn on a mass number vs. atomic number map; 7 questions on the α/β patterns, helium, the stable endpoint, and half-life | Auto-checked items must be right; written items need a full sentence | ~8 min |
@@ -115,4 +115,4 @@ Greek letters come from a small embedded font in the shared theme (Noto Serif It
 - `make-form.gs`: the Form builder (runs in Google Apps Script, not on the page).
 - `theme-v1.css`: a fallback copy of the shared theme. The page loads `gibsonm1.github.io/theme/theme-v1.css` first and uses this copy only if that fails. Create the `theme` repo once and every class interactive can share it.
 
-Version: Oct 12, 2026, update 7
+Version: Oct 12, 2026, update 8

@@ -271,15 +271,23 @@ html[lang="ar"] .reading{font-family:"Gibson Greek","Noto Sans Arabic",var(--md-
 .acc.open .chev{transform:rotate(-135deg)}
 .acc-h button:disabled .chev{display:none}
 .acc-b{padding:0 16px 16px}
-.mark{display:grid;grid-template-columns:auto auto 48px auto auto 48px auto auto;grid-template-rows:auto auto auto;align-items:center;column-gap:4px;row-gap:2px;direction:ltr;margin:6px 0 12px;width:max-content;max-width:100%;overflow-x:auto}
-.mark .ring{display:inline-grid;place-items:center;min-width:2.4em;height:1.7em;padding:0 6px;border:3px solid var(--md-sys-color-tertiary);border-radius:999px;font-size:19px;font-weight:700}
-.mark > span{justify-self:end}
-.mark .mk-s{font-size:46px;font-weight:700;justify-self:start;line-height:1}
-.mark .mk-op{justify-self:center;font-size:24px;font-weight:700;color:var(--md-sys-color-tertiary)}
-.mark .mk-op.mid{font-size:32px;color:var(--md-sys-color-on-surface)}
 .namenote{padding:8px 10px;border-radius:var(--md-sys-shape-corner-small);background:var(--md-sys-color-surface-container-high)}
 .blank{display:inline-flex;flex-direction:column;vertical-align:top;margin:0 2px}
 .blank .help{font-size:13px;line-height:1.25;color:var(--md-sys-color-on-surface-variant);padding:2px 4px 0}
+
+/* update 8: worked-example animation */
+.exeq{font-size:44px;margin:8px 0 6px}
+.exeq .nuc .pre{gap:.32em}
+.exn{position:relative;display:inline-block}
+.exn.ring-on::after{content:"";position:absolute;inset:-4px -8px;border:3px solid var(--md-sys-color-tertiary);border-radius:999px;animation:ringIn .4s ease-out}
+@keyframes ringIn{from{transform:scale(1.9);opacity:0}to{transform:scale(1);opacity:1}}
+.exline{background:var(--md-sys-color-surface-container-high);color:var(--md-sys-color-on-surface);transition:background .3s}
+.exline:not(.ok) .st{visibility:hidden}
+.exd{display:inline-block;transition:opacity .2s}
+.exd.hide{opacity:0}
+.exd.land{animation:land .55s ease-out}
+@keyframes land{0%{transform:scale(1.35);color:var(--md-sys-color-tertiary)}100%{transform:scale(1)}}
+.exfly{position:fixed;z-index:2500;transform-origin:0 0;pointer-events:none;font-weight:700;color:var(--md-sys-color-tertiary);line-height:1}
 </style>
 </head>
 <body>
@@ -369,7 +377,7 @@ en: {
   helpD: "English element name-mass number, like hydrogen-2",
   helpT: "alpha or beta",
   exName: "We name an isotope with its element name and its mass number (the top number). So this daughter isotope is <b>thorium-234</b>, not thorium-90.",
-  cont2: "Continue",
+  replayEx: "Replay: how the numbers balance", cont2: "Continue",
   lq: "Quick check",
   le: "Example: the first decay of your chain",
   lr: "Read",
@@ -483,7 +491,7 @@ es: {
   helpD: "nombre del elemento en inglés-número másico, como hydrogen-2",
   helpT: "alpha o beta",
   exName: "Nombramos un isótopo con el nombre del elemento y su número másico (el número de arriba). Por eso este isótopo hijo es <b>thorium-234</b>, no thorium-90.",
-  cont2: "Continuar",
+  replayEx: "Repetir: cómo se equilibran los números", cont2: "Continuar",
   lq: "Comprobación rápida",
   le: "Ejemplo: la primera desintegración de tu cadena",
   lr: "Lee",
@@ -598,7 +606,7 @@ zh: {
   helpD: "英文元素名稱-質量數，例如 hydrogen-2",
   helpT: "alpha 或 beta",
   exName: "我們用元素名稱和質量數（上方的數字）來命名同位素。所以這個子同位素是 <b>thorium-234</b>，不是 thorium-90。",
-  cont2: "繼續",
+  replayEx: "重播：數字如何平衡", cont2: "繼續",
   lq: "快速檢查",
   le: "例子：你的衰變鏈的第一次衰變",
   lr: "閱讀",
@@ -713,7 +721,7 @@ ar: {
   helpD: "اسم العنصر بالإنجليزية-العدد الكتلي، مثل hydrogen-2",
   helpT: "alpha أو beta",
   exName: "نسمّي النظير باسم العنصر وعدده الكتلي (الرقم العلوي). لذلك هذا النظير الابن هو <b>thorium-234</b>، وليس thorium-90.",
-  cont2: "تابع",
+  replayEx: "إعادة: كيف تتوازن الأرقام", cont2: "تابع",
   lq: "تحقق سريع",
   le: "مثال: أول اضمحلال في سلسلتك",
   lr: "اقرأ",
@@ -821,7 +829,7 @@ ar: {
 };
 
 "use strict";
-const VERSION = "Oct 12, 2026, update 7";
+const VERSION = "Oct 12, 2026, update 8";
 const KEY = "decay238-v2";
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -1042,18 +1050,47 @@ function mcBlock(q, store, shown, num) {
   if (shown) fb = val === undefined ? `<p class="fb bad">${t("choose")}</p>` : `<p class="fb ${q.opts[val].ok ? "ok" : "bad"}">${q.opts[val].ok ? t("correct") : t("notYet")} ${q.opts[val].why()}</p>`;
   return `<fieldset class="q"><legend class="qtext"><b>${num})</b> ${q.q()}</legend>${opts}${fb}</fieldset>`;
 }
-// the worked example drawn like the teacher's markup: top and bottom numbers ringed, = and + between them, arrow in the middle
-function exMark(par, pt, d) {
-  const ring = (v) => `<span class="ring">${v < 0 ? "−" + Math.abs(v) : v}</span>`;
-  const col = (c, x) => `<span style="grid-column:${x};grid-row:1">${ring(c.A)}</span><span style="grid-column:${x};grid-row:3">${ring(c.Z)}</span><span class="mk-s" style="grid-column:${x + 1};grid-row:1/4">${c.sym}</span>`;
-  const op = (x, mid, side) => `<span class="mk-op" style="grid-column:${x};grid-row:1">${side}</span><span class="mk-op mid" style="grid-column:${x};grid-row:2">${mid}</span><span class="mk-op" style="grid-column:${x};grid-row:3">${side}</span>`;
-  return `<div class="mark" role="img" aria-label="${par.A} = ${pt.A} + ${d.A}; ${par.Z} = ${pt.Z} + ${d.Z}">${col(par, 1)}${op(3, "→", "=")}${col(pt, 4)}${op(6, "+", "+")}${col(d, 7)}</div>`;
+// worked-example animation: ring each number in the equation, fly it into its balance row, then mark the row balanced
+const exNuc = (c, k) => `<span class="nuc"><span class="pre"><span class="exn" data-src="A${k}">${c.A}</span><span class="exn" data-src="Z${k}">${c.Z}</span></span><span class="sym">${c.sym}</span></span>`;
+const exLine = (f, name, v) => `<div class="tline exline" data-line="${f}"><span class="tn">${name}</span><span class="math"><span class="exd" data-dst="${f}0">${v[0]}</span> = <span class="exd" data-dst="${f}1">${v[1]}</span> + <span class="exd" data-dst="${f}2">${v[2]}</span></span><span class="st">${t("bal")}</span></div>`;
+let exRun = 0;
+function exFly(src, dst) {
+  const s = src.getBoundingClientRect(), d = dst.getBoundingClientRect(), g = document.createElement("span");
+  g.className = "exfly"; g.textContent = src.textContent; g.style.font = getComputedStyle(src).font; g.style.left = s.left + "px"; g.style.top = s.top + "px";
+  document.body.appendChild(g);
+  const k = d.height / s.height, an = g.animate([{ transform: "translate(0,0) scale(1)" }, { transform: `translate(${d.left - s.left}px,${d.top - s.top}px) scale(${k})` }], { duration: 700, easing: "cubic-bezier(.4,0,.2,1)" });
+  return an.finished.then(() => g.remove(), () => g.remove());
+}
+async function playExample() {
+  const run = ++exRun, box = $("#exEq"); if (!box) return;
+  const still = () => run === exRun && document.body.contains(box), reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? Math.min(ms, 120) : ms));
+  $$(".exn").forEach((e) => e.classList.remove("ring-on")); $$(".exd").forEach((e) => e.classList.add("hide")); $$(".exline").forEach((e) => e.classList.remove("ok"));
+  $("#replayEx").hidden = true;
+  await wait(600);
+  for (const f of ["A", "Z"]) {
+    for (let k = 0; k < 3; k++) {
+      if (!still()) return;
+      const src = $(`.exn[data-src="${f}${k}"]`), dst = $(`.exd[data-dst="${f}${k}"]`);
+      src.classList.add("ring-on"); await wait(400);
+      if (!still()) return;
+      if (!reduce) await exFly(src, dst);
+      if (!still()) return;
+      dst.classList.remove("hide"); dst.classList.add("land"); setTimeout(() => dst.classList.remove("land"), 600);
+      await wait(250);
+    }
+    if (!still()) return;
+    $(`.exline[data-line="${f}"]`).classList.add("ok"); beep("ok"); await wait(600);
+  }
+  if (still()) { const b = $("#replayEx"); b.hidden = false; }
 }
 const LEARN = ["lw", "lr", "le", "lq"];
 function learnBody(i) {
   if (i === 0) return CONFIG.videos.map((v) => `<div class="vid"><a class="md-btn tonal" href="${esc(v.url)}" target="_blank" rel="noopener">${t("openVideo")}</a><div><b lang="en">${esc(v.title)}</b><br><span class="muted">${t("watchRange", { from: v.from, to: v.to })}${v.matchesChain ? " " + t("khanNote") : ""}</span></div></div>`).join("");
   if (i === 1) return `<div class="reading" id="readA">${speakUI("readA")}<p>${t("r1")}</p><p>${t("r2", { he: HE() })}</p><p>${t("r3", { e: EM() })}</p><p>${t("r4")}</p></div>`;
-  if (i === 2) return `${exMark(CHAIN[0], P.a, CHAIN[1])}<div class="tally">${tally(CHAIN[0], P.a, 234, 90)}</div>
+  if (i === 2) return `<div class="bigeq exeq" id="exEq">${exNuc(CHAIN[0], 0)}<span>→</span>${exNuc(P.a, 1)}<span>+</span>${exNuc(CHAIN[1], 2)}</div>
+      <div class="tally">${exLine("A", t("massTop"), [238, 4, 234])}${exLine("Z", t("atomBot"), [92, 2, 90])}</div>
+      <div class="actions" style="margin-top:8px"><button class="md-btn tonal" type="button" data-act="replayEx" id="replayEx" hidden>↻ ${t("replayEx")}</button></div>
       <p style="margin-top:10px">${t("exNote")}</p><p class="namenote">${t("exName")}</p>
       <h3>${t("cardsH")}</h3><div class="legend"><span class="item">${pCard("a", 'aria-hidden="true"', "div")}${t("legA")}</span><span class="item">${pCard("b", 'aria-hidden="true"', "div")}${t("legB")}</span></div>`;
   const allOk = MC.every((q) => q.opts[state.mc[q.id]]?.ok);
@@ -1069,6 +1106,7 @@ function renderLearn(app) {
         <span class="acc-t">${t(k)}</span><span class="acc-ic" aria-hidden="true">${done ? "✓" : reached ? "" : LOCK}</span><span class="chev" aria-hidden="true"></span></button></h2>
       ${isOpen ? `<div class="acc-b">${learnBody(i)}${i < 3 ? `<div class="actions"><button class="md-btn filled" type="button" data-act="secNext" data-i="${i}">${t("cont2")}</button></div>` : ""}</div>` : ""}</section>`;
   }).join("")}</div>`;
+  if (open === 2) requestAnimationFrame(() => playExample()); else exRun++;
 }
 function checkMC() {
   state.mcShown = true;
@@ -1424,6 +1462,7 @@ document.addEventListener("click", (e) => {
   if (act === "hint") { const r = state.rows[curRow()]; r.hint = Math.min(3, r.hint + 1); save(); return render(); }
   if (act === "takeOut") return takeOut(a.dataset.slot);
   if (act === "checkPat") return checkPat();
+  if (act === "replayEx") return playExample();
   if (act === "replay") { $("#chartBox").innerHTML = chartSVG(true); return; }
   if (act === "send") return sendForm();
   if (act === "copy") return copyWork();
