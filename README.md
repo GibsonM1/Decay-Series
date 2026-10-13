@@ -6,7 +6,7 @@ A digital version of the Ch4 U-238 decay series card sort, built for make-up wor
 
 | Step | What students do | Check before moving on | Time |
 |---|---|---|---|
-| 1 Learn | Watch FuseSchool (0:00–2:50) and Khan Academy (0:00–6:30), read a short passage (read-aloud available), see the U-238 → Th-234 example | 3 questions (must all be right; first-try score recorded) | ~15 min |
+| 1 Learn | Four sections open one at a time (Watch, Read, Example, Quick check). The example circles the top and bottom numbers right on the equation with = and + between them, then explains naming (thorium-234, not thorium-90) | 3 questions (must all be right; first-try score recorded) | ~15 min |
 | 2 Practice | Fill in the missing card for Pu-239 (α) and Ra-228 (β), then write and say the sentence frame for each | Each card and each sentence must be right | ~6 min |
 | 3 Build the chain | Decays 2–14. Each decay shows the α/β piles and 4 isotope cards (1 right + 3 traps). Students write and say the sentence frame for the first two β decays (2, 3), the first two α decays (4, 5), and the last β and α decays (13, 14) | Balanced check every decay; sentence on 6 of them | ~15 min |
 | 4 Patterns | The chain is drawn on a mass number vs. atomic number map; 7 questions on the α/β patterns, helium, the stable endpoint, and half-life | Auto-checked items must be right; written items need a full sentence | ~8 min |
@@ -79,6 +79,14 @@ The card order is shuffled with Fisher–Yates. An 8,000-student simulation put 
   - Pa-234m is a nuclear isomer, which is *beyond the NGSS assessment boundary*. It appears only as an enrichment note.
   - Gamma decay is in the PS1-8 boundary but is not practiced here.
 
+## Numbering
+
+Only one numbering system shows at a time. The stepper uses ✓ and lock icons instead of numbers, "Decay n of 14" appears only while students build the chain, Learn sections have no numbers, and questions are numbered "1)".
+
+## Sentence frame feedback
+
+Each blank has helper text under it ("alpha or beta"; "English element name-mass number, like hydrogen-2"). Feedback is specific: atomic number used instead of mass number, missing name or number, wrong element. A one-letter typo is fixed automatically ("We fixed a small spelling mistake"), and two letters off gets a spelling nudge. After 3 misses, the answer is shown, and the summary reports how many answers were shown.
+
 ## Card shapes
 
 The α card is a pink pentagon pointing down, because both numbers go down. The β card is the same pentagon turned 180° (light blue, pointing up), because the atomic number goes up. Colors follow the class code: pink/red = positive (α is +2), blue = negative (β is −1), green = correct. Card-related highlights (selected card, drop slot, parent card) are neutral gray so blue only ever means β. The slot for the decay particle is a plain rounded rectangle, so it doesn't hint which one belongs. The map uses the same idea: mass number runs across the bottom and atomic number up the side, so α arrows run down-left and β arrows run straight up.
@@ -107,4 +115,4 @@ Greek letters come from a small embedded font in the shared theme (Noto Serif It
 - `make-form.gs`: the Form builder (runs in Google Apps Script, not on the page).
 - `theme-v1.css`: a fallback copy of the shared theme. The page loads `gibsonm1.github.io/theme/theme-v1.css` first and uses this copy only if that fails. Create the `theme` repo once and every class interactive can share it.
 
-Version: Oct 12, 2026, update 6
+Version: Oct 12, 2026, update 7
