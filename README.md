@@ -6,7 +6,7 @@ A digital version of the Ch4 U-238 decay series card sort, built for make-up wor
 
 | Step | What students do | Check before moving on | Time |
 |---|---|---|---|
-| 1 Learn | Watch, Read, and Example on the left, Quick check on the right, all visible at once. When the example scrolls into view, each mass number gets a ring and drops into the number directly below it; the Mass numbers row turns green once it balances; then the same for the atomic numbers. A Replay button follows, then a naming note (thorium-234, not thorium-90) | 3 questions (must all be right; first-try score recorded) | ~15 min |
+| 1 Learn | Watch, Read, and Example on the left, Quick check on the right, all visible at once. When the example scrolls into view, each mass number gets a ring and drops into the number directly below it; the Mass numbers row turns green once it balances; then the same for the atomic numbers. At the same moment, the parent's and daughter's mass numbers also drop into the example sentence ("Parent isotope uranium-238 undergoes alpha decay to form daughter isotope thorium-234"), the same frame students fill in later. Parent isotope = orange, daughter isotope = teal, in the equation and the sentence. The animation runs about 12 seconds (`EX_SLOW` in the code sets its speed); a Replay button follows | 3 questions (must all be right; first-try score recorded) | ~15 min |
 | 2 Practice | Fill in the missing card for Pu-239 (α) and Ra-228 (β), then write and say the sentence frame for each | Each card and each sentence must be right | ~6 min |
 | 3 Build the chain | Decays 2–14. Each decay shows the α/β piles and 4 isotope cards (1 right + 3 traps). Students write and say the sentence frame for the first two β decays (2, 3), the first two α decays (4, 5), and the last β and α decays (13, 14) | Balanced check every decay; sentence on 6 of them | ~15 min |
 | 4 Patterns | The chain is drawn on a mass number vs. atomic number map; 7 questions on the α/β patterns, helium, the stable endpoint, and half-life | Auto-checked items must be right; written items need a full sentence | ~8 min |
@@ -91,6 +91,10 @@ Everywhere an equation is checked (Learn example, Practice, Build the chain, New
 
 Each blank has helper text under it ("alpha or beta"; "English element name-mass number, like hydrogen-2"). Feedback is specific: atomic number used instead of mass number, missing name or number, wrong element. A one-letter typo is fixed automatically ("We fixed a small spelling mistake"), and two letters off gets a spelling nudge. After 3 misses, the answer is shown, and the summary reports how many answers were shown.
 
+## Parent/daughter colors
+
+Parent isotope words and terms are orange; daughter isotope words and terms are teal, in the Learn example, every sentence frame, and the labels under the Build-the-chain equation. These avoid the class codes already in use: pink/red = positive and α, blue = negative and β, green = correct, purple = interface, amber = hints and the animation rings.
+
 ## Tapping and phones
 
 Tapping a card puts it straight into its box (each card fits only one box), so students don't need to drag. Dragging still works, and so does the keyboard (Enter on a card).
@@ -125,4 +129,4 @@ Greek letters come from a small embedded font in the shared theme (Noto Serif It
 - `make-form.gs`: the Form builder (runs in Google Apps Script, not on the page).
 - `theme-v1.css`: a fallback copy of the shared theme. The page loads `gibsonm1.github.io/theme/theme-v1.css` first and uses this copy only if that fails. Create the `theme` repo once and every class interactive can share it.
 
-Version: Oct 12, 2026, update 11
+Version: Oct 12, 2026, update 12

@@ -11,12 +11,14 @@
 <link rel="stylesheet" href="https://gibsonm1.github.io/theme/theme-v1.css" onerror="this.onerror=null;this.href='theme-v1.css'">
 <style>
 :root{
+  /* parent isotope = orange, daughter isotope = teal (no overlap with charge, correct, accent, or hint colors) */
+  --parent-ink:#a94600; --daughter-ink:#00696a;
   /* class color code: red/pink = positive (α, +2), blue = negative (β, −1); green stays for "correct" */
   --alpha-fill:#f9c6d3; --alpha-ink:#5c0f2b; --alpha-line:#c2185b;
   --beta-fill:#b9dcf7;  --beta-ink:#0b3a5c;  --beta-line:#1e6fb0;
   --bar-h:64px;
 }
-@media (prefers-color-scheme:dark){ :root{ --alpha-line:#f48fb1; --beta-line:#8ec9f2; } }
+@media (prefers-color-scheme:dark){ :root{ --alpha-line:#f48fb1; --beta-line:#8ec9f2; --parent-ink:#ffb68a; --daughter-ink:#6fd8d4; } }
 body{overflow-x:hidden}
 html[lang="ar"] body{font-family:"Gibson Greek","Noto Sans Arabic",var(--md-ref-typeface)}
 html[lang="zh-Hant"] body{font-family:"Gibson Greek","Atkinson Hyperlegible","Noto Sans TC",var(--md-ref-typeface)}
@@ -353,6 +355,15 @@ svg.links path{fill:none;stroke:var(--md-sys-color-outline);stroke-width:1.6;str
 }
 .eqgrid .lbl .kw{white-space:normal}
 @media (max-width:1000px), (max-height:520px){ .work button, .work input, .work .slot{scroll-margin-bottom:200px} }
+
+/* update 12: parent/daughter color code; example sentence */
+.pc,.pc .kw{color:var(--parent-ink)} .dc,.dc .kw{color:var(--daughter-ink)}
+.pc .tr,.dc .tr{color:inherit;opacity:.85}
+.exsent{margin:12px 0 4px;line-height:1.6}
+.exs{display:inline-block;min-width:1.9em;transition:opacity .2s}
+.exs.hide{opacity:0}
+.exs.land{animation:land .7s ease-out}
+.exn.ring-fade::after{transition:opacity 1s ease-out}
 </style>
 </head>
 <body>
@@ -442,7 +453,7 @@ en: {
   helpD: "English element name-mass number, like hydrogen-2",
   helpT: "alpha or beta",
   exName: "We name an isotope with its element name and its mass number (the top number). So this daughter isotope is <b>thorium-234</b>, not thorium-90.",
-  replayEx: "Replay: how the numbers balance", cont2: "Continue",
+  exGloss: "", replayEx: "Replay: how the numbers balance", cont2: "Continue",
   lq: "Quick check",
   le: "Example: the first decay of your chain",
   lr: "Read",
@@ -556,7 +567,7 @@ es: {
   helpD: "nombre del elemento en inglés-número másico, como hydrogen-2",
   helpT: "alpha o beta",
   exName: "Nombramos un isótopo con el nombre del elemento y su número másico (el número de arriba). Por eso este isótopo hijo es <b>thorium-234</b>, no thorium-90.",
-  replayEx: "Repetir: cómo se equilibran los números", cont2: "Continuar",
+  exGloss: "En español: El isótopo padre {p} experimenta una desintegración alfa para formar el isótopo hijo {d}.", replayEx: "Repetir: cómo se equilibran los números", cont2: "Continuar",
   lq: "Comprobación rápida",
   le: "Ejemplo: la primera desintegración de tu cadena",
   lr: "Lee",
@@ -671,7 +682,7 @@ zh: {
   helpD: "英文元素名稱-質量數，例如 hydrogen-2",
   helpT: "alpha 或 beta",
   exName: "我們用元素名稱和質量數（上方的數字）來命名同位素。所以這個子同位素是 <b>thorium-234</b>，不是 thorium-90。",
-  replayEx: "重播：數字如何平衡", cont2: "繼續",
+  exGloss: "中文意思：母同位素 {p} 經歷α衰變，形成子同位素 {d}。", replayEx: "重播：數字如何平衡", cont2: "繼續",
   lq: "快速檢查",
   le: "例子：你的衰變鏈的第一次衰變",
   lr: "閱讀",
@@ -786,7 +797,7 @@ ar: {
   helpD: "اسم العنصر بالإنجليزية-العدد الكتلي، مثل hydrogen-2",
   helpT: "alpha أو beta",
   exName: "نسمّي النظير باسم العنصر وعدده الكتلي (الرقم العلوي). لذلك هذا النظير الابن هو <b>thorium-234</b>، وليس thorium-90.",
-  replayEx: "إعادة: كيف تتوازن الأرقام", cont2: "تابع",
+  exGloss: "بالعربية: النظير الأم {p} يمر باضمحلال ألفا ليكوّن النظير الابن {d}.", replayEx: "إعادة: كيف تتوازن الأرقام", cont2: "تابع",
   lq: "تحقق سريع",
   le: "مثال: أول اضمحلال في سلسلتك",
   lr: "اقرأ",
@@ -894,7 +905,7 @@ ar: {
 };
 
 "use strict";
-const VERSION = "Oct 12, 2026, update 11";
+const VERSION = "Oct 12, 2026, update 12";
 const KEY = "decay238-v2";
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -1141,19 +1152,20 @@ function mcBlock(q, store, shown, num) {
 // worked-example animation: ring each number in the equation, drop it into the number directly below it, then mark the row balanced
 const exNuc = (c, k) => `<span class="nuc"><span class="pre"><span class="exn" data-src="A${k}">${c.A}</span><span class="exn" data-src="Z${k}">${c.Z}</span></span><span class="sym">${c.sym}</span></span>`;
 let exRun = 0, exObs = null;
+const EX_SLOW = 1.25; // example animation speed: 1 = original, 1.25 = 25% slower
 function exFly(src, dst) {
   const s = src.getBoundingClientRect(), d = dst.getBoundingClientRect(), g = document.createElement("span");
   g.className = "exfly"; g.textContent = src.textContent; g.style.font = getComputedStyle(src).font; g.style.left = s.left + "px"; g.style.top = s.top + "px";
   document.body.appendChild(g);
   const gr = g.getBoundingClientRect(), k0 = s.height / (gr.height || s.height), k1 = d.height / (gr.height || s.height);
-  const an = g.animate([{ transform: `translate(0,0) scale(${k0})` }, { transform: `translate(${d.left + (d.width - gr.width * k1) / 2 - s.left}px,${d.top - s.top}px) scale(${k1})` }], { duration: 700, easing: "cubic-bezier(.4,0,.2,1)" });
+  const an = g.animate([{ transform: `translate(0,0) scale(${k0})` }, { transform: `translate(${d.left + (d.width - gr.width * k1) / 2 - s.left}px,${d.top - s.top}px) scale(${k1})` }], { duration: 700 * EX_SLOW, easing: "cubic-bezier(.4,0,.2,1)" });
   return an.finished.then(() => g.remove(), () => g.remove());
 }
 async function playExample() {
   const run = ++exRun, box = $("#exGrid"); if (!box) return;
   const still = () => run === exRun && document.body.contains(box), reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? Math.min(ms, 120) : ms));
-  $$(".exn", box).forEach((e) => e.classList.remove("ring-on", "ring-fade")); $$("[data-dst]", box).forEach((e) => e.classList.add("hide"));
+  const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? Math.min(ms, 120) : ms * EX_SLOW));
+  $$(".exn", box).forEach((e) => e.classList.remove("ring-on", "ring-fade")); $$("[data-dst]", box).forEach((e) => e.classList.add("hide")); $$("[data-sdst]").forEach((e) => e.classList.add("hide"));
   $$("[data-line]", box).forEach((e) => { e.classList.remove("ok"); e.classList.add("pending"); });
   $("#replayEx").hidden = true;
   await wait(500);
@@ -1163,9 +1175,10 @@ async function playExample() {
       const src = box.querySelector(`.exn[data-src="${f}${k}"]`), dst = box.querySelector(`[data-dst="${f}${k}"]`);
       src.classList.add("ring-on"); await wait(400);
       if (!still()) return;
-      if (!reduce) await exFly(src, dst);
+      const sd = $(`[data-sdst="${f}${k}"]`);
+      if (!reduce) await Promise.all([exFly(src, dst), sd ? exFly(src, sd) : null]);
       if (!still()) return;
-      dst.classList.remove("hide"); dst.classList.add("land"); setTimeout(() => dst.classList.remove("land"), 600);
+      [dst, sd].forEach((el) => { if (!el) return; el.classList.remove("hide"); el.classList.add("land"); setTimeout(() => el.classList.remove("land"), 700); });
       await wait(250);
     }
     if (!still()) return;
@@ -1182,11 +1195,11 @@ const LEARN = ["lw", "lr", "le", "lq"];
 function learnBody(i) {
   if (i === 0) return CONFIG.videos.map((v) => `<div class="vid"><a class="md-btn tonal" href="${esc(v.url)}" target="_blank" rel="noopener">${t("openVideo")}</a><div><b lang="en">${esc(v.title)}</b><br><span class="muted">${t("watchRange", { from: v.from, to: v.to })}${v.matchesChain ? " " + t("khanNote") : ""}</span></div></div>`).join("");
   if (i === 1) return `<div class="reading" id="readA">${speakUI("readA")}<p>${t("r1")}</p><p>${t("r2", { he: HE() })}</p><p>${t("r3", { e: EM() })}</p><p>${t("r4")}</p></div>`;
-  if (i === 2) return eqGrid([exNuc(CHAIN[0], 0), exNuc(P.a, 1), exNuc(CHAIN[1], 2)], { id: "exGrid", cls: "exeq",
+  if (i === 2) return eqGrid([`<span class="pc">${exNuc(CHAIN[0], 0)}</span>`, exNuc(P.a, 1), `<span class="dc">${exNuc(CHAIN[1], 2)}</span>`], { id: "exGrid", cls: "exeq",
         rows: [{ f: "A", name: t("massTop"), v: [238, 4, 234], state: "pending", data: true }, { f: "Z", name: t("atomBot"), v: [92, 2, 90], state: "pending", data: true }] }) + `
-      <div class="actions" style="margin-top:8px"><button class="md-btn tonal" type="button" data-act="replayEx" id="replayEx" hidden>↻ ${t("replayEx")}</button></div>
-      <p style="margin-top:10px">${t("exNote")}</p><p class="namenote">${t("exName")}</p>
-      <h3>${t("cardsH")}</h3><div class="legend"><span class="item">${pCard("a", 'aria-hidden="true"', "div")}${t("legA")}</span><span class="item">${pCard("b", 'aria-hidden="true"', "div")}${t("legB")}</span></div>`;
+      <p class="frameEn exsent" lang="en"><span class="pc"><b>Parent isotope</b> uranium-<span class="exs" data-sdst="A0">238</span></span> undergoes <b>alpha</b> decay to form <span class="dc"><b>daughter isotope</b> thorium-<span class="exs" data-sdst="A2">234</span></span>.</p>
+      ${L() !== "en" ? `<p class="gloss muted">${t("exGloss", { p: '<span lang="en">uranium-238</span>', d: '<span lang="en">thorium-234</span>' })}</p>` : ""}
+      <div class="actions" style="margin-top:8px"><button class="md-btn tonal" type="button" data-act="replayEx" id="replayEx" hidden>↻ ${t("replayEx")}</button></div>`;
   const allOk = MC.every((q) => q.opts[state.mc[q.id]]?.ok);
   return `<p class="muted">${t("qcSub")}</p>${MC.map((q, n) => mcBlock(q, state.mc, state.mcShown, n + 1)).join("")}
     <div class="actions"><button class="md-btn ${allOk ? "outlined" : "filled"}" type="button" data-act="checkMC">${t("checkAnswers")}</button>${allOk ? nextBtn(1) : ""}</div>`;
@@ -1253,8 +1266,8 @@ function sentenceUI(key) {
   if (s.said) return `<p class="said" lang="en" dir="ltr">✓ ${esc(sentText(c))}</p>`;
   const blank = (f, aria, help) => `<span class="blank"><input class="md-input ${f}" data-sent="${key}" data-f="${f}" value="${esc(s[f])}" aria-label="${aria}" aria-describedby="h-${key.replace(":", "-")}-${f}" autocomplete="off" spellcheck="false"><small class="help" id="h-${key.replace(":", "-")}-${f}">${help}</small></span>`;
   const frame = s.ok
-    ? `<p class="frameEn" lang="en">Parent isotope <b>${full(c.par)}</b> undergoes <b>${esc(s.t)}</b> decay to form daughter isotope <b>${esc(s.d)}</b>.</p>`
-    : `<p class="frameEn" lang="en">Parent isotope <b>${full(c.par)}</b> undergoes ${blank("t", "decay type: alpha or beta", t("helpT"))} decay to form daughter isotope ${blank("d", "daughter isotope: element name and mass number", t("helpD"))}.</p>`;
+    ? `<p class="frameEn" lang="en"><span class="pc"><b>Parent isotope</b> <b>${full(c.par)}</b></span> undergoes <b>${esc(s.t)}</b> decay to form <span class="dc"><b>daughter isotope</b> <b>${esc(s.d)}</b></span>.</p>`
+    : `<p class="frameEn" lang="en"><span class="pc"><b>Parent isotope</b> <b>${full(c.par)}</b></span> undergoes ${blank("t", "decay type: alpha or beta", t("helpT"))} decay to form <span class="dc"><b>daughter isotope</b></span> ${blank("d", "daughter isotope: element name and mass number", t("helpD"))}.</p>`;
   const gloss = L() !== "en" ? `<p class="gloss muted">${t("frameGloss", { p: `<span lang="en">${full(c.par)}</span>` })}</p>` : "";
   const fbs = s.fb ? [].concat(s.fb) : [], fb = fbs.length ? `<p class="fb ${s.ok ? "ok" : "bad"}">${fbs.map((x) => t(x.k, x.v || {})).join(" ")}</p>` : "";
   const act = s.ok
@@ -1338,7 +1351,7 @@ function renderBuild(app) {
       ${lock ? "" : `<p class="muted">${t("buildInst")}</p>`}
       ${lock ? eqGrid([nucC(par), `<span class="pnuc">${shapeSVG(r.p, "mshape")}${nuc(P[r.p].A, P[r.p].Z, P[r.p].sym)}</span>`, nucC(C(r.d))], { cls: "small", rows: balRows(par, P[r.p], C(r.d).A, C(r.d).Z) })
         : eqGrid([`<div class="parent">${isoCard(par, "", "div")}</div>`, slot("p"), slot("d")], {
-            labels: [kw("parent isotope", "Parent isotope") + (cur ? `<br>${t("parentFrom", { n: cur })}` : ""), kw("decay particle", "Decay particle"), kw("daughter isotope", "Daughter isotope")],
+            labels: [`<span class="pc">${kw("parent isotope", "Parent isotope")}</span>` + (cur ? `<br>${t("parentFrom", { n: cur })}` : ""), kw("decay particle", "Decay particle"), `<span class="dc">${kw("daughter isotope", "Daughter isotope")}</span>`],
             rows: r.last ? balRows(par, P[r.last.p], C(r.last.d).A, C(r.last.d).Z) : [] })}
       ${lock ? "" : `<div class="actions"><button class="md-btn filled" type="button" data-act="checkRow">${t("checkDecay")}</button>${showHint ? `<button class="md-btn outlined" type="button" data-act="hint">${r.hint ? t("hintMore") : t("hintB")}</button>` : ""}</div>`}
       ${lock ? "" : `<div class="hintbox">${hintText(cur, r.hint)}</div>`}
